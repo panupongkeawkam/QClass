@@ -9,14 +9,14 @@ import OwnerRoomQuiz from "../screens/owner/OwnerRoomQuiz";
 import StartAttemptButton from "../components/button/StartAttemptButton";
 
 export default (props) => {
+  // console.log("Owner room tab navigation room props : ", props.route.params.room)
+  // console.log("Owner room tab navigation user props : ", props.route.params.user)
   const [showStartAttemptButton, setShowStartAttemptButton] = useState(true);
   const RoomTabsNavigators = createBottomTabNavigator();
-  // console.log(props);
-  // console.log(props.route.params.room.inviteCode);
 
   useEffect(() => {
     props.navigation.setOptions({
-      title: props.route.params.roomTitle,
+      title: props.route.params.room.title,
       headerRight: () => {
         return (
           <InviteButton
@@ -119,6 +119,7 @@ export default (props) => {
       <RoomTabsNavigators.Screen
         name="OwnerAnnouncement"
         component={OwnerAnnouncement}
+        initialParams={{room : props.route.params.room, user : props.route.params.user}}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (

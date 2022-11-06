@@ -23,11 +23,10 @@ export default (props) => {
     try {
       let newQuiz = await createQuiz(quizName);
       props.onCreatedQuiz(newQuiz);
-      console.log(newQuiz);
       props.close();
       setQuizName("");
     } catch (error) {
-      console.log(error);
+      console.log("Error : ", error);
     }
   };
 

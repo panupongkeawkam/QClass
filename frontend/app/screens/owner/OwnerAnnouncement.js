@@ -1,52 +1,66 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../../assets/theme/Theme";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 import ChatBox from "../../components/ChatBox";
+import {
+  sendAnnouncement,
+  fetchAnnouncements,
+} from "../../controller/RoomController";
 
 export default (props) => {
   const [message, setMessage] = useState("");
-  const data = [
-    {
-      message: "Just take a break for 15 minutes",
-      time: "12:40",
-    },
-    { message: "See ya!", time: "Yesterday 15:07" },
-    { message: "When I'm tired!", time: "Yesterday 16:07" },
-    {
-      message:
-        "How can I find another one like you, then I love to lay down on",
-      time: "22 October 15:07",
-    },
-  ];
-  const refsFocus = useRef(null); // ทำเป็นปุ่มกดแชทได้
+  const [announcements, setAnnouncements] = useState([]);
 
-  const sendMessageHandler = () => {
-    console.log("send message: " + message);
-    setMessage("")
-    Keyboard.dismiss()
-  }
+  const userId = props.route.params.user.userId;
+  const roomId = props.route.params.room.roomId;
+
+  const sendMessageHandler = async () => {
+    try {
+      var newAnnouncement = await sendAnnouncement(userId, roomId, message);
+      var announcementsVar = announcements;
+      announcementsVar.push(newAnnouncement);
+      setMessage("");
+      setAnnouncements([...announcementsVar]);
+    } catch (err) {
+      console.log("Error : ", err);
+    }
+    Keyboard.dismiss();
+  };
+
+  useEffect(() => {
+    props.navigation.addListener("focus", async () => {
+      try {
+        var announcementsVar = await fetchAnnouncements(roomId);
+      } catch (error) {
+        console.log(error);
+      }
+      setAnnouncements([...announcementsVar]);
+    });
+  });
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
       <View style={{ flex: 1 }}>
         <ScrollView style={theme.container}>
-          {data.length !== 0 ? (
-            data.map((d, index) => {
+          {announcements.length !== 0 ? (
+            announcements.map((announcement, index) => {
               return (
                 <ChatBox
-                  style={{ marginBottom: data.length - 1 === index ? 240 : 0 }}
-                  message={d.message}
-                  dateTime={d.time} // didn't format
+                  style={{
+                    marginBottom: announcements.length - 1 === index ? 240 : 0,
+                  }}
+                  message={announcement.message}
+                  dateTime={announcement.time} // didn't format
                   alignRight
                   key={index}
                 />
@@ -95,10 +109,10 @@ export default (props) => {
                 setMessage(text);
               }}
               onFocus={() => {
-                console.log("focus!")
+                console.log("focus!");
               }}
               onSubmitEditing={() => {
-                console.log("submit!")
+                console.log("submit!");
               }}
             />
             <TouchableOpacity

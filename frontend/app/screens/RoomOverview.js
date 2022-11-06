@@ -29,8 +29,8 @@ export default (props) => {
   const selectOwnRoomHandler = (room, index) => {
     // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
     props.navigation.navigate("OwnerRoomTabsNavigator", {
-      roomTitle: room.title,
       room: room,
+      user: user
     });
   };
 
@@ -67,7 +67,6 @@ export default (props) => {
 
   const selectMyRoomHandler = (room, index) => {
     // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
-    console.log(room);
     props.navigation.navigate("ParticipantRoomTabsNavigator", {
       roomTitle: room.title,
       room: room,

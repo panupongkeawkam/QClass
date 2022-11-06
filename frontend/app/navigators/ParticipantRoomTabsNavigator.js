@@ -9,20 +9,16 @@ import ParticipantAnnouncement from "../screens/participant/ParticipantAnnouncem
 import ParticipantRoomQuiz from "../screens/participant/ParticipantRoomQuiz";
 
 export default (props) => {
-  console.log("Tab : ", props.route.params.room);
   const RoomTabsNavigators = createBottomTabNavigator();
   const leaveRoomHandler = async () => {
-    console.log("Press 'Leave' button")
-    // console.log(props.route.params.room);
     const userId = props.route.params.user.userId
     const room = props.route.params.room
     try {
       var leave = await leaveRoom(userId, room);
-      console.log(leave);
       props.navigation.navigate("RoomOverview");
-      // console.log("Success : ", newRoom)
+      console.log("Success : ", leave)
     } catch (error) {
-      // console.log("Error : ", error);
+      console.log("Error : ", error);
     }
   }
 
@@ -124,6 +120,7 @@ export default (props) => {
       <RoomTabsNavigators.Screen
         name="ParticipantAnnouncement"
         component={ParticipantAnnouncement}
+        initialParams={{room : props.route.params.room, user : props.route.params.user}}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (

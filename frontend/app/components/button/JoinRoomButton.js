@@ -37,8 +37,6 @@ export default (props) => {
   const joinHandler = async () => {
     try {
       var newRoom = await joinRoom(user.userId, inviteCode);
-      console.log("Success: ", newRoom);
-      console.log(props);
       props.navigation.navigate("QuizLibrary", {});
       props.navigation.navigate("RoomOverview", {});
       bottomSheetRef.current.close();

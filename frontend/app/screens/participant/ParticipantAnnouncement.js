@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -6,28 +6,38 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-
 import { theme, color } from "../../assets/theme/Theme";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 import ChatBox from "../../components/ChatBox";
+import { fetchAnnouncements } from "../../controller/RoomController";
 
 export default (props) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const roomId = props.route.params.room.roomId;
+
+  const fetchAnnouncementsData = async () => {
+    try {
+      var announcementsVar = await fetchAnnouncements(roomId);
+    } catch (error) {
+      console.log("Error from participant announcement screen : ", error);
+    }
+    setAnnouncements([...announcementsVar]);
+  };
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      fetchAnnouncementsData();
+    });
+  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
+      fetchAnnouncementsData();
     }, 1000);
   };
-
-  const data = [
-    {
-      message: "Just take a break for 15 minutes",
-      time: "12:40",
-    },
-    { message: "See ya!", time: "Yesterday 15:07" },
-  ];
 
   return (
     <ScrollView
@@ -36,13 +46,15 @@ export default (props) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {data.length !== 0 ? (
-        data.map((d, index) => {
+      {announcements.length !== 0 ? (
+        announcements.map((announcement, index) => {
           return (
             <ChatBox
-              style={{ marginBottom: data.length - 1 === index ? 240 : 0 }}
-              message={d.message}
-              dateTime={d.time} // didn't format
+              style={{
+                marginBottom: announcements.length - 1 === index ? 240 : 0,
+              }}
+              message={announcement.message}
+              dateTime={announcement.time} // didn't format
               key={index}
             />
           );
