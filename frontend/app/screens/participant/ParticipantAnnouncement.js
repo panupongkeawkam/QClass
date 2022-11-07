@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { theme, color } from "../../assets/theme/Theme";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
@@ -20,7 +21,7 @@ export default (props) => {
     try {
       var announcementsVar = await fetchAnnouncements(roomId);
     } catch (error) {
-      console.log("Error from participant announcement screen : ", error);
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
     setAnnouncements([...announcementsVar]);
   };

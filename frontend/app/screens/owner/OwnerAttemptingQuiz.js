@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Text, View, ScrollView, Alert } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
+import axios from "axios";
 
 import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
@@ -8,83 +9,12 @@ import Label from "../../components/Label";
 import Question from "../../components/Question";
 import StepBar from "../../components/StepBar";
 
+import config from "../../assets/api-config";
+
 export default (props) => {
-  const [questions, setQuestions] = useState([
-    {
-      title: "กากาำส",
-      correct: "1",
-      timer: 5,
-      choices: [
-        {
-          title: "มแทก",
-        },
-        {
-          title: "ากาก",
-        },
-      ],
-      type: "choice",
-    },
-    {
-      title: "why",
-      correct: "2",
-      timer: 0,
-      choices: [
-        {
-          title: "b",
-          index: 0,
-        },
-        {
-          title: "m",
-          index: 1,
-        },
-        {
-          title: "nn",
-          index: 2,
-        },
-        {
-          title: "nnn",
-          index: 3,
-        },
-        {
-          title: "b vbv",
-          index: 4,
-        },
-      ],
-      type: "choice",
-    },
-    {
-      title: "bdbd",
-      correct: "4",
-      timer: null,
-      choices: [
-        {
-          title: "o",
-          index: 0,
-        },
-        {
-          title: "p",
-          index: 1,
-        },
-        {
-          title: "k",
-          index: 2,
-        },
-        {
-          title: "l",
-          index: 3,
-        },
-        {
-          title: "u",
-          index: 4,
-        },
-        {
-          title: "n",
-          index: 5,
-        },
-      ],
-      type: "choice",
-    },
-  ]);
+  const quizTitle = props.route.params.quiz.title;
+  const questionLength = props.route.params.quiz.questionLength;
+  const questions = props.route.params.quiz.questions;
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -98,7 +28,7 @@ export default (props) => {
   });
 
   const endAttemptHandler = () => {
-    Alert.alert(`End "${"HID Week 7"}" Quiz?`, "", [
+    Alert.alert(`End "${quizTitle}" Quiz?`, "", [
       {
         text: "Cancel",
         style: "cancel",
@@ -106,7 +36,18 @@ export default (props) => {
       {
         text: "End",
         style: "destructive",
-        onPress: () => {
+        onPress: async () => {
+          await axios.put(
+            `http://${config.ip}:3000/quiz/${props.route.params.quiz.quizId}`,
+            {
+              quiz: {
+                state: "ended",
+              },
+            }
+          );
+
+          // result statement
+
           props.navigation.navigate("OwnerQuizResult", {});
         },
       },
@@ -134,11 +75,11 @@ export default (props) => {
           ]}
         >
           <Text style={[theme.textHeader1, { color: color.base1 }]}>
-            HID Week 7
+            {quizTitle}
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Label text={"Quiz"} />
-            <Label text={"10 Questions"} />
+            <Label text={`${questionLength} Questions`} />
           </View>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>

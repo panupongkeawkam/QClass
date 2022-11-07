@@ -10,15 +10,15 @@ import ParticipantRoomQuiz from "../screens/participant/ParticipantRoomQuiz";
 
 export default (props) => {
   const RoomTabsNavigators = createBottomTabNavigator();
+
   const leaveRoomHandler = async () => {
     const userId = props.route.params.user.userId
     const room = props.route.params.room
     try {
       var leave = await leaveRoom(userId, room);
       props.navigation.navigate("RoomOverview");
-      console.log("Success : ", leave)
     } catch (error) {
-      console.log("Error : ", error);
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
   }
 

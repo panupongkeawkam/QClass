@@ -64,7 +64,7 @@ export default (props) => {
                 isCorrect={choice.isCorrect}
                 index={index}
                 onSetCorrect={() => {
-                  console.log("no correct choice need");
+                  // no correct choice
                 }}
                 onDelete={(index) => {
                   deleteHandler(index);

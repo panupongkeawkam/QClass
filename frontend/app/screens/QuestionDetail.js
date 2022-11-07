@@ -101,7 +101,6 @@ export default (props) => {
           text: "Retry",
         },
       ]);
-      console.log("Error : ", error);
     }
   };
 

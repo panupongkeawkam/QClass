@@ -9,8 +9,6 @@ import OwnerRoomQuiz from "../screens/owner/OwnerRoomQuiz";
 import StartAttemptButton from "../components/button/StartAttemptButton";
 
 export default (props) => {
-  // console.log("Owner room tab navigation room props : ", props.route.params.room)
-  // console.log("Owner room tab navigation user props : ", props.route.params.user)
   const [showStartAttemptButton, setShowStartAttemptButton] = useState(true);
   const RoomTabsNavigators = createBottomTabNavigator();
 

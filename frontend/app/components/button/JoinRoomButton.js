@@ -41,9 +41,8 @@ export default (props) => {
       props.navigation.navigate("RoomOverview", {});
       bottomSheetRef.current.close();
     } catch (error) {
-      Alert.alert(error.message);
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
       setInviteCode("");
-      console.log("Error: ", error);
     }
   };
 

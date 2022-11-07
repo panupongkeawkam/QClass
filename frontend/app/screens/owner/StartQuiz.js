@@ -43,10 +43,6 @@ export default (props) => {
   };
 
   const startHandler = async () => {
-    // console.log("Check Quiz Index: " + selectedQuizIndex);
-    // console.log("Check Quiz:", selectedQuiz);
-    // console.log("Room:", props.route.params.room);
-    // console.log("User:", props.route.params.user);
     setIsLoading(true);
     const newQuiz = await Controller.startQuiz(
       selectedQuiz,

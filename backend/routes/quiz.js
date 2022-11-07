@@ -84,8 +84,8 @@ router.post("/quiz/:quizId/question", async (req, res) => {
 router.post("/question/:questionId/choice", async (req, res) => {
   const questionId = req.params.questionId;
   const surveyId = req.body.surveyId;
-  const title = req.body.title;
-  const index = req.body.index;
+  const title = req.body.choice.title;
+  const index = req.body.choice.index;
 
   const conn = await pool.getConnection();
   await conn.beginTransaction();
@@ -109,13 +109,21 @@ router.post("/question/:questionId/choice", async (req, res) => {
 
 // owner stop quiz
 router.put("/quiz/:quizId", async (req, res) => {
-  // { body: { state: "ended" } }
+  const quizId = req.params.quizId;
+  const state = req.body.quiz.state;
+
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    const [quiz, rows] = await conn.query(
+      `UPDATE Quiz SET \`state\` = ?
+      WHERE quizId = ?`,
+      [state, quizId]
+    );
+
     await conn.commit();
-    res.json();
+    res.status(200).send("Success");
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

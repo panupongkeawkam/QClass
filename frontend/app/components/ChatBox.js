@@ -28,7 +28,7 @@ export default ({ dateTime, message, style, alignRight = false }) => {
         ]}
       >
         <Text style={{ marginBottom: 4, color: color.base4 }}>{dateTime}</Text>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{message}</Text>
+        <Text style={{ fontSize: 20, fontWeight: "400" }}>{message}</Text>
       </View>
     </View>
   );

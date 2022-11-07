@@ -45,14 +45,22 @@ export default (props) => {
   const MyIcon = (icon) => {
     return (
       <TouchableOpacity
+        style={{
+          width: 40,
+          height: 40,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 20,
+          backgroundColor: icon.isSelect ? `${color.primary}22` : "transparent",
+        }}
         onPress={() => {
           icon.onSelect();
         }}
       >
         <Ionicons
           name={icon.isSelect ? icon.iconName : icon.iconName + "-outline"}
-          size={28}
-          color={icon.isSelect ? color.primary : color.base3}
+          size={24}
+          color={icon.isSelect ? color.primary : color.content4}
         />
       </TouchableOpacity>
     );

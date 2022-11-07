@@ -21,7 +21,6 @@ export default (props) => {
 
   useEffect(() => {
     props.navigation.addListener("focus", async () => {
-      // console.log("Focused OwnerRoomQuiz");
     });
   });
 

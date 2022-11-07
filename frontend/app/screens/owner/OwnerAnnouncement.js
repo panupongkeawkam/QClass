@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
+  Alert,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 
@@ -21,18 +22,24 @@ export default (props) => {
   const [message, setMessage] = useState("");
   const [announcements, setAnnouncements] = useState([]);
 
+  const scrollView = useRef(null);
+
   const userId = props.route.params.user.userId;
   const roomId = props.route.params.room.roomId;
 
   const sendMessageHandler = async () => {
+    if (!message.trim()) {
+      return;
+    }
+
     try {
       var newAnnouncement = await sendAnnouncement(userId, roomId, message);
       var announcementsVar = announcements;
       announcementsVar.push(newAnnouncement);
       setMessage("");
       setAnnouncements([...announcementsVar]);
-    } catch (err) {
-      console.log("Error : ", err);
+    } catch (error) {
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
     Keyboard.dismiss();
   };
@@ -42,7 +49,7 @@ export default (props) => {
       try {
         var announcementsVar = await fetchAnnouncements(roomId);
       } catch (error) {
-        console.log(error);
+        Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
       }
       setAnnouncements([...announcementsVar]);
     });
@@ -51,7 +58,7 @@ export default (props) => {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
       <View style={{ flex: 1 }}>
-        <ScrollView style={theme.container}>
+        <ScrollView ref={scrollView} style={theme.container}>
           {announcements.length !== 0 ? (
             announcements.map((announcement, index) => {
               return (
@@ -108,14 +115,9 @@ export default (props) => {
               onChangeText={(text) => {
                 setMessage(text);
               }}
-              onFocus={() => {
-                console.log("focus!");
-              }}
-              onSubmitEditing={() => {
-                console.log("submit!");
-              }}
             />
             <TouchableOpacity
+              activeOpacity={message.trim() ? 0.2 : 1}
               style={{
                 width: "12%",
                 marginLeft: "4%",
@@ -127,7 +129,7 @@ export default (props) => {
               <Ionicons
                 name="paper-plane-outline"
                 size={28}
-                color={color.secondary}
+                color={message.trim() ? color.secondary : color.base3}
               />
             </TouchableOpacity>
           </View>

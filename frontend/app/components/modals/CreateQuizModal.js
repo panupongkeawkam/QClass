@@ -26,21 +26,14 @@ export default (props) => {
       props.close();
       setQuizName("");
     } catch (error) {
-      console.log("Error : ", error);
+      setQuizName("");
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
   };
 
   return (
     <View style={modalTheme.centeredView}>
-      <Modal
-        transparent={true}
-        animationType={"fade"}
-        visible={props.visible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          props.close();
-        }}
-      >
+      <Modal transparent={true} animationType={"fade"} visible={props.visible}>
         <KeyboardAwareScrollView
           style={{
             flex: 1,
@@ -58,6 +51,7 @@ export default (props) => {
                 <Text style={modalTheme.textHeader}>Create Quiz</Text>
                 <TouchableOpacity
                   onPress={() => {
+                    setQuizName("");
                     props.close();
                   }}
                 >
@@ -86,7 +80,7 @@ export default (props) => {
                 backgroundColor={color.wrong}
                 title="CLEAR USER"
                 onPress={async () => {
-                  await AsyncStorage.removeItem("user")
+                  await AsyncStorage.removeItem("user");
                 }}
               />
               <SecondaryButton

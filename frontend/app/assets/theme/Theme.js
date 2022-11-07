@@ -1,9 +1,10 @@
 import { StyleSheet, Dimensions } from "react-native";
 
 const color = {
-  primary: "#3bc8ed",
+  primary: "#4dbee4", // #3bc8ed
   secondary: "#ffb630",
   correct: "#37de90",
+  warning: "#ffb630",
   wrong: "#de3758",
   base1: "#ffffff",
   base2: "#f9f9f9",
@@ -180,7 +181,7 @@ const theme = StyleSheet.create({
   chatBox: {
     justifyContent: "flex-start",
     paddingTop: 12,
-    paddingBottom: 24,
+    paddingBottom: 16,
     paddingHorizontal: 16,
     borderRadius: 24,
     marginVertical: 8,

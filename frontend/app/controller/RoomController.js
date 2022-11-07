@@ -40,7 +40,7 @@ function formatDate(dateFormat) {
     return `Yesterday ${time}`;
   }
 
-  return `${date} ${time}`;
+  return `${date}${!isSameYear ? " " + dateTime.getFullYear() : ""} ${time}`;
 }
 
 function inviteCodeGenerator() {
@@ -82,7 +82,6 @@ const leaveRoom = async (userId, room) => {
       room: room,
     })
     .then((res) => {
-      console.log("Controller :  , when leave room is success : ", res.data);
       return res.data;
     })
     .catch((err) => {

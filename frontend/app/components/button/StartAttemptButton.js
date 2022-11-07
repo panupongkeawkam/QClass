@@ -24,7 +24,6 @@ export default (props) => {
 
   const startHandler = ({ type, quiz, quizIndex }) => {
     bottomSheetRef.current.close();
-    console.log("StartAttemptButton says:", quiz);
     setTimeout(() => {
       props.navigation.navigate("OwnerAttemptingQuiz", {
         type,

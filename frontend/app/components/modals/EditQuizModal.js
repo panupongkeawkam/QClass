@@ -20,14 +20,13 @@ export default (props) => {
   const [editQuizModalVisible, setEditQuizModalVisible] = useState(false);
   const [title, setTitle] = useState(props.title);
 
-
   const confirmHandler = async () => {
     try {
       let newTitleDetail = await editQuizName(title, props.title);
       props.onEditQuiz(newTitleDetail);
-      setEditQuizModalVisible(current => !current);
+      setEditQuizModalVisible((current) => !current);
     } catch (error) {
-      console.log("Error : ", error);
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
   };
 
@@ -38,10 +37,6 @@ export default (props) => {
           transparent={true}
           animationType={"fade"}
           visible={editQuizModalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setEditQuizModalVisible(false);
-          }}
         >
           <KeyboardAwareScrollView
             style={{
