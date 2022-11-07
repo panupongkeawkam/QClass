@@ -1,5 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import axios from "axios";
+import config from "../assets/api-config";
+
 function formatDate(dateFormat) {
   var dateTime = new Date(dateFormat);
   var date = `${dateTime.getFullYear()}-${(dateTime.getMonth() + 1 + 1000)
@@ -76,22 +79,27 @@ const createQuestion = async (data) => {
   } else if (isSameQuestionTitle) {
     throw { message: "Question title already used in this quiz" };
   } else if (isNoCorrect) {
-    throw { message: type === "choice" ? "No correct choice answer in this question" : "Answer cannot be empty"};
+    throw {
+      message:
+        type === "choice"
+          ? "No correct choice answer in this question"
+          : "Answer cannot be empty",
+    };
   } else {
     if (type === "choice") {
       // Variable choice titles
       var choices = data.choices.map((choice, index) => {
-        return { 
+        return {
           title: choice.title.trim(),
-          index: index
-         };
+          index: index,
+        };
       });
 
       // Checking data
       var choiceNulls = choices
         .map((choice, index) => (choice.title.length <= 0 ? index : ""))
         .filter(String);
-      var allChoiceTitle = data.choices.map(choice => choice.title.trim())
+      var allChoiceTitle = data.choices.map((choice) => choice.title.trim());
       var setOfChoices = new Array(...new Set(allChoiceTitle));
 
       // Boolean choice
@@ -99,7 +107,10 @@ const createQuestion = async (data) => {
       var isSameChoice = allChoiceTitle.length !== setOfChoices.length;
 
       if (isChoiceNull) {
-        throw { message: "Choices title cannot be empty", choiceNulls: choiceNulls };
+        throw {
+          message: "Choices title cannot be empty",
+          choiceNulls: choiceNulls,
+        };
       } else if (isSameChoice) {
         throw { message: "Choice cannot be same as other choice" };
       }
@@ -120,15 +131,14 @@ const createQuestion = async (data) => {
       correct: correct,
       timer: timer,
       choices: null,
-      type: type
-    }
+      type: type,
+    };
     targetQuiz.questions.push(newQuestion);
     quizzes[targetQuizIndex] = targetQuiz;
     await AsyncStorage.setItem("quizzes", JSON.stringify(quizzes));
     return newQuestion;
   }
 };
-
 
 const editQuizName = async (newTitle, oldTitle) => {
   let title = newTitle.trim();
@@ -156,7 +166,7 @@ const saveNewTitle = async (newTitle, oldTitle) => {
   let quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"));
   let targetQuizIndex = quizzes.findIndex((quiz) => quiz.title === oldTitle);
   // let targetQuiz = quizzes.find((quiz) => quiz.title === oldTitle);
-  let targetQuiz = quizzes[targetQuizIndex]
+  let targetQuiz = quizzes[targetQuizIndex];
 
   // เวลากด Delete ตอนเปลี่ยนชื่อมันจะหาจาก Asyncstorage ไม่เจอ
   if (targetQuizIndex === -1) {
@@ -170,19 +180,19 @@ const saveNewTitle = async (newTitle, oldTitle) => {
 
 const deleteQuestion = async (questions, targetIndex, quizTitle) => {
   // All quizzes
-  var quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"))
+  var quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"));
 
   // Find quiz
-  var targetQuizIndex = quizzes.findIndex(quiz => quiz.title === quizTitle)
-  var targetQuiz = quizzes[targetQuizIndex]
+  var targetQuizIndex = quizzes.findIndex((quiz) => quiz.title === quizTitle);
+  var targetQuiz = quizzes[targetQuizIndex];
 
   // Set data
-  targetQuiz.questions.splice(targetIndex, 1)
-  quizzes[targetQuizIndex] = targetQuiz
-  await AsyncStorage.setItem("quizzes", JSON.stringify(quizzes))
+  targetQuiz.questions.splice(targetIndex, 1);
+  quizzes[targetQuizIndex] = targetQuiz;
+  await AsyncStorage.setItem("quizzes", JSON.stringify(quizzes));
 
   return targetQuiz.questions;
-}
+};
 
 const editQuestion = async (data, oldTitle, questionIndex) => {
   // Variables
@@ -193,48 +203,59 @@ const editQuestion = async (data, oldTitle, questionIndex) => {
   var type = data.type;
 
   // All quizzes
-  var quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"))
+  var quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"));
 
   // Find quiz and index
-  var targetQuizIndex = quizzes.findIndex(quiz => quiz.title === quizTitle)
-  var targetQuiz = quizzes[targetQuizIndex]
+  var targetQuizIndex = quizzes.findIndex((quiz) => quiz.title === quizTitle);
+  var targetQuiz = quizzes[targetQuizIndex];
 
   // All name question title
-  var allQuestionTitle = targetQuiz.questions.map(question => question.title.trim() !== oldTitle ? question.title.trim() : "").filter(String)
+  var allQuestionTitle = targetQuiz.questions
+    .map((question) =>
+      question.title.trim() !== oldTitle ? question.title.trim() : ""
+    )
+    .filter(String);
 
   // Boolean
-  var isNullQuestionTitle = questionTitle.length <= 0
-  var isSameQuestionTitle = allQuestionTitle.some(title => title === questionTitle)
-  var isNoCorrect = correct === null
+  var isNullQuestionTitle = questionTitle.length <= 0;
+  var isSameQuestionTitle = allQuestionTitle.some(
+    (title) => title === questionTitle
+  );
+  var isNoCorrect = correct === null;
 
   if (isNullQuestionTitle) {
     throw { message: "Question title cannot be empty" };
   } else if (isSameQuestionTitle) {
     throw { message: "Question title already used in this quiz" };
   } else if (isNoCorrect) {
-    throw { message: type === "choice" ? "No correct choice answer in this question" : "Answer cannot be empty"};
+    throw {
+      message:
+        type === "choice"
+          ? "No correct choice answer in this question"
+          : "Answer cannot be empty",
+    };
   } else {
-    if (type === "choice"){
+    if (type === "choice") {
       var choices = data.choices.map((choice, index) => {
         return {
-          title : choice.title.trim(),
-          index: index
-        }
-      })
+          title: choice.title.trim(),
+          index: index,
+        };
+      });
 
       // Choices data
-      var allChoiceTitle = data.choices.map(choice => choice.title.trim())
-      var setOfChoicesTitle = new Array(...new Set(allChoiceTitle))
+      var allChoiceTitle = data.choices.map((choice) => choice.title.trim());
+      var setOfChoicesTitle = new Array(...new Set(allChoiceTitle));
 
       // Boolean
-      var isChoiceNull = allChoiceTitle.some(title => title.length <= 0)
-      var isSameChoice = allChoiceTitle.length !== setOfChoicesTitle.length
+      var isChoiceNull = allChoiceTitle.some((title) => title.length <= 0);
+      var isSameChoice = allChoiceTitle.length !== setOfChoicesTitle.length;
 
       if (isChoiceNull) {
-        throw { message: "Choices title cannot be empty"};
+        throw { message: "Choices title cannot be empty" };
       } else if (isSameChoice) {
         throw { message: "Choice cannot be same as other choice" };
-      } 
+      }
       var newQuestion = {
         title: questionTitle,
         correct: correct,
@@ -252,15 +273,66 @@ const editQuestion = async (data, oldTitle, questionIndex) => {
       correct: correct,
       timer: timer,
       choices: null,
-      type: type
-    }
+      type: type,
+    };
 
     targetQuiz.questions[questionIndex] = newQuestion;
     quizzes[targetQuizIndex] = targetQuiz;
     await AsyncStorage.setItem("quizzes", JSON.stringify(quizzes));
     return targetQuiz.questions;
   }
-}
+};
+
+const startQuiz = async (quiz, room, user) => {
+  quiz.questionLength = quiz.questions.length;
+
+  const newQuiz = await axios.post(`http://${config.ip}:3000/quiz`, {
+    quiz: { questionLength: quiz.questions.length, title: quiz.title },
+    roomId: room.roomId,
+  });
+
+  quiz.quizId = newQuiz.data.quizId;
+
+  var newQuestion;
+  for (const question of quiz.questions) {
+    newQuestion = await axios.post(
+      `http://${config.ip}:3000/quiz/${quiz.quizId}/question`,
+      {
+        question: {
+          correct: question.correct,
+          timer: question.timer,
+          title: question.title,
+          type: question.type,
+        },
+      }
+    );
+
+    question.questionId = newQuestion.data.questionId;
+    question.quizId = quiz.quizId;
+
+    if (question.type === "choice") {
+      var newChoice;
+      for (const choice of question.choices) {
+        newChoice = await axios.post(
+          `http://${config.ip}:3000/question/${question.questionId}/choice`,
+          {
+            choice: {
+              title: choice.title,
+              index: choice.index,
+            },
+            surveyId: null,
+          }
+        );
+
+        choice.choiceId = newChoice.data.choiceId;
+        choice.questionId = question.questionId;
+        choice.surveyId = null;
+      }
+    }
+  }
+
+  return quiz;
+};
 
 export {
   createQuiz,
@@ -269,5 +341,6 @@ export {
   editQuizName,
   saveNewTitle,
   deleteQuestion,
-  editQuestion
+  editQuestion,
+  startQuiz,
 };

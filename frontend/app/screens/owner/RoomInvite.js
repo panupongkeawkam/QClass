@@ -13,9 +13,7 @@ import * as Clipboard from "expo-clipboard";
 import { theme, color } from "../../assets/theme/Theme";
 
 export default (props) => {
-  const [QRCode, setQRCode] = useState(
-    `https://quickchart.io/qr?text=${props.route.params.roomCode}&ecLevel=H&size=1080`
-  );
+  const QRCode = `https://quickchart.io/qr?text=${props.route.params.roomCode}Roti&ecLevel=H&size=1080`;
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -39,6 +37,7 @@ export default (props) => {
           resizeMode: "contain",
         }}
         source={{ uri: QRCode }}
+        loadingIndicatorSource={{ uri: "https://i.gifer.com/8EeP.gif" }}
       />
       <TouchableOpacity
         style={{

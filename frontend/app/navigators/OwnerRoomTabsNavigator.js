@@ -21,7 +21,9 @@ export default (props) => {
         return (
           <InviteButton
             onInvite={() => {
-              props.navigation.navigate("RoomInvite", { roomCode: props.route.params.room.inviteCode });
+              props.navigation.navigate("RoomInvite", {
+                roomCode: props.route.params.room.inviteCode,
+              });
             }}
           />
         );
@@ -81,6 +83,10 @@ export default (props) => {
       <RoomTabsNavigators.Screen
         name="OwnerRoomQuiz"
         component={OwnerRoomQuiz}
+        initialParams={{
+          room: props.route.params.room,
+          user: props.route.params.user,
+        }}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (
@@ -112,14 +118,24 @@ export default (props) => {
         component={NullComponent}
         options={() => ({
           tabBarButton: () => {
-            return <StartAttemptButton {...props} hide={!showStartAttemptButton} />;
+            return (
+              <StartAttemptButton
+                room={props.route.params.room}
+                user={props.route.params.user}
+                {...props}
+                hide={!showStartAttemptButton}
+              />
+            );
           },
         })}
       />
       <RoomTabsNavigators.Screen
         name="OwnerAnnouncement"
         component={OwnerAnnouncement}
-        initialParams={{room : props.route.params.room, user : props.route.params.user}}
+        initialParams={{
+          room: props.route.params.room,
+          user: props.route.params.user,
+        }}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (

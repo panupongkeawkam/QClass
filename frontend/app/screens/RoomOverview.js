@@ -30,7 +30,7 @@ export default (props) => {
     // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
     props.navigation.navigate("OwnerRoomTabsNavigator", {
       room: room,
-      user: user
+      user: user,
     });
   };
 
@@ -119,19 +119,15 @@ export default (props) => {
               setCreateRoomModalVisible(true);
             }}
           />
-          {ownRoom.length > 0 ? (
-            ownRoom.map((room, index) => (
-              <Room
-                room={room}
-                onSelect={() => {
-                  selectOwnRoomHandler(room, index);
-                }}
-                key={index}
-              />
-            ))
-          ) : (
-            <EmptyDataLabel title={"No room"} isSmall />
-          )}
+          {ownRoom.map((room, index) => (
+            <Room
+              room={room}
+              onSelect={() => {
+                selectOwnRoomHandler(room, index);
+              }}
+              key={index}
+            />
+          ))}
         </View>
         <Text style={theme.textLabel}>JOINED ROOM</Text>
         <View style={[theme.boxContainer, { paddingBottom: 200 }]}>

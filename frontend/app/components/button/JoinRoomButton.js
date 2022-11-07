@@ -54,10 +54,25 @@ export default (props) => {
   };
 
   const handleBarCodeScanned = async ({ type, data }) => {
+    if (!data.includes("Roti")) {
+      setActiveCamera(false);
+      setScanned(true);
+      Alert.alert("Invalid room QR code", "", [
+        {
+          text: "Retry",
+          style: "cancel",
+          onPress: () => {
+            setActiveCamera(true);
+            setScanned(false);
+          },
+        },
+      ]);
+      return;
+    }
     setTimeout(() => {
       setScanned(() => false);
     }, 2000);
-    setInviteCode(() => data);
+    setInviteCode(() => data.replace("Roti", ""));
   };
 
   const getBarCodeScannerPermissions = async () => {
@@ -141,7 +156,7 @@ export default (props) => {
                     style={{ flex: 1 }}
                   />
                 ) : (
-                  <EmptyDataLabel title="Accessing Camera..." />
+                  <View style={{ flex: 1, backgroundColor: "black" }}></View>
                 )}
               </View>
               <View

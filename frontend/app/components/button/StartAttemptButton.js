@@ -22,12 +22,14 @@ export default (props) => {
   const bottomSheetRef = useRef(null);
   const Tab = createMaterialTopTabNavigator();
 
-  const startHandler = (data) => {
+  const startHandler = ({ type, quiz, quizIndex }) => {
     bottomSheetRef.current.close();
-    console.log("StartAttemptButton says:", data);
+    console.log("StartAttemptButton says:", quiz);
     setTimeout(() => {
       props.navigation.navigate("OwnerAttemptingQuiz", {
-        data: data,
+        type,
+        quiz,
+        quizIndex,
       });
     }, 500);
   };
@@ -107,6 +109,7 @@ export default (props) => {
               >
                 <Tab.Screen
                   name="StartSurvey"
+                  initialParams={{ room: props.room, user: props.user }}
                   children={(props) => (
                     <StartSurvey
                       onStart={(data) => {
@@ -119,6 +122,7 @@ export default (props) => {
                 />
                 <Tab.Screen
                   name="StartQuiz"
+                  initialParams={{ room: props.room, user: props.user }}
                   children={(props) => (
                     <StartQuiz
                       onStart={(data) => {

@@ -15,15 +15,15 @@ export default (props) => {
       minScore: 2,
       meanScore: 7.5,
       maxScore: 9,
-      createDate: "22 October 2565 19:30"
+      createDate: "22 October 2565 19:30",
     },
   ]);
 
   useEffect(() => {
-    props.navigation.addListener('focus', async () => {
-      console.log("Focused OwnerRoomQuiz")
-    })
-  })
+    props.navigation.addListener("focus", async () => {
+      // console.log("Focused OwnerRoomQuiz");
+    });
+  });
 
   return (
     <View style={{ flex: 1 }}>

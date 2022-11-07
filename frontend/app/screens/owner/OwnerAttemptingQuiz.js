@@ -9,7 +9,6 @@ import Question from "../../components/Question";
 import StepBar from "../../components/StepBar";
 
 export default (props) => {
-  console.log("OwnerAttemptingQuiz say: ", props.route.params.data);
   const [questions, setQuestions] = useState([
     {
       title: "กากาำส",
