@@ -16,6 +16,8 @@ import SurveyResult from "../../components/SurveyResult";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 
 export default (props) => {
+  const participantId = props.participantId
+  console.log("ParticipantRoomQuiz participant id : ", participantId)
   const [attempt, setAttempt] = useState({ type: "quiz", key: "value" }); // { data } or null
   const [refreshing, setRefreshing] = useState(false);
   const [results, setResults] = useState([

@@ -42,8 +42,8 @@ router.post("/user", async (req, res) => {
       [newUser.insertId]
     );
 
-    await conn.commit()
-    
+    await conn.commit();
+
     res.json({
       userId: user.userId,
       registerDatetime: user.registerDatetime,
@@ -58,11 +58,25 @@ router.post("/user", async (req, res) => {
 
 // get participant xx (1) for room xx by user xx
 router.get("/user/:userId/room/:roomId/participant", async (req, res) => {
+  const roomId = req.params.roomId;
+  const userId = req.params.userId;
+  const state = "left";
+
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
-    res.json();
+    const [participant, rows] = await conn.query(
+      `SELECT participantId
+      FROM Participant
+      WHERE userId = ? AND roomId = ? AND state != ?`,
+      [userId, roomId, state]
+    );
+
+    console.log(participant[0].participantId);
+
+    await conn.commit();
+    res.json({ participantId: participant[0].participantId });
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

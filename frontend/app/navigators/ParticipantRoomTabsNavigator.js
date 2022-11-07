@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, Alert } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "react-native-vector-icons";
@@ -8,44 +8,66 @@ import { theme, color } from "../assets/theme/Theme";
 import ParticipantAnnouncement from "../screens/participant/ParticipantAnnouncement";
 import ParticipantRoomQuiz from "../screens/participant/ParticipantRoomQuiz";
 
+import axios from "axios";
+import config from "../assets/api-config";
+
 export default (props) => {
+  const [participantId, setParticipantId] = useState(null);
   const RoomTabsNavigators = createBottomTabNavigator();
+  const userId = props.route.params.user.userId;
+  const room = props.route.params.room;
 
   const leaveRoomHandler = async () => {
-    const userId = props.route.params.user.userId
-    const room = props.route.params.room
     try {
       var leave = await leaveRoom(userId, room);
       props.navigation.navigate("RoomOverview");
     } catch (error) {
       Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
-  }
+  };
 
   useEffect(() => {
     props.navigation.setOptions({
-      title: props.route.params.roomTitle,
+      title: props.route.params.room.title,
       headerRight: () => {
         return (
           <LeftRoomButton
             onLeave={() => {
-              Alert.alert(`Leave "${props.route.params.roomTitle}" Room?`, "", [
-                {
-                  text: "Cancel",
-                  style: "cancel",
-                },
-                {
-                  text: "Leave",
-                  style: "destructive",
-                  onPress: () => {
-                    leaveRoomHandler()
+              Alert.alert(
+                `Leave "${props.route.params.room.title}" Room?`,
+                "",
+                [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
                   },
-                },
-              ]);
+                  {
+                    text: "Leave",
+                    style: "destructive",
+                    onPress: () => {
+                      leaveRoomHandler();
+                    },
+                  },
+                ]
+              );
             }}
           />
         );
       },
+    });
+  }, []);
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      //userId and roomId is exists
+      const fetchParticipantId = async () => {
+        var participantIdVar = await axios.get(
+          `http://${config.ip}:3000/user/${userId}/room/${room.roomId}/participant`
+        );
+        setParticipantId(participantIdVar.data.participantId);
+      };
+
+      fetchParticipantId();
     });
   }, []);
 
@@ -90,7 +112,11 @@ export default (props) => {
     >
       <RoomTabsNavigators.Screen
         name="ParticipantRoomQuiz"
-        component={ParticipantRoomQuiz}
+        children={() => {
+          return (
+            <ParticipantRoomQuiz {...props} participantId={participantId} />
+          );
+        }}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (
@@ -120,7 +146,10 @@ export default (props) => {
       <RoomTabsNavigators.Screen
         name="ParticipantAnnouncement"
         component={ParticipantAnnouncement}
-        initialParams={{room : props.route.params.room, user : props.route.params.user}}
+        initialParams={{
+          room: props.route.params.room,
+          user: props.route.params.user,
+        }}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (
