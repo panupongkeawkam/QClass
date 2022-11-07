@@ -1,3 +1,3 @@
 export default {
-    ip: "kuay"
+    ip: "192.168.1.100"
 }
