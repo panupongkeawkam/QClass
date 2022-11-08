@@ -8,8 +8,9 @@ import PrimaryButton from "../../components/button/PrimaryButton";
 import Label from "../../components/Label";
 
 export default (props) => {
+  const fullScore = props.route.params.quiz.questionLength
+  const myScore = props.route.params.myScore
   const [chartImageUrl, setChartImageUrl] = useState(null);
-  const [fullScore, setFullScore] = useState(10);
   const generateChartUri = (score, radialColor) => {
     const options = {
       type: "radialGauge",
@@ -51,7 +52,7 @@ export default (props) => {
       },
     });
 
-    setChartImageUrl(generateChartUri(7, color.correct));
+    setChartImageUrl(generateChartUri(myScore, color.correct));
   });
 
   const backHomeHandler = () => {
@@ -127,7 +128,7 @@ export default (props) => {
                   { fontSize: 20, fontWeight: "500", color: color.content4 },
                 ]}
               >
-                7 of 10
+                {myScore} of {fullScore}
               </Text>
             </View>
             <View

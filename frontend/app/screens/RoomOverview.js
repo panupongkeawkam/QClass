@@ -65,11 +65,20 @@ export default (props) => {
     fetchRooms(user.userId);
   }, [user]);
 
-  const selectMyRoomHandler = (room, index) => {
+  const selectJoinedRoomHandler = async (room, index) => {
     // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
+
+    const fetchParticipantId = async () => {
+      const participantIdVar = await axios.get(
+        `http://${config.ip}:3000/user/${user.userId}/room/${room.roomId}/participant`
+      );
+      return participantIdVar.data.participantId;
+    };
+    const participantId = await fetchParticipantId();
     props.navigation.navigate("ParticipantRoomTabsNavigator", {
       room: room,
       user: user,
+      participantId: participantId,
     });
   };
 
@@ -135,7 +144,7 @@ export default (props) => {
               <Room
                 room={room}
                 onSelect={() => {
-                  selectMyRoomHandler(room, index);
+                  selectJoinedRoomHandler(room, index);
                 }}
                 key={index}
               />

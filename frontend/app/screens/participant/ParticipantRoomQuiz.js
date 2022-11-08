@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Text,
   View,
@@ -14,12 +15,15 @@ import QuizResult from "../../components/QuizResult";
 import Attempt from "../../components/Attempt";
 import SurveyResult from "../../components/SurveyResult";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
+import config from "../../assets/api-config";
+import Loading from "../../components/Loading";
 
 export default (props) => {
-  const participantId = props.participantId
-  console.log("ParticipantRoomQuiz participant id : ", participantId)
-  const [attempt, setAttempt] = useState({ type: "quiz", key: "value" }); // { data } or null
+  const roomId = props.route.params.room.roomId;
+  const participantId = props.route.params.participantId;
+  const [attempt, setAttempt] = useState(null); // { data } or null
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([
     {
       quizId: 99999,
@@ -59,96 +63,53 @@ export default (props) => {
     },
   ]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+  const fetchAvailableAttempt = async () => {
+    var quizResponse = await axios.get(
+      `http://${config.ip}:3000/room/${roomId}/quiz`
+    );
+    if (quizResponse.data.quiz) {
+      var quiz = quizResponse.data.quiz;
+      quiz.type = "quiz";
+      setAttempt(quiz);
+      return;
+    }
+    setAttempt(null);
   };
 
-  const attemptHandler = () => {
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchAvailableAttempt();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    props.navigation.addListener("focus", async () => {
+      await fetchAvailableAttempt();
+    });
+  }, []);
+
+  const attemptHandler = async () => {
     if (attempt.type === "quiz") {
+      var questionsResponse = await axios.get(
+        `http://${config.ip}:3000/quiz/${attempt.quizId}/question`
+      );
+      for (const question of questionsResponse.data) {
+        question.choices = null;
+        if (question.type === "choice") {
+          question.correct = parseInt(question.correct);
+          var choicesResponse = await axios.get(
+            `http://${config.ip}:3000/question/${question.questionId}/choice`
+          );
+          question.choices = choicesResponse.data;
+        }
+      }
+      attempt.questions = questionsResponse.data;
       props.navigation.navigate("ParticipantAttemptingQuiz", {
-        quiz: {
-          title: "HID Week 7",
-          questions: [
-            {
-              title: "ไม่เข้าใจจริงๆ เล๊ย",
-              correct: "2",
-              timer: 0,
-              choices: [
-                {
-                  title: "ทั้งเด็ก",
-                  index: 0,
-                },
-                {
-                  title: "ทั้งผู้ใหญ่",
-                  index: 1,
-                },
-                {
-                  title: "ตะโกนหา",
-                  index: 2,
-                },
-                {
-                  title: "สรรหา",
-                  index: 3,
-                },
-                {
-                  title: "สรรหา",
-                  index: 3,
-                },
-                {
-                  title: "สรรหา",
-                  index: 3,
-                },
-                {
-                  title: "สรรหา",
-                  index: 3,
-                },
-                {
-                  title: "สรรหา",
-                  index: 3,
-                },
-              ],
-              type: "choice",
-            },
-            {
-              title: "ไม่เข้าใจจริงๆ เล๊ย 2",
-              correct: "1",
-              timer: 0,
-              choices: [
-                {
-                  title: "ทั้งเด็ก",
-                  index: 0,
-                },
-                {
-                  title: "fasfasfasf",
-                  index: 1,
-                },
-                {
-                  title: "ตะโกนหา",
-                  index: 2,
-                },
-              ],
-              type: "choice",
-            },
-            {
-              title: "ครูบาอาจารย์มึงช่วยไรได้",
-              correct: "ไอ่เหี้ยยย",
-              timer: 20,
-              choices: null,
-              type: "text",
-            },
-            {
-              title: "ครูบาอาจารย์มึงช่วยไรได้ 2",
-              correct: "ไอ่เหี้ยยย",
-              timer: 19,
-              choices: null,
-              type: "text",
-            },
-          ],
-        },
+        quiz: attempt,
         questionIndex: 0,
+        response: [],
+        score: 0,
+        participantId: participantId,
       });
     } else if (attempt.type === "survey") {
       props.navigation.navigate("ParticipantAttemptingSurvey", {
@@ -161,67 +122,70 @@ export default (props) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView
-        style={theme.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <Text style={theme.textLabel}>AVAILABLE QUIZ</Text>
-        {attempt ? (
-          <Attempt
-            type={attempt.type}
-            attemptTitle={"HID Week 7"}
-            questionLength={10}
-            onAttempt={() => {
-              Alert.alert(`Start Attempting "${"HID Week 7"}" Quiz?`, "", [
-                {
-                  text: "Cancel",
-                  style: "cancel",
-                },
-                {
-                  text: "Confirm",
-                  style: "destructive",
-                  onPress: () => {
-                    attemptHandler();
-                    // props.navigation.navigate("OwnerQuizResult", {});
+    <>
+      <Loading active={loading} />
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          style={theme.container}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Text style={theme.textLabel}>AVAILABLE QUIZ</Text>
+          {attempt ? (
+            <Attempt
+              type={attempt.type}
+              attemptTitle={attempt.title}
+              questionLength={attempt.questionLength}
+              onAttempt={() => {
+                Alert.alert(`Start Attempting "${attempt.title}" Quiz?`, "", [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
                   },
-                },
-              ]);
-            }}
-          />
-        ) : (
-          <EmptyDataLabel title={"No Quiz Available Now"} isSmall />
-        )}
-        <Text style={theme.textLabel}>FINISHED QUIZ</Text>
+                  {
+                    text: "Confirm",
+                    style: "destructive",
+                    onPress: () => {
+                      attemptHandler();
+                      // props.navigation.navigate("OwnerQuizResult", {});
+                    },
+                  },
+                ]);
+              }}
+            />
+          ) : (
+            <EmptyDataLabel title={"No Quiz Available Now"} isSmall />
+          )}
+          <Text style={theme.textLabel}>FINISHED QUIZ</Text>
 
-        {results.map((result, index) => (
-          <View
-            key={index}
-            style={{ marginBottom: index === results.length - 1 ? 200 : 0 }}
-          >
-            {result.type === "quiz" ? (
-              <QuizResult
-                quizTitle={result.quizTitle}
-                questionLength={result.questionLength}
-                fullScore={result.fullScore}
-                minScore={result.minScore}
-                meanScore={result.meanScore}
-                maxScore={result.maxScore}
-                createDate={"22 October 2565 19:30"}
-                myScore={result.myScore}
-              />
-            ) : (
-              <SurveyResult
-                surveyTitle={result.surveyTitle}
-                createDate={result.createDate}
-                choices={result.choices}
-              />
-            )}
-          </View>
-        ))}
-      </ScrollView>
-    </View>
+          {results.map((result, index) => (
+            <View
+              key={index}
+              style={{ marginBottom: index === results.length - 1 ? 200 : 0 }}
+            >
+              {result.type === "quiz" ? (
+                <QuizResult
+                  quizTitle={result.quizTitle}
+                  questionLength={result.questionLength}
+                  fullScore={result.fullScore}
+                  minScore={result.minScore}
+                  meanScore={result.meanScore}
+                  maxScore={result.maxScore}
+                  createDate={"22 October 2565 19:30"}
+                  myScore={result.myScore}
+                />
+              ) : (
+                <SurveyResult
+                  surveyTitle={result.surveyTitle}
+                  createDate={result.createDate}
+                  choices={result.choices}
+                />
+              )}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    </>
   );
 };

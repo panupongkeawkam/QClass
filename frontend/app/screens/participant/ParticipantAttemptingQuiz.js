@@ -7,6 +7,8 @@ import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import StepBar from "../../components/StepBar";
 import Choice from "../../components/Choice";
+import axios from "axios";
+import config from "../../assets/api-config";
 
 export default (props) => {
   const [quizTitle, setQuizTitle] = useState(props.route.params.quiz.title);
@@ -39,17 +41,45 @@ export default (props) => {
     }
   });
 
-  const submit = () => {
+  const submit = async () => {
+    var score = props.route.params.score + (await pointSummarize());
+    console.log("Now Score : ", score);
     props.navigation.navigate("ParticipantQuizResult", {
       quiz: props.route.params.quiz,
+      myScore: score,
     });
   };
 
-  const next = () => {
+  const pointSummarize = async () => {
+    await axios.post(
+      `http://${config.ip}:3000/question/${questions[questionIndex].questionId}/response`,
+      {
+        participantId: props.route.params.participantId,
+        answered:
+          questions[questionIndex].type === "choice"
+            ? selectedChoiceIndex === -1
+              ? null
+              : selectedChoiceIndex.toString()
+            : textAnswer
+      }
+    );
+    var point =
+      questions[questionIndex].type === "choice"
+        ? questions[questionIndex].correct === selectedChoiceIndex
+        : questions[questionIndex].correct === textAnswer;
+
+    return point;
+  };
+
+  const next = async () => {
+    console.log(props.route.params.participantId);
+    var score = props.route.params.score + (await pointSummarize());
     props.navigation.dispatch(
       StackActions.replace("ParticipantAttemptingQuiz", {
         quiz: props.route.params.quiz,
         questionIndex: questionIndex + 1,
+        score: score,
+        participantId: props.route.params.participantId,
       })
     );
   };

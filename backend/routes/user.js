@@ -73,8 +73,6 @@ router.get("/user/:userId/room/:roomId/participant", async (req, res) => {
       [userId, roomId, state]
     );
 
-    console.log(participant[0].participantId);
-
     await conn.commit();
     res.json({ participantId: participant[0].participantId });
   } catch (err) {

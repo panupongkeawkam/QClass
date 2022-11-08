@@ -12,10 +12,11 @@ import axios from "axios";
 import config from "../assets/api-config";
 
 export default (props) => {
-  const [participantId, setParticipantId] = useState(null);
   const RoomTabsNavigators = createBottomTabNavigator();
   const userId = props.route.params.user.userId;
   const room = props.route.params.room;
+  const participantId = props.route.params.participantId
+  console.log(participantId)
 
   const leaveRoomHandler = async () => {
     try {
@@ -58,17 +59,6 @@ export default (props) => {
   }, []);
 
   useEffect(() => {
-    props.navigation.addListener("focus", () => {
-      //userId and roomId is exists
-      const fetchParticipantId = async () => {
-        var participantIdVar = await axios.get(
-          `http://${config.ip}:3000/user/${userId}/room/${room.roomId}/participant`
-        );
-        setParticipantId(participantIdVar.data.participantId);
-      };
-
-      fetchParticipantId();
-    });
   }, []);
 
   const LeftRoomButton = ({ onLeave }) => {
@@ -112,11 +102,8 @@ export default (props) => {
     >
       <RoomTabsNavigators.Screen
         name="ParticipantRoomQuiz"
-        children={() => {
-          return (
-            <ParticipantRoomQuiz {...props} participantId={participantId} />
-          );
-        }}
+        component={ParticipantRoomQuiz}
+        initialParams={{room : room, participantId : participantId}}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (

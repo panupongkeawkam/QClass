@@ -107,6 +107,30 @@ router.post("/question/:questionId/choice", async (req, res) => {
   }
 });
 
+//get available quiz in room xx
+router.get("/room/:roomId/quiz", async (req, res) => {
+  const roomId = req.params.roomId;
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [quiz, rows] = await conn.query(
+      `SELECT *
+      FROM \`Quiz\`
+      WHERE \`roomId\` = ? AND \`state\` = ?`,
+      [roomId, "attempting"]
+    );
+
+    await conn.commit();
+    res.json({ quiz: quiz[0] });
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
 // owner stop quiz
 router.put("/quiz/:quizId", async (req, res) => {
   const quizId = req.params.quizId;
@@ -167,12 +191,20 @@ router.post("/quiz/:quizId/score", async (req, res) => {
 
 // get all question in quiz xx
 router.get("/quiz/:quizId/question", async (req, res) => {
+  const quizId = req.params.quizId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    const [questions, rows] = await conn.query(
+      `SELECT *
+      FROM Question
+      WHERE \`quizId\` = ?`,
+      [quizId]
+    );
+
     await conn.commit();
-    res.json();
+    res.json(questions);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -182,13 +214,22 @@ router.get("/quiz/:quizId/question", async (req, res) => {
 });
 
 // get all response for each question xx
-router.get("/question/:questionId/response", async (req, res) => {
+router.post("/question/:questionId/response", async (req, res) => {
+  const questionId = req.params.questionId;
+  const participantId = req.body.participantId;
+  const answered = req.body.answered;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    const [response, rows] = await conn.query(
+      `INSERT INTO \`Response\` (\`questionId\` , \`participantId\`, \`answered\`, \`createDatetime\`)
+      VALUES (?, ?, ?, NOW())`,
+      [questionId, participantId, answered]
+    );
+
     await conn.commit();
-    res.json();
+    res.status(200).json({ responseId: response.insertId });
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -199,12 +240,20 @@ router.get("/question/:questionId/response", async (req, res) => {
 
 // get all choice in question xx
 router.get("/question/:questionId/choice", async (req, res) => {
+  const questionId = req.params.questionId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    const [choices, rows] = await conn.query(
+      `SELECT *
+      FROM Choice
+      WHERE questionId = ?`,
+      [questionId]
+    );
+
     await conn.commit();
-    res.json();
+    res.json(choices);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
