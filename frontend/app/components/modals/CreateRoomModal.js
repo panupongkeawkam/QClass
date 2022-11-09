@@ -20,17 +20,29 @@ export default (props) => {
   const [roomName, setRoomName] = useState("");
   const [iconName, setIconName] = useState("");
   const icons = [
-    "ios-earth",
     "ios-musical-notes",
-    "analytics",
-    "ios-bar-chart",
-    "md-medkit",
-    "md-location",
-    "ios-terminal",
-    "md-desktop",
-    "cloud",
-    "image",
+    "ios-flask",
+    "ios-camera",
+    "document-text",
+    "ios-earth",
+    "pie-chart",
+    "game-controller",
+    "ios-fast-food",
+    "ios-baseball",
+    "color-palette",
   ];
+  const colorOfIcons = {
+    "ios-musical-notes": { primary: "#ff8f85", secondary: "#ffecec" },
+    "ios-flask": { primary: "#ca97d4", secondary: "#f9eef8" },
+    "game-controller": { primary: "#c48bd3", secondary: "#f6ebf8" },
+    "ios-camera": { primary: "#70b5d9", secondary: "#e8f2f8" },
+    "document-text": { primary: "#75c2ee", secondary: "#e9f5fc" },
+    "ios-earth": { primary: "#4cdbc2", secondary: "#e5f8f6" },
+    "pie-chart": { primary: "#5fd39c", secondary: "#e7f6ef" },
+    "ios-fast-food": { primary: "#fbdc59", secondary: "#fff9e7" },
+    "ios-baseball": { primary: "#ffc15f", secondary: "#fef5e5" },
+    "color-palette": { primary: "#f19458", secondary: "#fceee5" },
+  };
 
   const confirmHandler = async () => {
     // กดปุ่ม confirm
@@ -51,7 +63,7 @@ export default (props) => {
           justifyContent: "center",
           alignItems: "center",
           borderRadius: 20,
-          backgroundColor: icon.isSelect ? `${color.primary}22` : "transparent",
+          backgroundColor: icon.isSelect ? colorOfIcons[icon.iconName].secondary : "transparent",
         }}
         onPress={() => {
           icon.onSelect();
@@ -60,7 +72,7 @@ export default (props) => {
         <Ionicons
           name={icon.isSelect ? icon.iconName : icon.iconName + "-outline"}
           size={24}
-          color={icon.isSelect ? color.primary : color.content4}
+          color={icon.isSelect ? colorOfIcons[icon.iconName].primary : color.content4}
         />
       </TouchableOpacity>
     );

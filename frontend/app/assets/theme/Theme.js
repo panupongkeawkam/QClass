@@ -51,7 +51,7 @@ const theme = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 10,
     width: "50%",
-    height: 164,
+    height: 172,
   },
   boxInner: {
     borderRadius: 24,
