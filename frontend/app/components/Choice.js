@@ -30,7 +30,13 @@ export default (props) => {
       ]}
     >
       <TouchableOpacity
-        style={{ justifyContent: "center", alignItems: "center", width: "16%" }}
+        activeOpacity={props.isCorrect === undefined ? 0 : 0.2}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          width: "16%",
+          opacity: props.isCorrect === undefined ? 0 : 1,
+        }}
         onPress={() => {
           props.onSetCorrect(props.title);
         }}

@@ -60,10 +60,9 @@ export default (props) => {
               <Choice
                 key={index}
                 isDeletable={choice.isDeletable}
-                isCorrect={choice.isCorrect}
                 index={index}
                 onSetCorrect={() => {
-                  // no correct choice
+                  // do nothing
                 }}
                 onDelete={(index) => {
                   deleteHandler(index);
