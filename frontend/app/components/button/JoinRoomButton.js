@@ -128,7 +128,7 @@ export default (props) => {
           style={[theme.blurShadow]}
           handleStyle={{
             backgroundColor: color.base1,
-            paddingBottom: 20,
+            paddingBottom: 24,
             borderRadius: 60,
           }}
           handleIndicatorStyle={{ width: 48 }}

@@ -71,7 +71,7 @@ export default (props) => {
               />
               <SecondaryButton
                 disabled={!quizName?.trim()}
-                title="CONFIRM"
+                title="Confirm"
                 onPress={() => {
                   confirmHandler();
                 }}

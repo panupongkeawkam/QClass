@@ -16,6 +16,7 @@ import Question from "../components/Question";
 import PrimaryButton from "../components/button/PrimaryButton";
 import EditQuizModal from "../components/modals/EditQuizModal";
 import EmptyDataLabel from "../components/EmptyDataLabel";
+import HeaderButton from "../components/button/HeaderButton";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -55,8 +56,9 @@ export default (props) => {
                 setTitle(newTitle);
               }}
             />
-            <DeleteQuizButton
-              onDeleteQuiz={async () => {
+            <HeaderButton
+              iconName={"trash-outline"}
+              onPress={() => {
                 Alert.alert(`Delete "${quizTitle}" Quiz?`, "", [
                   {
                     text: "Cancel",
@@ -98,25 +100,6 @@ export default (props) => {
       questions: questions,
       questionIndex: index,
     });
-  };
-
-  const DeleteQuizButton = ({ onDeleteQuiz }) => {
-    return (
-      <TouchableOpacity
-        onPress={onDeleteQuiz}
-        style={{
-          marginLeft: 16,
-          backgroundColor: "#eee",
-          borderRadius: "50%",
-          width: 36,
-          height: 36,
-          ...theme.centered,
-          ...theme.blurShadow,
-        }}
-      >
-        <Ionicons name="trash-outline" size={20} color={color.base4} />
-      </TouchableOpacity>
-    );
   };
 
   return (

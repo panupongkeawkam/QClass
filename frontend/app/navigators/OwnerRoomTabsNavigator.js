@@ -7,6 +7,7 @@ import { theme, color } from "../assets/theme/Theme";
 import OwnerAnnouncement from "../screens/owner/OwnerAnnouncement";
 import OwnerRoomQuiz from "../screens/owner/OwnerRoomQuiz";
 import StartAttemptButton from "../components/button/StartAttemptButton";
+import HeaderButton from "../components/button/HeaderButton";
 
 export default (props) => {
   const [showStartAttemptButton, setShowStartAttemptButton] = useState(true);
@@ -15,49 +16,21 @@ export default (props) => {
   useEffect(() => {
     props.navigation.setOptions({
       title: props.route.params.room.title,
-      headerRight: () => {
-        return (
-          <InviteButton
-            onInvite={() => {
-              props.navigation.navigate("RoomInvite", {
-                roomCode: props.route.params.room.inviteCode,
-              });
-            }}
-          />
-        );
-      },
+      headerRight: () => (
+        <HeaderButton
+          title={"Invite"}
+          iconName="person-add-outline"
+          iconSize={16}
+          onPress={() => {
+            props.navigation.navigate("RoomInvite", {
+              roomCode: props.route.params.room.inviteCode,
+            });
+          }}
+        />
+      ),
     });
   }, []);
 
-  const InviteButton = ({ onInvite }) => {
-    return (
-      <TouchableOpacity
-        onPress={onInvite}
-        style={{
-          backgroundColor: "#eee",
-          borderRadius: "50",
-          paddingHorizontal: 12,
-          marginLeft: 8,
-          height: 36,
-          flexDirection: "row",
-          ...theme.centered,
-          ...theme.blurShadow,
-        }}
-      >
-        <Ionicons name="person-add-outline" size={16} color="grey" />
-        <Text
-          style={{
-            marginLeft: 4,
-            fontSize: 16,
-            fontWeight: "bold",
-            color: "grey",
-          }}
-        >
-          Invite
-        </Text>
-      </TouchableOpacity>
-    );
-  };
   const NullComponent = () => null;
 
   return (

@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  FlatList,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import Constants from "expo-constants";
@@ -13,7 +14,8 @@ import axios from "axios";
 import { theme, color } from "../assets/theme/Theme";
 import Room from "../components/Room";
 import CreateRoomModal from "../components/modals/CreateRoomModal";
-import CreatorButton from "../components/button/CreatorButton";
+import HeaderButton from "../components/button/HeaderButton";
+import EmptyDataLabel from "../components/EmptyDataLabel";
 
 import { userInitialize } from "../controller/UserController";
 import config from "../assets/api-config";
@@ -64,6 +66,20 @@ export default (props) => {
   }, []);
 
   useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButton
+          style={{ marginRight: 12 }}
+          title={"Room"}
+          onPress={() => {
+            setCategory("owned");
+            setCreateRoomModalVisible(true);
+          }}
+          iconName="add"
+        />
+      ),
+    });
+
     props.navigation.addListener("focus", async () => {
       await fetchRoomsByCategory(user.userId);
     });
@@ -138,12 +154,71 @@ export default (props) => {
     );
   };
 
+  const GetStarted = () => {
+    return (
+      <View style={{ padding: 10, width: "100%" }}>
+        <View
+          style={[
+            theme.blurShadow,
+            {
+              borderTopRightRadius: 24,
+              borderBottomRightRadius: 24,
+              borderTopLeftRadius: 4,
+              borderBottomLeftRadius: 4,
+              paddingVertical: 16,
+              paddingHorizontal: 24,
+              backgroundColor: color.primaryTransparent,
+              paddingBottom: 48,
+              borderLeftWidth: 4,
+              borderColor: color.primary,
+            },
+          ]}
+        >
+          <Text style={[theme.textHeader2, { color: color.primary }]}>
+            Get Started
+          </Text>
+          <Text
+            style={[
+              {
+                color: color.primary,
+                fontSize: 18,
+              },
+            ]}
+          >
+            Join Room to start an activity!
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  const renderJoinedRoom = ({ item, index }) => {
+    return (
+      <Room
+        room={item}
+        onSelect={() => {
+          selectJoinedRoomHandler(item, index);
+        }}
+      />
+    );
+  };
+
+  const renderOwnedRoom = ({ item, index }) => {
+    return (
+      <Room
+        room={item}
+        onSelect={() => {
+          selectOwnedRoomHandler(item, index);
+        }}
+      />
+    );
+  };
+
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: color.base2,
-        // paddingTop: Constants.statusBarHeight,
       }}
     >
       <View style={[theme.container]}>
@@ -170,12 +245,7 @@ export default (props) => {
             />
           </ScrollView>
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <View style={{ width: "100%" }}>
           <CreateRoomModal
             visible={createRoomModalVisible}
             user={user}
@@ -190,80 +260,47 @@ export default (props) => {
             }}
           />
           {category === "joined" ? (
-            <View
-              style={[
-                theme.boxContainer,
-                {
-                  paddingBottom: 200,
-                },
-              ]}
-            >
-              {joinedRoom.length > 0 ? (
-                joinedRoom.map((room, index) => (
-                  <Room
-                    room={room}
-                    onSelect={() => {
-                      selectJoinedRoomHandler(room, index);
-                    }}
-                    key={index}
-                  />
-                ))
-              ) : (
-                <View style={{ padding: 10, width: "100%" }}>
-                  <View
-                    style={[
-                      theme.blurShadow,
-                      {
-                        borderTopRightRadius: 24,
-                        borderBottomRightRadius: 24,
-                        borderTopLeftRadius: 4,
-                        borderBottomLeftRadius: 4,
-                        paddingVertical: 16,
-                        paddingHorizontal: 24,
-                        backgroundColor: color.primaryTransparent,
-                        paddingBottom: 48,
-                        borderLeftWidth: 4,
-                        borderColor: color.primary,
-                      },
-                    ]}
-                  >
-                    <Text style={[theme.textHeader2, { color: color.primary }]}>
-                      Get Started
-                    </Text>
-                    <Text
-                      style={[
-                        {
-                          color: color.primary,
-                          fontSize: 18,
-                        },
-                      ]}
-                    >
-                      Join Room to start an activity!
-                    </Text>
-                  </View>
-                </View>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              data={joinedRoom}
+              initialNumToRender={4}
+              key={"joined"}
+              renderItem={renderJoinedRoom}
+              keyExtractor={(room) => room.roomId}
+              ListEmptyComponent={() => <GetStarted />}
+              ListFooterComponent={() => (
+                <View style={{ marginBottom: 200 }}></View>
               )}
-            </View>
+            />
           ) : (
-            <View style={[theme.boxContainer]}>
-              <CreatorButton
-                title="Create Room"
-                onCreate={() => {
-                  setCreateRoomModalVisible(true);
-                }}
-              />
-              {ownedRoom.map((room, index) => (
-                <Room
-                  room={room}
-                  onSelect={() => {
-                    selectOwnedRoomHandler(room, index);
-                  }}
-                  key={index}
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              data={ownedRoom}
+              initialNumToRender={4}
+              key={"owned"}
+              numColumns={2}
+              renderItem={renderOwnedRoom}
+              keyExtractor={(room) => room.roomId}
+              ListEmptyComponent={() => (
+                <EmptyDataLabel
+                  title={"No Created Room"}
+                  description={
+                    "Use create room button on the top right of this page"
+                  }
                 />
-              ))}
-            </View>
+              )}
+              ListFooterComponent={() => (
+                <View style={{ marginBottom: 200 }}></View>
+              )}
+            />
           )}
-        </ScrollView>
+        </View>
       </View>
     </View>
   );

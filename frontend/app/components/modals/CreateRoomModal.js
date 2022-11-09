@@ -162,7 +162,7 @@ export default (props) => {
               </View>
               <SecondaryButton
                 disabled={!roomName?.trim()}
-                title="CONFIRM"
+                title="Confirm"
                 onPress={() => {
                   confirmHandler();
                 }}

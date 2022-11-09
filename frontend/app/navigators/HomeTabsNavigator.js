@@ -10,7 +10,6 @@ import { theme, color } from "../assets/theme/Theme";
 
 export default (props) => {
   const HomeTabs = createBottomTabNavigator();
-  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -28,6 +27,11 @@ export default (props) => {
       screenOptions={{
         headerShown: true,
         headerTitleAlign: "left",
+        headerStyle: {
+          backgroundColor: color.base2,
+          height: 100,
+        },
+        headerShadowVisible: false,
         headerTitle: () => {
           return (
             <Image

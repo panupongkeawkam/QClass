@@ -19,6 +19,7 @@ import { theme, color } from "../assets/theme/Theme";
 import PrimaryButton from "../components/button/PrimaryButton";
 import Choice from "../components/Choice";
 import AddChoiceButton from "../components/button/AddChoiceButton";
+import HeaderButton from "../components/button/HeaderButton";
 
 import { deleteQuestion, editQuestion } from "../controller/QuizController";
 
@@ -44,8 +45,9 @@ export default (props) => {
       title: null,
       headerRight: () => {
         return (
-          <DeleteQuizButton
-            onDeleteQuiz={async () => {
+          <HeaderButton
+            iconName={"trash-outline"}
+            onPress={() => {
               Alert.alert(`Delete "${title}" Question?`, "", [
                 {
                   text: "Cancel",
@@ -75,8 +77,8 @@ export default (props) => {
           ? null
           : correct.trim()
         : correct === -1
-          ? null
-          : correct + "";
+        ? null
+        : correct + "";
     try {
       var questionObject = {
         quizTitle: props.route.params.quizTitle,
@@ -195,24 +197,6 @@ export default (props) => {
       </TouchableOpacity>
     );
   };
-  const DeleteQuizButton = ({ onDeleteQuiz }) => {
-    return (
-      <TouchableOpacity
-        onPress={onDeleteQuiz}
-        style={{
-          marginLeft: 16,
-          backgroundColor: "#eee",
-          borderRadius: "50%",
-          width: 36,
-          height: 36,
-          ...theme.centered,
-          ...theme.blurShadow,
-        }}
-      >
-        <Ionicons name="trash-outline" size={20} color={color.base4} />
-      </TouchableOpacity>
-    );
-  };
 
   return (
     <View style={{ flex: 1, backgroundColor: color.base2 }}>
@@ -286,9 +270,7 @@ export default (props) => {
               />
             )}
             {type === "text" ? null : choices.length < 8 ? (
-              <AddChoiceButton
-                onAddChoice={addChoiceHandler}
-              />
+              <AddChoiceButton onAddChoice={addChoiceHandler} />
             ) : null}
           </View>
         </ScrollView>

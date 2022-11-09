@@ -7,6 +7,7 @@ import { leaveRoom } from "../controller/RoomController";
 import { theme, color } from "../assets/theme/Theme";
 import ParticipantAnnouncement from "../screens/participant/ParticipantAnnouncement";
 import ParticipantRoomQuiz from "../screens/participant/ParticipantRoomQuiz";
+import HeaderButton from "../components/button/HeaderButton";
 
 import axios from "axios";
 import config from "../assets/api-config";
@@ -15,7 +16,7 @@ export default (props) => {
   const RoomTabsNavigators = createBottomTabNavigator();
   const userId = props.route.params.user.userId;
   const room = props.route.params.room;
-  const participantId = props.route.params.participantId
+  const participantId = props.route.params.participantId;
 
   const leaveRoomHandler = async () => {
     try {
@@ -31,8 +32,10 @@ export default (props) => {
       title: props.route.params.room.title,
       headerRight: () => {
         return (
-          <LeftRoomButton
-            onLeave={() => {
+          <HeaderButton
+            title={"Leave"}
+            iconName={"exit-outline"}
+            onPress={() => {
               Alert.alert(
                 `Leave "${props.route.params.room.title}" Room?`,
                 "",
@@ -57,39 +60,6 @@ export default (props) => {
     });
   }, []);
 
-  useEffect(() => {
-  }, []);
-
-  const LeftRoomButton = ({ onLeave }) => {
-    return (
-      <TouchableOpacity
-        onPress={onLeave}
-        style={{
-          backgroundColor: "#eee",
-          borderRadius: "50",
-          paddingHorizontal: 12,
-          marginLeft: 8,
-          height: 36,
-          flexDirection: "row",
-          ...theme.centered,
-          ...theme.blurShadow,
-        }}
-      >
-        <Ionicons name="exit-outline" size={20} color="grey" />
-        <Text
-          style={{
-            marginLeft: 4,
-            fontSize: 16,
-            fontWeight: "bold",
-            color: "grey",
-          }}
-        >
-          Leave
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <RoomTabsNavigators.Navigator
       initialRouteName="ParticipantRoomQuiz"
@@ -102,7 +72,7 @@ export default (props) => {
       <RoomTabsNavigators.Screen
         name="ParticipantRoomQuiz"
         component={ParticipantRoomQuiz}
-        initialParams={{room : room, participantId : participantId}}
+        initialParams={{ room: room, participantId: participantId }}
         options={{
           tabBarIcon: ({ focused, size }) => {
             return (

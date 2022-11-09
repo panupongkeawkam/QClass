@@ -16,13 +16,12 @@ import OwnerRoomTabsNavigator from "./app/navigators/OwnerRoomTabsNavigator";
 import RoomInvite from "./app/screens/owner/RoomInvite";
 import OwnerAttemptingQuiz from "./app/screens/owner/OwnerAttemptingQuiz";
 import OwnerAttemptingSurvey from "./app/screens/owner/OwnerAttemptingSurvey";
-import OwnerQuizResult from "./app/screens/owner/OwnerQuizResult"
+import OwnerQuizResult from "./app/screens/owner/OwnerQuizResult";
 import ParticipantAttemptingQuiz from "./app/screens/participant/ParticipantAttemptingQuiz";
 import ParticipantQuizResult from "./app/screens/participant/ParticipantQuizResult";
 import ParticipantAttemptingSurvey from "./app/screens/participant/ParticipantAttemptingSurvey";
 
 export default function App() {
-
   const Stack = createNativeStackNavigator();
 
   StatusBar.setBarStyle("dark-content");
@@ -44,7 +43,7 @@ export default function App() {
                 fontWeight: "600",
                 fontSize: 16,
               },
-              headerBackTitle: "",
+              headerBackTitle: null,
               headerLeft: () => {
                 if (props.route.name === "HomeTabsNavigator") {
                   return null;
