@@ -131,15 +131,15 @@ CREATE TABLE `Choice` (
         REFERENCES `Question` (`questionId`)
 );
 
-DROP TABLE IF EXISTS `Response`;
+DROP TABLE IF EXISTS `SurveyResponse`;
 
-CREATE TABLE `Response` (
-    `responseId` INT(10) AUTO_INCREMENT,
+CREATE TABLE `SurveyResponse` (
+    `surveyResponseId` INT(10) AUTO_INCREMENT,
     `surveyId` INT(10),
     `participantId` INT(10) NOT NULL,
     `answered` VARCHAR(255),
     `createDatetime` DATETIME,
-    PRIMARY KEY (`responseId`),
+    PRIMARY KEY (`surveyResponseId`),
     FOREIGN KEY (`participantId`)
         REFERENCES `Participant` (`participantId`),
     FOREIGN KEY (`surveyId`)
