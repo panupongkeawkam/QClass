@@ -59,7 +59,6 @@ export default (props) => {
             return (
               <Choice
                 key={index}
-                title={choice.title}
                 isDeletable={choice.isDeletable}
                 isCorrect={choice.isCorrect}
                 index={index}
@@ -70,7 +69,7 @@ export default (props) => {
                   deleteHandler(index);
                 }}
                 onTitleChange={(newTitle) => {
-                  titleChangeHandler(newTitle.trim(), index);
+                  titleChangeHandler(newTitle, index);
                 }}
               />
             );

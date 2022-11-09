@@ -68,6 +68,7 @@ export default (props) => {
             quizTitle: quizTitle,
             questionLength: questionLength,
             fullScore: questionLength,
+            type: "quiz"
           };
 
           var resultResponse = await axios.post(
