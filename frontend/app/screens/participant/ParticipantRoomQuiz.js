@@ -79,6 +79,18 @@ export default (props) => {
         return;
       }
     }
+
+    var surveyResponse = await axios.get(
+      `http://${config.ip}:3000/room/${roomId}/survey`
+    );
+
+    if (surveyResponse.data[0]) {
+      var survey = surveyResponse.data[0];
+      survey.type = "survey"
+      setAttempt(survey);
+      return;
+    }
+
     setAttempt(null);
   };
 
@@ -124,10 +136,14 @@ export default (props) => {
         roomId: roomId,
       });
     } else if (attempt.type === "survey") {
+      var surveyChoices = await axios.get(
+        `http://${config.ip}:3000/survey/${attempt.surveyId}/choice`
+      );
       props.navigation.navigate("ParticipantAttemptingSurvey", {
         survey: {
-          title: "What T-shirt color would you like?",
-          choices: [{ title: "Black" }, { title: "Pink" }],
+          survey: attempt,
+          choices: surveyChoices.data,
+          participantId: participantId
         },
       });
     }

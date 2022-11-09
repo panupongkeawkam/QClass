@@ -7,7 +7,9 @@ import { theme, color } from "../../assets/theme/Theme";
 import Choice from "../../components/Choice";
 import AddChoiceButton from "../../components/button/AddChoiceButton";
 import PrimaryButton from "../../components/button/PrimaryButton";
-import { createSurvey } from "../../controller/QuizController";
+
+
+import * as Controller from "../../controller/QuizController";
 
 export default (props) => {
   const [surveyTitle, setSurveyTitle] = useState("");
@@ -45,36 +47,33 @@ export default (props) => {
     newChoices.splice(index, 1);
     setChoices([...newChoices]);
   };
-  const startHandler = () => {
+
+
+  const startHandler = async () => {
     try {
-      var newSurvey = createSurvey(surveyTitle, choices);
+      var newSurvey = Controller.createSurvey(surveyTitle, choices);
+      var survey = await Controller.onStartSurvey(props.route.params.room.roomId, newSurvey)
 
       setSurveyTitle("");
       setChoices([
         {
           title: "",
           isDeletable: false,
-          isCorrect: false,
         },
         {
           title: "",
           isDeletable: false,
-          isCorrect: false,
         },
       ]);
 
       props.onStart({
-        survey: newSurvey,
+        survey: survey,
+        type: "survey"
       });
 
-      console.log(newSurvey);
     } catch (error) {
       Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
-    // props.onStart({
-    //   type: "survey",
-    //   survey: {},
-    // });
   };
 
   return (

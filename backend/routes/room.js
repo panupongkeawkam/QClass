@@ -96,8 +96,6 @@ router.post("/user/:userId/participant", async (req, res) => {
       [userId, room[0].roomId, "left"]
     );
 
-    console.log("If user join same room data : ", user);
-
     if (user.length > 0) {
       console.log("You join same room");
       await conn.rollback();
@@ -220,11 +218,21 @@ router.get("/room/:roomId/quiz", async (req, res) => {
 // get survey available of room xx
 router.get("/room/:roomId/survey", async (req, res) => {
   // find survey state = "attempting"
+  const roomId = req.params.roomId
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
-    res.json();
+
+    const [survey, rows]  = await conn.query(
+      `SELECT *
+      FROM \`Survey\`
+      WHERE \`roomId\` = ? AND \`state\` = ?`,
+      [roomId, "attempting"]
+    )
+
+    await conn.commit()
+    res.json(survey);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -339,5 +347,6 @@ router.put("/participant/:participantId", async (req, res) => {
     conn.release();
   }
 });
+
 
 exports.router = router;

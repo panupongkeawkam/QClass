@@ -7,8 +7,10 @@ import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import Question from "../../components/Question";
 
+import config from "../../assets/api-config"
+
 export default (props) => {
-  console.log("OwnerAttemptingSurvey:", props.route.params.survey);
+  console.log(props.route.params);
   const survey = props.route.params.survey;
 
   useEffect(() => {
@@ -22,7 +24,10 @@ export default (props) => {
     });
   });
 
-  const endAttemptHandler = () => {
+  const endAttemptHandler = async () => {
+    await axios.put(
+      `http://${config.ip}:3000/survey/${survey.surveyId}`
+    ) 
     if (true) {
       props.navigation.goBack();
     }

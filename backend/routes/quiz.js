@@ -1,5 +1,7 @@
 const express = require("express");
 const pool = require("../config");
+// const { router } = require("./room");
+// const { router } = require("./room");
 
 router = express.Router();
 
@@ -44,6 +46,59 @@ router.post("/quiz", async (req, res) => {
 
     await conn.commit();
     res.status(200).json({ quizId: quiz.insertId });
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+router.post("/survey", async (req, res) => {
+  const roomId = req.body.roomId;
+  const title = req.body.title;
+
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [survey, rows] = await conn.query(
+      `INSERT INTO \`Survey\`
+      (roomId, \`title\`, createDatetime, \`state\`)
+      VALUES(?, ?, NOW(), ?)`,
+      [roomId, title, "attempting"]
+    );
+
+    await conn.commit();
+    res.json({ surveyId: survey.insertId });
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+//create choice from survey xx
+router.post("/survey/:surveyId/choice", async (req, res) => {
+  const surveyId = req.params.surveyId;
+  const questionId = req.body.questionId;
+  const title = req.body.choice.title;
+  const index = req.body.choice.index;
+
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [choice, rows] = await conn.query(
+      `INSERT INTO \`Choice\` (surveyId, questionId, \`title\`, \`index\`)
+      VALUES (?, ?, ?, ?)`,
+      [surveyId, questionId, title, index]
+    );
+
+    await conn.commit();
+
+    res.json({ choiceId: choice.insertId });
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -269,6 +324,28 @@ router.post("/question/:questionId/response", async (req, res) => {
   }
 });
 
+router.get("/survey/:surveyId/choice", async (req, res) => {
+  const surveyId = req.params.surveyId;
+  console.log(surveyId);
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [choices, rows] = await conn.query(
+      `SELECT *
+      FROM Choice
+      WHERE surveyId = ?`,
+      [surveyId]
+    );
+    await conn.commit();
+    res.json(choices);
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
 // get all choice in question xx
 router.get("/question/:questionId/choice", async (req, res) => {
   const questionId = req.params.questionId;
@@ -328,6 +405,55 @@ router.post("/room/:roomId/result", async (req, res) => {
 
     await conn.commit();
     res.json(jsonData);
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+router.put("/survey/:surveyId", async (req, res) => {
+  const surveyId = req.params.surveyId;
+  const state = "ended";
+
+  const conn = await pool.getConnection();
+  conn.beginTransaction();
+
+  try {
+    const [survey, rows] = await conn.query(
+      `UPDATE \`Survey\`
+      SET \`state\` = ?
+      WHERE surveyId = ?`,
+      [state, surveyId]
+    );
+
+    await conn.commit();
+    res.status(200).send("Success");
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+//add response survey
+router.post("/participant/:participantId/survey/:surveyId", async (req, res) => {
+  const participantId = req.params.participantId
+  const index = req.body.index
+  const surveyId = req.params.surveyId
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [result, rows] = await conn.query(
+      `INSERT INTO \`SurveyResponse\` (participantId, surveyId, answered, createDatetime)
+      VALUES (?, ?, ?, NOW())`,
+      [participantId, surveyId, index]
+    );
+    await conn.commit();
+    res.status(200).send("Insert into SurveyResponse Success");
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

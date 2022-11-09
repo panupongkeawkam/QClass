@@ -41,6 +41,7 @@ export default (props) => {
     setTimeout(() => {
       props.navigation.navigate("OwnerAttemptingSurvey", {
         survey,
+        room
       });
     }, 500);
   };

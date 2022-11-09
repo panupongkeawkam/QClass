@@ -3,17 +3,22 @@ import { Text, View, ScrollView, TextInput } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "react-native-vector-icons";
 
+import axios from "axios";
 import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import Choice from "../../components/Choice";
+import config from "../../assets/api-config"
 
 export default (props) => {
+  const surveyId = props.route.params.survey.survey.surveyId
+  const participantId = props.route.params.survey.participantId
+  // console.log(participantId);
   const [surveyTitle, setSurveyTitle] = useState(
-    props.route.params.survey.title
+    props.route.params.survey.survey.title
   );
   const [choices, setChoices] = useState(props.route.params.survey.choices);
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState(-1);
-
+  
   useEffect(() => {
     props.navigation.setOptions({
       title: null,
@@ -25,8 +30,11 @@ export default (props) => {
     });
   });
 
-  const submitHandler = () => {
-    // do something
+  const submitHandler = async () => {
+    var index = selectedChoiceIndex.toString()
+    const myResponse = await axios.post(
+      `http://${config.ip}:3000/participant/${participantId}/survey/${surveyId}`,{index: index}
+    );
     props.navigation.goBack();
   };
 

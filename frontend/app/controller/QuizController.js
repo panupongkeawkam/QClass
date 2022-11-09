@@ -42,7 +42,7 @@ function formatDateForResult(dateFormat) {
     .toString()
     .slice(2)}`;
 
-  return `${date}${ " " + dateTime.getFullYear()} ${time}`;
+  return `${date}${" " + dateTime.getFullYear()} ${time}`;
 }
 
 //need to apply auto refreshing
@@ -222,38 +222,36 @@ const deleteQuestion = async (questions, targetIndex, quizTitle) => {
   return targetQuiz.questions;
 };
 const createSurvey = (surveyTitle, choices) => {
-  surveyTitle = surveyTitle.trim()
-  var isNullSurveyTitle = surveyTitle.length <= 0
+  surveyTitle = surveyTitle.trim();
+  var isNullSurveyTitle = surveyTitle.length <= 0;
 
- 
   if (isNullSurveyTitle) {
     throw { message: "Survey title cannot be empty" };
   }
 
-   var allChoiceTitle = choices.map((choice) => choice.title.trim());
+  var allChoiceTitle = choices.map((choice) => choice.title.trim());
   var setOfChoicesTitle = new Array(...new Set(allChoiceTitle));
 
   var isChoiceNull = allChoiceTitle.some((title) => title.length <= 0);
   var isSameChoice = allChoiceTitle.length !== setOfChoicesTitle.length;
 
   if (isChoiceNull) {
-    throw { message: "Choices title cannot be empty"}
+    throw { message: "Choices title cannot be empty" };
   } else if (isSameChoice) {
-    throw {message: "Choice cannot be same as other choice"}
+    throw { message: "Choice cannot be same as other choice" };
   }
   allChoiceTitle = allChoiceTitle.map((choice, index) => {
     return {
       title: choice,
-      index: index
-    }
-  })
+      index: index,
+    };
+  });
   var newSurvey = {
     title: surveyTitle,
-    choices: allChoiceTitle
-  }
-  return newSurvey
-
-}
+    choices: allChoiceTitle,
+  };
+  return newSurvey;
+};
 const editQuestion = async (data, oldTitle, questionIndex) => {
   // Variables
   var quizTitle = data.quizTitle;
@@ -394,6 +392,30 @@ const startQuiz = async (quiz, room, user) => {
   return quiz;
 };
 
+const onStartSurvey = async (roomId, survey) => {
+  var surveyId = await axios.post(`http://${config.ip}:3000/survey`, {
+    roomId: roomId,
+    title: survey.title,
+  });
+  survey.surveyId = surveyId.data.surveyId;
+  for (const choice of survey.choices) {
+    var newChoiceId = await axios.post(
+      `http://${config.ip}:3000/survey/${surveyId.data.surveyId}/choice`,
+      {
+        choice: {
+          title: choice.title,
+          index: choice.index,
+        },
+        questionId: null,
+      }
+    );
+    choice.surveyId = surveyId.data.surveyId;
+    choice.choiceId = newChoiceId.data.choiceId;
+  }
+
+  return survey;
+};
+
 export {
   createQuiz,
   createQuestion,
@@ -404,5 +426,6 @@ export {
   editQuestion,
   startQuiz,
   formatDateForResult,
-  createSurvey
+  createSurvey,
+  onStartSurvey,
 };

@@ -105,13 +105,10 @@ DROP TABLE IF EXISTS `Survey`;
 CREATE TABLE `Survey` (
     `surveyId` INT(10) AUTO_INCREMENT,
     `roomId` INT(10) NOT NULL,
-    `participantId` INT(10) NOT NULL,
     `title` VARCHAR(255) NOT NULL,
     `createDatetime` DATETIME,
     `state` ENUM('attempting', 'ended'),
     PRIMARY KEY (`surveyId`),
-    FOREIGN KEY (`participantId`)
-        REFERENCES `Participant` (`participantId`),
     FOREIGN KEY (`roomId`)
         REFERENCES `Room` (`roomId`)
 );
