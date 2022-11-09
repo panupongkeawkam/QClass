@@ -107,30 +107,6 @@ router.post("/question/:questionId/choice", async (req, res) => {
   }
 });
 
-//get available quiz in room xx
-router.get("/room/:roomId/quiz", async (req, res) => {
-  const roomId = req.params.roomId;
-  const conn = await pool.getConnection();
-  await conn.beginTransaction();
-
-  try {
-    const [quiz, rows] = await conn.query(
-      `SELECT *
-      FROM \`Quiz\`
-      WHERE \`roomId\` = ? AND \`state\` = ?`,
-      [roomId, "attempting"]
-    );
-
-    await conn.commit();
-    res.json({ quiz: quiz[0] });
-  } catch (err) {
-    await conn.rollback();
-    res.status(500).send(err);
-  } finally {
-    conn.release();
-  }
-});
-
 // owner stop quiz
 router.put("/quiz/:quizId", async (req, res) => {
   const quizId = req.params.quizId;
@@ -158,12 +134,23 @@ router.put("/quiz/:quizId", async (req, res) => {
 
 // get all score for quiz xx
 router.get("/quiz/:quizId/score", async (req, res) => {
+  const quizId = req.params.quizId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    const [scores, rows] = await conn.query(
+      `
+    SELECT * 
+    FROM \`Score\`
+    WHERE quizId = ?`,
+      [quizId]
+    );
+
+    console.log(scores);
+
     await conn.commit();
-    res.json();
+    res.json(scores);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -184,8 +171,8 @@ router.post("/quiz/:quizId/score", async (req, res) => {
 
   try {
     const [score, rows] = await conn.query(
-      `INSERT INTO \`Score\` (quizId, participantId, point, totalAttempting, fullScore)
-      VALUES (?, ?, 0, 0, ?)`,
+      `INSERT INTO \`Score\` (quizId, participantId, point, totalAttempting, fullScore, createDatetime)
+      VALUES (?, ?, 0, 0, ?, NOW())`,
       [quizId, participantId, fullScore]
     );
 
@@ -314,6 +301,33 @@ router.get("/room/:roomId/result", async (req, res) => {
   try {
     await conn.commit();
     res.json();
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+router.post("/room/:roomId/result", async (req, res) => {
+  const roomId = req.params.roomId;
+  const jsonData = req.body.jsonData;
+  const jsonDataString = JSON.stringify(req.body.jsonData);
+  const now = new Date();
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [result, rows] = await conn.query(
+      `INSERT INTO \`Result\` (roomId, jsonData, createDatetime)
+      VALUES (?, ?, ?)`,
+      [roomId, jsonDataString, now]
+    );
+
+    jsonData.createDate = now;
+
+    await conn.commit();
+    res.json(jsonData);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

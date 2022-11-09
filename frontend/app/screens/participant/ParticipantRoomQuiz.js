@@ -67,11 +67,17 @@ export default (props) => {
     var quizResponse = await axios.get(
       `http://${config.ip}:3000/room/${roomId}/quiz`
     );
-    if (quizResponse.data.quiz) {
-      var quiz = quizResponse.data.quiz;
-      quiz.type = "quiz";
-      setAttempt(quiz);
-      return;
+
+    if (quizResponse.data.quiz[0]) {
+      var myScore = await axios.get(
+        `http://${config.ip}:3000/quiz/${quizResponse.data.quiz[0].quizId}/participant/${participantId}/score`
+      );
+      if (!myScore.data.myScore.length) {
+        var quiz = quizResponse.data.quiz[0];
+        quiz.type = "quiz";
+        setAttempt(quiz);
+        return;
+      }
     }
     setAttempt(null);
   };
@@ -115,6 +121,7 @@ export default (props) => {
         quiz: attempt,
         questionIndex: 0,
         participantId: participantId,
+        roomId: roomId,
       });
     } else if (attempt.type === "survey") {
       props.navigation.navigate("ParticipantAttemptingSurvey", {

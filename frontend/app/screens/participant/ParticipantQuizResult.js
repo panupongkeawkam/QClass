@@ -8,8 +8,12 @@ import PrimaryButton from "../../components/button/PrimaryButton";
 import Label from "../../components/Label";
 
 export default (props) => {
+  // score data of participant xx
+  console.log("Participant Score : ", props.route.params.myScore)
+  
+  const myAttemptingTime = props.route.params.myAttemptingTime
+  const myPoint = props.route.params.myScore.point
   const fullScore = props.route.params.quiz.questionLength
-  // const myScore = props.route.params.myScore
   const [chartImageUrl, setChartImageUrl] = useState(null);
   const generateChartUri = (score, radialColor) => {
     const options = {
@@ -52,7 +56,7 @@ export default (props) => {
       },
     });
 
-    setChartImageUrl(generateChartUri(10, color.correct));
+    setChartImageUrl(generateChartUri(myPoint, color.correct));
   });
 
   const backHomeHandler = () => {
@@ -82,11 +86,11 @@ export default (props) => {
           ]}
         >
           <Text style={[theme.textHeader1, { color: color.base1 }]}>
-            HID Week 7
+            {props.route.params.quiz.title}
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Label text={"Quiz"} />
-            <Label text={"10 Questions"} />
+            <Label text={`${props.route.params.quiz.questionLength} questions`} />
           </View>
         </View>
         <View
@@ -128,7 +132,7 @@ export default (props) => {
                   { fontSize: 20, fontWeight: "500", color: color.content4 },
                 ]}
               >
-                {10} of {fullScore}
+                {myPoint} of {fullScore}
               </Text>
             </View>
             <View

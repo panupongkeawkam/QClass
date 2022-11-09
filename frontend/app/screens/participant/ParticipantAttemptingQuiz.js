@@ -42,10 +42,16 @@ export default (props) => {
   });
 
   const submit = async () => {
-    await pointSummarize();
+    var quizAvailable = await checkQuizAvailable();
+    if (quizAvailable) {
+      await pointSummarize();
+    }
+    const myScore = await axios.get(
+      `http://${config.ip}:3000/quiz/${props.route.params.quiz.quizId}/participant/${props.route.params.participantId}/score`
+    );
     props.navigation.navigate("ParticipantQuizResult", {
       quiz: props.route.params.quiz,
-      participantId: props.route.params.participantId,
+      myScore: myScore.data.myScore[0],
     });
   };
 
@@ -62,15 +68,28 @@ export default (props) => {
     );
   };
 
-  const next = async () => {
-    await pointSummarize();
-    props.navigation.dispatch(
-      StackActions.replace("ParticipantAttemptingQuiz", {
-        quiz: props.route.params.quiz,
-        questionIndex: questionIndex + 1,
-        participantId: props.route.params.participantId,
-      })
+  const checkQuizAvailable = async () => {
+    var quizResponse = await axios.get(
+      `http://${config.ip}:3000/room/${props.route.params.roomId}/quiz`
     );
+    return quizResponse.data.quiz.length;
+  };
+
+  const next = async () => {
+    var quizAvailable = await checkQuizAvailable();
+    if (quizAvailable) {
+      await pointSummarize();
+      props.navigation.dispatch(
+        StackActions.replace("ParticipantAttemptingQuiz", {
+          quiz: props.route.params.quiz,
+          questionIndex: questionIndex + 1,
+          participantId: props.route.params.participantId,
+          roomId: props.route.params.roomId,
+        })
+      );
+      return;
+    }
+    submit();
   };
 
   const pressHandler = () => {

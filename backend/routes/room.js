@@ -150,10 +150,10 @@ router.post("/user/:userId/room", async (req, res) => {
   // generate inviteCode
   // room member is 0 default
   const newRoom = req.body.room;
-  var userId = req.params.userId;
-  var title = req.body.room.title;
-  var iconName = req.body.room.iconName;
-  var inviteCode = req.body.room.inviteCode;
+  const userId = req.params.userId;
+  const title = req.body.room.title;
+  const iconName = req.body.room.iconName;
+  const inviteCode = req.body.room.inviteCode;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
@@ -164,6 +164,10 @@ router.post("/user/:userId/room", async (req, res) => {
     VALUES (?, ?, ?, ?, NOW(), 0)`,
       [userId, title, iconName, inviteCode]
     );
+
+    newRoom.roomId = room.insertId;
+    newRoom.userId = userId;
+
     await conn.commit();
     res.json(newRoom);
   } catch (err) {
@@ -191,12 +195,20 @@ router.get("/user/:userId/room/:roomId", async (req, res) => {
 
 // get quiz available of room xx
 router.get("/room/:roomId/quiz", async (req, res) => {
-  // find quiz state = "attempting"
+  const roomId = req.params.roomId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
-    res.json();
+    const [quiz, rows] = await conn.query(
+      `SELECT *
+      FROM \`Quiz\`
+      WHERE \`roomId\` = ? AND \`state\` = ?`,
+      [roomId, "attempting"]
+    );
+
+    await conn.commit();
+    res.json({ quiz: quiz });
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

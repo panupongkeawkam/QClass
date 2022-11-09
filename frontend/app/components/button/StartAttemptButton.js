@@ -19,6 +19,8 @@ import StartQuiz from "../../screens/owner/StartQuiz";
 import StartSurvey from "../../screens/owner/StartSurvey";
 
 export default (props) => {
+  const room = props.route.params.room
+  
   const bottomSheetRef = useRef(null);
   const Tab = createMaterialTopTabNavigator();
 
@@ -29,6 +31,7 @@ export default (props) => {
         type,
         quiz,
         quizIndex,
+        room
       });
     }, 500);
   };

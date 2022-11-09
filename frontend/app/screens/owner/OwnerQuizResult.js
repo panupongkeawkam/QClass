@@ -17,7 +17,7 @@ import QuizResult from "../../components/QuizResult";
 import SurveyResult from "../../components/SurveyResult";
 
 export default (props) => {
-  const [type, setType] = useState("survey"); // quiz || survey
+  const [type, setType] = useState(props.route.params.type); // quiz || survey
 
   const BackRoomHandler = () => {
     props.navigation.goBack();
@@ -66,13 +66,13 @@ export default (props) => {
         </View>
         {type === "quiz" ? (
           <QuizResult
-            quizTitle={"HID Week 7"}
-            questionLength={10}
-            fullScore={10}
-            minScore={1}
-            meanScore={7.6}
-            maxScore={10}
-            createDate={"28 October 2565 19:30"}
+            quizTitle={props.route.params.jsonData.quizTitle}
+            questionLength={props.route.params.jsonData.questionLength}
+            fullScore={props.route.params.jsonData.questionLength}
+            minScore={props.route.params.jsonData.minScore}
+            meanScore={props.route.params.jsonData.averageScore}
+            maxScore={props.route.params.jsonData.maxScore}
+            createDate={props.route.params.jsonData.createDate}
           />
         ) : (
           <SurveyResult

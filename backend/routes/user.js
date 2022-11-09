@@ -87,11 +87,21 @@ router.get("/user/:userId/room/:roomId/participant", async (req, res) => {
 router.get(
   "/quiz/:quizId/participant/:participantId/score",
   async (req, res) => {
+    const quizId = req.params.quizId;
+    const participantId = req.params.participantId;
     const conn = await pool.getConnection();
     await conn.beginTransaction();
 
     try {
-      res.json();
+      const [score, rows] = await conn.query(
+        `SELECT *
+        FROM \`Score\`
+        WHERE \`quizId\` = ? AND \`participantId\` = ?`,
+        [quizId, participantId]
+      );
+
+      await conn.commit();
+      res.json({ myScore: score });
     } catch (err) {
       await conn.rollback();
       res.status(500).send(err);

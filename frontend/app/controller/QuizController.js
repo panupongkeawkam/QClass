@@ -17,6 +17,34 @@ function formatDate(dateFormat) {
   return dateFormat;
 }
 
+function formatDateForResult(dateFormat) {
+  var dateTime = new Date(dateFormat);
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  var date = `${(dateTime.getDate() + 1000).toString().slice(2)} ${
+    monthNames[dateTime.getMonth()]
+  }`;
+  var time = `${(dateTime.getHours() + 1000).toString().slice(2)}:${(
+    dateTime.getMinutes() + 1000
+  )
+    .toString()
+    .slice(2)}`;
+
+  return `${date}${ " " + dateTime.getFullYear()} ${time}`;
+}
+
 //need to apply auto refreshing
 const createQuiz = async (newTitle) => {
   //Variable
@@ -343,4 +371,5 @@ export {
   deleteQuestion,
   editQuestion,
   startQuiz,
+  formatDateForResult
 };

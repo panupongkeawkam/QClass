@@ -11,10 +11,14 @@ import StepBar from "../../components/StepBar";
 
 import config from "../../assets/api-config";
 
+import {formatDateForResult} from "../../controller/QuizController";
+
 export default (props) => {
+  const roomId = props.route.params.room.roomId;
   const quizTitle = props.route.params.quiz.title;
   const questionLength = props.route.params.quiz.questionLength;
   const questions = props.route.params.quiz.questions;
+  const quizId = props.route.params.quiz.quizId;
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -47,8 +51,40 @@ export default (props) => {
           );
 
           // result statement
+          var scores = await axios.get(
+            `http://${config.ip}:3000/quiz/${quizId}/score`
+          );
+          var allScoresVar = scores.data.map((score) => score.point);
+          var maxScoreVar = Math.max(allScoresVar);
+          var minScoreVar = Math.min(allScoresVar);
+          var averageScoreVar =
+            allScoresVar.reduce((prev, current) => prev + current, 0) /
+            allScoresVar.length;
+          var jsonData = {
+            allScore: allScoresVar,
+            maxScore: maxScoreVar,
+            minScore: minScoreVar,
+            averageScore: averageScoreVar,
+            quizTitle: quizTitle,
+            questionLength: questionLength,
+            fullScore: questionLength,
+          };
 
-          props.navigation.navigate("OwnerQuizResult", {});
+          var resultResponse = await axios.post(
+            `http://${config.ip}:3000/room/${roomId}/result`,
+            {
+              jsonData: jsonData,
+            }
+          );
+
+          resultResponse.data.createDate = formatDateForResult(
+            resultResponse.data.createDate
+          );
+
+          props.navigation.navigate("OwnerQuizResult", {
+            type: "quiz",
+            jsonData: resultResponse.data,
+          });
         },
       },
     ]);
