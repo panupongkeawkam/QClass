@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const color = {
   primary: "#4dbee4", // #3bc8ed
+  primaryTransparent: "#edfbff",
   secondary: "#ffb630",
   correct: "#37de90",
   warning: "#ffb630",
@@ -70,9 +71,9 @@ const theme = StyleSheet.create({
     borderColor: color.base3,
   },
   textLabel: {
-    fontSize: 14,
-    fontWeight: "800",
-    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: "400",
+    marginLeft: 12,
     color: color.content4,
     marginBottom: 4,
   },

@@ -14,43 +14,48 @@ import { theme, color } from "../assets/theme/Theme";
 import Room from "../components/Room";
 import CreateRoomModal from "../components/modals/CreateRoomModal";
 import CreatorButton from "../components/button/CreatorButton";
-import EmptyDataLabel from "../components/EmptyDataLabel";
 
 import { userInitialize } from "../controller/UserController";
 import config from "../assets/api-config";
 
 export default (props) => {
-  // const data = [];
-  const [ownRoom, setOwnRoom] = useState([]);
+  const [ownedRoom, setOwnedRoom] = useState([]);
   const [joinedRoom, setJoinedRoom] = useState([]);
   const [createRoomModalVisible, setCreateRoomModalVisible] = useState(false);
+  const [showGetStarted, setShowGetStarted] = useState(true);
+  const [category, setCategory] = useState("joined");
   const [user, setUser] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
-  const selectOwnRoomHandler = (room, index) => {
-    // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
-    props.navigation.navigate("OwnerRoomTabsNavigator", {
-      room: room,
-      user: user,
-    });
-  };
-
-  const fetchRooms = async (userId) => {
+  const fetchJoinedRooms = async (userId) => {
     if (userId) {
-      var newOwnRooms = await axios
-        .get(`http://${config.ip}:3000/user/${userId}/room`)
-        .then((res) => res.data.rooms)
-        .catch((err) => console.error(err));
       var newJoinedRooms = await axios
         .get(`http://${config.ip}:3000/participant/${userId}/room`)
         .then((res) => res.data.rooms)
         .catch((err) => console.error(err));
-      setOwnRoom(newOwnRooms);
       setJoinedRoom(newJoinedRooms);
     }
   };
 
+  const fetchOwnedRooms = async (userId) => {
+    if (userId) {
+      var newOwnedRooms = await axios
+        .get(`http://${config.ip}:3000/user/${userId}/room`)
+        .then((res) => res.data.rooms)
+        .catch((err) => console.error(err));
+      setOwnedRoom(newOwnedRooms);
+    }
+  };
+
+  const fetchRoomsByCategory = async (userId) => {
+    if (category === "joined") {
+      await fetchJoinedRooms(userId);
+    } else if (category === "owned") {
+      await fetchOwnedRooms(userId);
+    }
+  };
+
   useEffect(() => {
-    //fetchUser
     async function userInitial() {
       var userVar = await userInitialize();
       setUser(userVar);
@@ -59,10 +64,10 @@ export default (props) => {
   }, []);
 
   useEffect(() => {
-    props.navigation.addListener("focus", () => {
-      fetchRooms(user.userId);
+    props.navigation.addListener("focus", async () => {
+      await fetchRoomsByCategory(user.userId);
     });
-    fetchRooms(user.userId);
+    fetchRoomsByCategory(user.userId);
   }, [user]);
 
   const selectJoinedRoomHandler = async (room, index) => {
@@ -74,7 +79,9 @@ export default (props) => {
       );
       return participantIdVar.data.participantId;
     };
+
     const participantId = await fetchParticipantId();
+
     props.navigation.navigate("ParticipantRoomTabsNavigator", {
       room: room,
       user: user,
@@ -82,14 +89,53 @@ export default (props) => {
     });
   };
 
-  const [refreshing, setRefreshing] = useState(false);
+  const selectOwnedRoomHandler = (room, index) => {
+    // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
+    props.navigation.navigate("OwnerRoomTabsNavigator", {
+      room: room,
+      user: user,
+    });
+  };
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    fetchRooms(user.userId);
+    await fetchRoomsByCategory(user.userId);
+
     setTimeout(() => {
       setRefreshing(false);
-    }, 1000);
+    }, 500);
+  };
+
+  const Category = ({ isFocus, title, onSelect }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          onSelect();
+        }}
+        style={{
+          marginRight: 8,
+          borderRadius: 40,
+          paddingVertical: 8,
+          paddingHorizontal: 16,
+          backgroundColor: isFocus ? color.content4 : color.base2,
+          justifyContent: "center",
+          alignItems: "center",
+          borderWidth: 1,
+          borderColor: color.content4,
+          ...theme.blurShadow,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "600",
+            color: isFocus ? color.base1 : color.content4,
+          }}
+        >
+          {title}
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -97,63 +143,128 @@ export default (props) => {
       style={{
         flex: 1,
         backgroundColor: color.base2,
-        paddingTop: Constants.statusBarHeight,
+        // paddingTop: Constants.statusBarHeight,
       }}
     >
-      <ScrollView
-        style={[theme.container]}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <CreateRoomModal
-          visible={createRoomModalVisible}
-          user={user}
-          onCreateRoom={(newRoom) => {
-            setOwnRoom((currentRoom) => {
-              currentRoom.push(newRoom);
-              return currentRoom;
-            });
-          }}
-          close={() => {
-            setCreateRoomModalVisible(false);
-          }}
-        />
-        <Text style={theme.textLabel}>MY ROOM</Text>
-        <View style={[theme.boxContainer]}>
-          <CreatorButton
-            title="Create Room"
-            onCreate={() => {
-              setCreateRoomModalVisible(true);
+      <View style={[theme.container]}>
+        <View style={{ paddingHorizontal: 10, marginBottom: 16 }}>
+          <ScrollView
+            horizontal={true}
+            style={[{ flexDirection: "row", borderRadius: 20 }]}
+          >
+            <Category
+              isFocus={category === "joined"}
+              title="Joined"
+              onSelect={() => {
+                setCategory("joined");
+                fetchJoinedRooms(user.userId);
+              }}
+            />
+            <Category
+              isFocus={category === "owned"}
+              title="Owned"
+              onSelect={() => {
+                setCategory("owned");
+                fetchOwnedRooms(user.userId);
+              }}
+            />
+          </ScrollView>
+        </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <CreateRoomModal
+            visible={createRoomModalVisible}
+            user={user}
+            onCreateRoom={(newRoom) => {
+              setOwnedRoom((currentRoom) => {
+                currentRoom.push(newRoom);
+                return currentRoom;
+              });
+            }}
+            close={() => {
+              setCreateRoomModalVisible(false);
             }}
           />
-          {ownRoom.map((room, index) => (
-            <Room
-              room={room}
-              onSelect={() => {
-                selectOwnRoomHandler(room, index);
-              }}
-              key={index}
-            />
-          ))}
-        </View>
-        <Text style={theme.textLabel}>JOINED ROOM</Text>
-        <View style={[theme.boxContainer, { paddingBottom: 200 }]}>
-          {joinedRoom.length > 0 ? (
-            joinedRoom.map((room, index) => (
-              <Room
-                room={room}
-                onSelect={() => {
-                  selectJoinedRoomHandler(room, index);
-                }}
-                key={index}
-              />
-            ))
+          {category === "joined" ? (
+            <View
+              style={[
+                theme.boxContainer,
+                {
+                  paddingBottom: 200,
+                },
+              ]}
+            >
+              {joinedRoom.length > 0 ? (
+                joinedRoom.map((room, index) => (
+                  <Room
+                    room={room}
+                    onSelect={() => {
+                      selectJoinedRoomHandler(room, index);
+                    }}
+                    key={index}
+                  />
+                ))
+              ) : (
+                <View style={{ padding: 10, width: "100%" }}>
+                  <View
+                    style={[
+                      theme.blurShadow,
+                      {
+                        borderTopRightRadius: 24,
+                        borderBottomRightRadius: 24,
+                        borderTopLeftRadius: 4,
+                        borderBottomLeftRadius: 4,
+                        paddingVertical: 16,
+                        paddingHorizontal: 24,
+                        backgroundColor: color.primaryTransparent,
+                        paddingBottom: 48,
+                        borderLeftWidth: 4,
+                        borderColor: color.primary,
+                      },
+                    ]}
+                  >
+                    <Text style={[theme.textHeader2, { color: color.primary }]}>
+                      Get Started
+                    </Text>
+                    <Text
+                      style={[
+                        {
+                          color: color.primary,
+                          fontSize: 18,
+                        },
+                      ]}
+                    >
+                      Join Room to start an activity!
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
           ) : (
-            <EmptyDataLabel title={"No room"} isSmall />
+            <View style={[theme.boxContainer]}>
+              <CreatorButton
+                title="Create Room"
+                onCreate={() => {
+                  setCreateRoomModalVisible(true);
+                }}
+              />
+              {ownedRoom.map((room, index) => (
+                <Room
+                  room={room}
+                  onSelect={() => {
+                    selectOwnedRoomHandler(room, index);
+                  }}
+                  key={index}
+                />
+              ))}
+            </View>
           )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 };

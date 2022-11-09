@@ -63,7 +63,9 @@ export default (props) => {
           justifyContent: "center",
           alignItems: "center",
           borderRadius: 20,
-          backgroundColor: icon.isSelect ? colorOfIcons[icon.iconName].secondary : "transparent",
+          backgroundColor: icon.isSelect
+            ? colorOfIcons[icon.iconName].secondary
+            : "transparent",
         }}
         onPress={() => {
           icon.onSelect();
@@ -72,7 +74,9 @@ export default (props) => {
         <Ionicons
           name={icon.isSelect ? icon.iconName : icon.iconName + "-outline"}
           size={24}
-          color={icon.isSelect ? colorOfIcons[icon.iconName].primary : color.content4}
+          color={
+            icon.isSelect ? colorOfIcons[icon.iconName].primary : color.content4
+          }
         />
       </TouchableOpacity>
     );
