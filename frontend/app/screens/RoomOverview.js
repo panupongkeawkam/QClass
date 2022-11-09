@@ -143,7 +143,7 @@ export default (props) => {
       style={{
         flex: 1,
         backgroundColor: color.base2,
-        paddingTop: Constants.statusBarHeight,
+        // paddingTop: Constants.statusBarHeight,
       }}
     >
       <View style={[theme.container]}>

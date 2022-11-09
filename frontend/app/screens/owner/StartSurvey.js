@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import SwitchSelector from "react-native-switch-selector";
 
@@ -25,13 +25,13 @@ export default (props) => {
   ]);
 
   const addChoiceHandler = () => {
-    var newChoices = choices
+    var newChoices = choices;
     newChoices.push({
       title: "",
       isDeletable: true,
       isCorrect: false,
-    })
-    setChoices([...newChoices])
+    });
+    setChoices([...newChoices]);
   };
 
   const titleChangeHandler = (newTitle, index) => {
@@ -47,10 +47,29 @@ export default (props) => {
   };
   const startHandler = () => {
     try {
-      var newSurvey = createSurvey(surveyTitle, choices)
+      var newSurvey = createSurvey(surveyTitle, choices);
+
+      setSurveyTitle("");
+      setChoices([
+        {
+          title: "",
+          isDeletable: false,
+          isCorrect: false,
+        },
+        {
+          title: "",
+          isDeletable: false,
+          isCorrect: false,
+        },
+      ]);
+
+      props.onStart({
+        survey: newSurvey,
+      });
+
       console.log(newSurvey);
-    } catch (error){
-      console.log("Error :  ", error.message);
+    } catch (error) {
+      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
     }
     // props.onStart({
     //   type: "survey",
@@ -80,6 +99,7 @@ export default (props) => {
                 key={index}
                 isDeletable={choice.isDeletable}
                 index={index}
+                title={choice.title}
                 onSetCorrect={() => {
                   // do nothing
                 }}

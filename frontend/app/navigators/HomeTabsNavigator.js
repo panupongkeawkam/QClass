@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Text, View, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "react-native-vector-icons";
 
@@ -26,7 +26,16 @@ export default (props) => {
     <HomeTabs.Navigator
       initialRouteName="RoomOverview"
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerTitleAlign: "left",
+        headerTitle: () => {
+          return (
+            <Image
+              source={require("../assets/q-class-logo-text.png")}
+              style={{ height: 20, width: 80, resizeMode: "contain" }}
+            />
+          );
+        },
         tabBarStyle: {
           ...theme.bottomTab,
         },

@@ -19,19 +19,28 @@ import StartQuiz from "../../screens/owner/StartQuiz";
 import StartSurvey from "../../screens/owner/StartSurvey";
 
 export default (props) => {
-  const room = props.route.params.room
-  
+  const room = props.route.params.room;
+
   const bottomSheetRef = useRef(null);
   const Tab = createMaterialTopTabNavigator();
 
-  const startHandler = ({ type, quiz, quizIndex }) => {
+  const startQuizHandler = ({ type, quiz, quizIndex }) => {
     bottomSheetRef.current.close();
     setTimeout(() => {
       props.navigation.navigate("OwnerAttemptingQuiz", {
         type,
         quiz,
         quizIndex,
-        room
+        room,
+      });
+    }, 500);
+  };
+
+  const startSurveyHandler = ({ survey }) => {
+    bottomSheetRef.current.close();
+    setTimeout(() => {
+      props.navigation.navigate("OwnerAttemptingSurvey", {
+        survey,
       });
     }, 500);
   };
@@ -115,7 +124,7 @@ export default (props) => {
                   children={(props) => (
                     <StartSurvey
                       onStart={(data) => {
-                        startHandler(data);
+                        startSurveyHandler(data);
                       }}
                       {...props}
                     />
@@ -129,7 +138,7 @@ export default (props) => {
                     <StartQuiz
                       onStart={(data) => {
                         props.navigation.navigate("StartSurvey");
-                        startHandler(data);
+                        startQuizHandler(data);
                       }}
                       {...props}
                     />

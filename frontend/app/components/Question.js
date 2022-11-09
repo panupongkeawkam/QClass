@@ -62,7 +62,7 @@ export default (props) => {
                     borderRadius: 16,
                     flexDirection: "row",
                     backgroundColor:
-                      index === parseInt(props.correct)
+                      index === parseInt(props?.correct)
                         ? color.correct
                         : color.base2,
                   }}
@@ -124,25 +124,27 @@ export default (props) => {
             </View>
           )}
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 16,
-          }}
-        >
-          <Ionicons name="timer-outline" size={20} color={color.base4} />
-          <Text
+        {!props.isSurvey ? (
+          <View
             style={{
-              marginLeft: 8,
-              fontSize: 20,
-              fontWeight: "bold",
-              color: color.base4,
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 16,
             }}
           >
-            {props.timer ? props.timer + "s" : "No Limit"}
-          </Text>
-        </View>
+            <Ionicons name="timer-outline" size={20} color={color.base4} />
+            <Text
+              style={{
+                marginLeft: 8,
+                fontSize: 20,
+                fontWeight: "bold",
+                color: color.base4,
+              }}
+            >
+              {props.timer ? props.timer + "s" : "No Limit"}
+            </Text>
+          </View>
+        ) : null}
       </View>
     </TouchableOpacity>
   );

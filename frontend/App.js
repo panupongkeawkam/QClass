@@ -15,6 +15,7 @@ import ParticipantRoomTabsNavigator from "./app/navigators/ParticipantRoomTabsNa
 import OwnerRoomTabsNavigator from "./app/navigators/OwnerRoomTabsNavigator";
 import RoomInvite from "./app/screens/owner/RoomInvite";
 import OwnerAttemptingQuiz from "./app/screens/owner/OwnerAttemptingQuiz";
+import OwnerAttemptingSurvey from "./app/screens/owner/OwnerAttemptingSurvey";
 import OwnerQuizResult from "./app/screens/owner/OwnerQuizResult"
 import ParticipantAttemptingQuiz from "./app/screens/participant/ParticipantAttemptingQuiz";
 import ParticipantQuizResult from "./app/screens/participant/ParticipantQuizResult";
@@ -83,6 +84,10 @@ export default function App() {
             <Stack.Screen
               name="OwnerAttemptingQuiz"
               component={OwnerAttemptingQuiz}
+            />
+            <Stack.Screen
+              name="OwnerAttemptingSurvey"
+              component={OwnerAttemptingSurvey}
             />
             <Stack.Screen name="OwnerQuizResult" component={OwnerQuizResult} />
             <Stack.Screen
