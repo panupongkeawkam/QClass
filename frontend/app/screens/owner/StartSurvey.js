@@ -7,6 +7,7 @@ import { theme, color } from "../../assets/theme/Theme";
 import Choice from "../../components/Choice";
 import AddChoiceButton from "../../components/button/AddChoiceButton";
 import PrimaryButton from "../../components/button/PrimaryButton";
+import { createSurvey } from "../../controller/QuizController";
 
 export default (props) => {
   const [surveyTitle, setSurveyTitle] = useState("");
@@ -23,20 +24,38 @@ export default (props) => {
     },
   ]);
 
-  const addChoiceHandler = () => {};
-
-  const titleChangeHandler = (newTitle, index) => {
-    var choicesVar = choices;
-    choicesVar[index].title = newTitle;
+  const addChoiceHandler = () => {
+    var newChoices = choices
+    newChoices.push({
+      title: "",
+      isDeletable: true,
+      isCorrect: false,
+    })
+    setChoices([...newChoices])
   };
 
-  const deleteHandler = (index) => {};
+  const titleChangeHandler = (newTitle, index) => {
+    const newChoices = choices;
+    newChoices[index].title = newTitle;
+    setChoices([...newChoices]);
+  };
 
+  const deleteHandler = (index) => {
+    var newChoices = choices;
+    newChoices.splice(index, 1);
+    setChoices([...newChoices]);
+  };
   const startHandler = () => {
-    props.onStart({
-      type: "survey",
-      survey: {},
-    });
+    try {
+      var newSurvey = createSurvey(surveyTitle, choices)
+      console.log(newSurvey);
+    } catch (error){
+      console.log("Error :  ", error.message);
+    }
+    // props.onStart({
+    //   type: "survey",
+    //   survey: {},
+    // });
   };
 
   return (
@@ -50,7 +69,7 @@ export default (props) => {
           placeholder="Survey title"
           value={surveyTitle}
           onChangeText={(text) => {
-            setSurveyTitle(text.trim());
+            setSurveyTitle(text);
           }}
         />
         <Text style={[theme.textLabel, { marginTop: 8 }]}>CHOICE</Text>

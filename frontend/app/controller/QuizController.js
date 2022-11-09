@@ -221,7 +221,39 @@ const deleteQuestion = async (questions, targetIndex, quizTitle) => {
 
   return targetQuiz.questions;
 };
+const createSurvey = (surveyTitle, choices) => {
+  surveyTitle = surveyTitle.trim()
+  var isNullSurveyTitle = surveyTitle.length <= 0
 
+ 
+  if (isNullSurveyTitle) {
+    throw { message: "Survey title cannot be empty" };
+  }
+
+   var allChoiceTitle = choices.map((choice) => choice.title.trim());
+  var setOfChoicesTitle = new Array(...new Set(allChoiceTitle));
+
+  var isChoiceNull = allChoiceTitle.some((title) => title.length <= 0);
+  var isSameChoice = allChoiceTitle.length !== setOfChoicesTitle.length;
+
+  if (isChoiceNull) {
+    throw { message: "Choices title cannot be empty"}
+  } else if (isSameChoice) {
+    throw {message: "Choice cannot be same as other choice"}
+  }
+  allChoiceTitle = allChoiceTitle.map((choice, index) => {
+    return {
+      title: choice,
+      index: index
+    }
+  })
+  var newSurvey = {
+    title: surveyTitle,
+    choices: allChoiceTitle
+  }
+  return newSurvey
+
+}
 const editQuestion = async (data, oldTitle, questionIndex) => {
   // Variables
   var quizTitle = data.quizTitle;
@@ -371,5 +403,6 @@ export {
   deleteQuestion,
   editQuestion,
   startQuiz,
-  formatDateForResult
+  formatDateForResult,
+  createSurvey
 };
