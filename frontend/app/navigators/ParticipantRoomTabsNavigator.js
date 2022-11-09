@@ -16,7 +16,6 @@ export default (props) => {
   const userId = props.route.params.user.userId;
   const room = props.route.params.room;
   const participantId = props.route.params.participantId
-  console.log(participantId)
 
   const leaveRoomHandler = async () => {
     try {

@@ -76,6 +76,8 @@ CREATE TABLE `Score` (
     `quizId` INT(10) NOT NULL,
     `participantId` INT(10) NOT NULL,
     `point` INT(10),
+    `totalAttempting` INT(10),
+    `fullScore` INT(10),
     `createDatetime` DATETIME,
     PRIMARY KEY (`scoreId`),
     FOREIGN KEY (`quizId`)
@@ -133,7 +135,6 @@ DROP TABLE IF EXISTS `Response`;
 
 CREATE TABLE `Response` (
     `responseId` INT(10) AUTO_INCREMENT,
-    `questionId` INT(10),
     `surveyId` INT(10),
     `participantId` INT(10) NOT NULL,
     `answered` VARCHAR(255),
@@ -141,11 +142,10 @@ CREATE TABLE `Response` (
     PRIMARY KEY (`responseId`),
     FOREIGN KEY (`participantId`)
         REFERENCES `Participant` (`participantId`),
-    FOREIGN KEY (`questionId`)
-        REFERENCES `Question` (`questionId`),
     FOREIGN KEY (`surveyId`)
         REFERENCES `Survey` (`surveyId`)
 );
+
 
 DROP TABLE IF EXISTS `Result`;
 

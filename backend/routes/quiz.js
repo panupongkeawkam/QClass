@@ -172,15 +172,59 @@ router.get("/quiz/:quizId/score", async (req, res) => {
   }
 });
 
-// add new score for quiz xx (do when submit)
+// create score for quiz xx (do when start)
 router.post("/quiz/:quizId/score", async (req, res) => {
   // { body: { participantId } }
+  const quizId = req.params.quizId;
+  const participantId = req.body.participantId;
+  const fullScore = req.body.questionLength;
+
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    const [score, rows] = await conn.query(
+      `INSERT INTO \`Score\` (quizId, participantId, point, totalAttempting, fullScore)
+      VALUES (?, ?, 0, 0, ?)`,
+      [quizId, participantId, fullScore]
+    );
+
     await conn.commit();
-    res.json();
+    res.json({ scoreId: score.insertId });
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+// put new score for quiz xx (do when next)
+router.put("/quiz/:quizId/score", async (req, res) => {
+  // { body: { participantId, point } }
+  const quizId = req.params.quizId;
+  const participantId = req.body.participantId;
+  const point = req.body.point ? 1 : 0;
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [score, rows] = await conn.query(
+      `UPDATE score
+      SET point = point + ?
+      WHERE quizId = ? AND participantId = ?`,
+      [point, quizId, participantId]
+    );
+
+    const [attempting, field] = await conn.query(
+      `UPDATE score
+      SET totalAttempting = totalAttempting + 1
+      WHERE quizId = ? AND participantId = ?`,
+      [quizId, participantId]
+    );
+
+    await conn.commit();
+    res.json({ scoreId: score.insertId });
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

@@ -42,43 +42,32 @@ export default (props) => {
   });
 
   const submit = async () => {
-    var score = props.route.params.score + (await pointSummarize());
-    console.log("Now Score : ", score);
+    await pointSummarize();
     props.navigation.navigate("ParticipantQuizResult", {
       quiz: props.route.params.quiz,
-      myScore: score,
+      participantId: props.route.params.participantId,
     });
   };
 
   const pointSummarize = async () => {
-    await axios.post(
-      `http://${config.ip}:3000/question/${questions[questionIndex].questionId}/response`,
+    await axios.put(
+      `http://${config.ip}:3000/quiz/${props.route.params.quiz.quizId}/score`,
       {
         participantId: props.route.params.participantId,
-        answered:
+        point:
           questions[questionIndex].type === "choice"
-            ? selectedChoiceIndex === -1
-              ? null
-              : selectedChoiceIndex.toString()
-            : textAnswer
+            ? questions[questionIndex].correct === selectedChoiceIndex
+            : questions[questionIndex].correct === textAnswer,
       }
     );
-    var point =
-      questions[questionIndex].type === "choice"
-        ? questions[questionIndex].correct === selectedChoiceIndex
-        : questions[questionIndex].correct === textAnswer;
-
-    return point;
   };
 
   const next = async () => {
-    console.log(props.route.params.participantId);
-    var score = props.route.params.score + (await pointSummarize());
+    await pointSummarize();
     props.navigation.dispatch(
       StackActions.replace("ParticipantAttemptingQuiz", {
         quiz: props.route.params.quiz,
         questionIndex: questionIndex + 1,
-        score: score,
         participantId: props.route.params.participantId,
       })
     );

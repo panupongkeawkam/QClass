@@ -9,7 +9,7 @@ import Label from "../../components/Label";
 
 export default (props) => {
   const fullScore = props.route.params.quiz.questionLength
-  const myScore = props.route.params.myScore
+  // const myScore = props.route.params.myScore
   const [chartImageUrl, setChartImageUrl] = useState(null);
   const generateChartUri = (score, radialColor) => {
     const options = {
@@ -52,7 +52,7 @@ export default (props) => {
       },
     });
 
-    setChartImageUrl(generateChartUri(myScore, color.correct));
+    setChartImageUrl(generateChartUri(10, color.correct));
   });
 
   const backHomeHandler = () => {
@@ -128,7 +128,7 @@ export default (props) => {
                   { fontSize: 20, fontWeight: "500", color: color.content4 },
                 ]}
               >
-                {myScore} of {fullScore}
+                {10} of {fullScore}
               </Text>
             </View>
             <View

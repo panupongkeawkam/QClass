@@ -90,6 +90,13 @@ export default (props) => {
 
   const attemptHandler = async () => {
     if (attempt.type === "quiz") {
+      await axios.post(
+        `http://${config.ip}:3000/quiz/${attempt.quizId}/score`,
+        {
+          participantId: participantId,
+          questionLength: attempt.questionLength,
+        }
+      );
       var questionsResponse = await axios.get(
         `http://${config.ip}:3000/quiz/${attempt.quizId}/question`
       );
@@ -107,8 +114,6 @@ export default (props) => {
       props.navigation.navigate("ParticipantAttemptingQuiz", {
         quiz: attempt,
         questionIndex: 0,
-        response: [],
-        score: 0,
         participantId: participantId,
       });
     } else if (attempt.type === "survey") {
