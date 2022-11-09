@@ -55,8 +55,8 @@ export default (props) => {
             `http://${config.ip}:3000/quiz/${quizId}/score`
           );
           var allScoresVar = scores.data.map((score) => score.point);
-          var maxScoreVar = Math.max(allScoresVar);
-          var minScoreVar = Math.min(allScoresVar);
+          var maxScoreVar = Math.max(...allScoresVar);
+          var minScoreVar = Math.min(...allScoresVar);
           var averageScoreVar =
             allScoresVar.reduce((prev, current) => prev + current, 0) /
             allScoresVar.length;
