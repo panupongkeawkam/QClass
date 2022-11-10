@@ -52,11 +52,11 @@ export default (props) => {
         activeOpacity={props.hide ? 0 : 0.2}
         style={[
           {
-            width: 108,
-            height: 72,
-            bottom: 40,
+            width: 88,
+            height: 88,
+            bottom: 48,
             backgroundColor: color.primary,
-            borderRadius: 24,
+            borderRadius: 88,
             opacity: props.hide ? 0 : 1,
           },
           theme.blurShadow,
@@ -69,13 +69,12 @@ export default (props) => {
           bottomSheetRef?.current?.expand();
         }}
       >
-        <Ionicons name="ios-add" size={24} color={color.base1} />
+        <Ionicons name="ios-add" size={32} color={color.base1} />
         <Text
           style={{
             color: color.base1,
             fontWeight: "bold",
             fontSize: 12,
-            marginTop: 4,
           }}
         >
           ATTEMPT

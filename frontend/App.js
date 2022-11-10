@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { TouchableOpacity, StatusBar } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TouchableOpacity, StatusBar, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PortalProvider } from "@gorhom/portal";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "./app/assets/theme/Theme";
+import Splash from "./app/screens/Splash";
 import HomeTabsNavigator from "./app/navigators/HomeTabsNavigator";
 import QuestionOverview from "./app/screens/QuestionOverview";
 import QuestionDetail from "./app/screens/QuestionDetail";
@@ -16,15 +17,26 @@ import OwnerRoomTabsNavigator from "./app/navigators/OwnerRoomTabsNavigator";
 import RoomInvite from "./app/screens/owner/RoomInvite";
 import OwnerAttemptingQuiz from "./app/screens/owner/OwnerAttemptingQuiz";
 import OwnerAttemptingSurvey from "./app/screens/owner/OwnerAttemptingSurvey";
-import OwnerQuizResult from "./app/screens/owner/OwnerQuizResult";
+import OwnerAttemptResult from "./app/screens/owner/OwnerAttemptResult";
 import ParticipantAttemptingQuiz from "./app/screens/participant/ParticipantAttemptingQuiz";
 import ParticipantQuizResult from "./app/screens/participant/ParticipantQuizResult";
 import ParticipantAttemptingSurvey from "./app/screens/participant/ParticipantAttemptingSurvey";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  const [loading, setLoading] = useState(true);
 
   StatusBar.setBarStyle("dark-content");
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  });
+
+  if (loading) {
+    return <Splash />;
+  }
 
   return (
     <SafeAreaProvider>
@@ -88,7 +100,10 @@ export default function App() {
               name="OwnerAttemptingSurvey"
               component={OwnerAttemptingSurvey}
             />
-            <Stack.Screen name="OwnerQuizResult" component={OwnerQuizResult} />
+            <Stack.Screen
+              name="OwnerAttemptResult"
+              component={OwnerAttemptResult}
+            />
             <Stack.Screen
               name="ParticipantRoomTabsNavigator"
               component={ParticipantRoomTabsNavigator}

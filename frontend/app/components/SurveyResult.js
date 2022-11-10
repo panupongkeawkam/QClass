@@ -55,7 +55,7 @@ export default ({
               minWidth: choiceResponse !== 0 ? 10 : 0,
               minHeight: choiceResponse !== 0 ? 10 : 0,
               width: `${Math.round((choiceResponse / totalResponse) * 100)}%`,
-              backgroundColor: color.secondary,
+              backgroundColor: color.warning,
             }}
           ></View>
         </View>

@@ -48,7 +48,7 @@ export default (props) => {
           <HeaderButton
             iconName={"trash-outline"}
             onPress={() => {
-              Alert.alert(`Delete "${title}" Question?`, "", [
+              Alert.alert("", "Are you sure to delete this question?", [
                 {
                   text: "Cancel",
                   style: "cancel",
@@ -202,7 +202,6 @@ export default (props) => {
     <View style={{ flex: 1, backgroundColor: color.base2 }}>
       <KeyboardAwareScrollView style={{ flex: 1 }} extraHeight={200}>
         <ScrollView style={[theme.container]}>
-          <Text style={theme.textLabel}>TITLE</Text>
           <TextInput
             style={theme.textInput}
             maxLength={60}
@@ -221,7 +220,7 @@ export default (props) => {
                 setTime(new Date(0, 0, 0, 0, 5));
               }}
             />
-            <Text style={[theme.textLabel, { marginLeft: 8 }]}>TIME LIMIT</Text>
+            <Text style={[theme.textLabel, { marginLeft: 8 }]}>Time Limit</Text>
           </View>
           <DateTimePicker
             style={[theme.textInput, { height: 160 }]}

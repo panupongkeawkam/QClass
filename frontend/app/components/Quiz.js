@@ -6,7 +6,7 @@ import Label from "./Label";
 export default (props) => {
   return (
     <TouchableOpacity
-      style={theme.boxOuter}
+      style={[theme.boxOuter, { height: 140 }]}
       onPress={() => {
         props.onSelect();
       }}
@@ -20,14 +20,10 @@ export default (props) => {
       >
         <View>
           <Text style={[theme.textHeader2]}>{props.title}</Text>
-          <Text
-            style={{ color: color.content4, fontSize: 12, marginBottom: 16 }}
-          >
-            22 October 2565
-          </Text>
         </View>
         <View style={{ flexDirection: "row" }}>
           <Label
+            colored
             text={
               props.questionLength === 0
                 ? "No question"

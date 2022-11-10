@@ -72,7 +72,7 @@ export default (props) => {
       });
 
     } catch (error) {
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
   };
 

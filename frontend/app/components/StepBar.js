@@ -12,7 +12,6 @@ export default ({ options }) => {
         width: "100%",
         paddingBottom: 12,
         paddingHorizontal: 16,
-        marginBottom: 20,
         paddingTop: Constants.statusBarHeight,
       }}
     >

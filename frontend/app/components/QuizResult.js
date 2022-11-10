@@ -53,7 +53,7 @@ export default ({
     },
     {
       label: "Mean",
-      chartImageUrl: generateChartUri(meanScore, color.secondary),
+      chartImageUrl: generateChartUri(meanScore, color.warning),
     },
     {
       label: "Max",
@@ -104,7 +104,7 @@ export default ({
           },
         ]}
       >
-        <View style={{ width: "90%" }}>
+        <View style={{ width: "80%" }}>
           <Text style={theme.textHeader2}>{quizTitle}</Text>
           <Text
             style={{ color: color.content4, fontSize: 12, marginBottom: 16 }}
@@ -113,24 +113,27 @@ export default ({
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Label text={"Quiz"} />
-            <Label text={"10 Questions"} />
+            <Label
+              text={
+                questionLength === 1
+                  ? "1 Question"
+                  : `${questionLength} Questions`
+              }
+            />
           </View>
         </View>
         <View
           style={{
-            width: "10%",
+            width: "20%",
             justifyContent: "flex-end",
             flexDirection: "row",
           }}
         >
-          <Text style={{ fontSize: 16, color: color.base4, fontWeight: "800" }}>
-            {fullScore}
+          <Text
+            style={{ fontSize: 12, color: color.base4, fontWeight: "normal" }}
+          >
+            {fullScore} Point
           </Text>
-          <MaterialCommunityIcons
-            name="file-powerpoint-box"
-            size={16}
-            color={color.base4}
-          />
         </View>
       </View>
       <View

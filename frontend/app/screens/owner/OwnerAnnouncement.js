@@ -21,6 +21,7 @@ import {
 export default (props) => {
   const [message, setMessage] = useState("");
   const [announcements, setAnnouncements] = useState([]);
+  const [keyboardFocused, setKeyboardFocused] = useState(false);
 
   const scrollView = useRef(null);
 
@@ -39,7 +40,7 @@ export default (props) => {
       setMessage("");
       setAnnouncements([...announcementsVar]);
     } catch (error) {
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
     Keyboard.dismiss();
   };
@@ -49,14 +50,18 @@ export default (props) => {
       try {
         var announcementsVar = await fetchAnnouncements(roomId);
       } catch (error) {
-        Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+        Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
       }
       setAnnouncements([...announcementsVar]);
     });
   });
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="height"
+      keyboardVerticalOffset={-16}
+    >
       <View style={{ flex: 1 }}>
         <ScrollView ref={scrollView} style={theme.container}>
           {announcements.length !== 0 ? (
@@ -82,7 +87,7 @@ export default (props) => {
             {
               position: "absolute",
               bottom: 0,
-              paddingHorizontal: 12,
+              paddingHorizontal: keyboardFocused ? 0 : 12,
               paddingBottom: 28,
             },
           ]}
@@ -90,7 +95,7 @@ export default (props) => {
           <View
             style={{
               backgroundColor: color.base1,
-              borderRadius: 32,
+              borderRadius: keyboardFocused ? 0 : 32,
               padding: 20,
               flexDirection: "row",
               paddingBottom: 96,
@@ -107,7 +112,11 @@ export default (props) => {
             <TextInput
               style={[
                 theme.textInput,
-                { width: "84%", marginTop: 0, marginBottom: 0 },
+                {
+                  width: keyboardFocused ? "84%" : "100%",
+                  marginTop: 0,
+                  marginBottom: 0,
+                },
               ]}
               placeholderTextColor={color.base3}
               placeholder="Announcement messages"
@@ -115,21 +124,30 @@ export default (props) => {
               onChangeText={(text) => {
                 setMessage(text);
               }}
+              onFocus={() => {
+                setKeyboardFocused(true);
+              }}
+              onEndEditing={() => {
+                setKeyboardFocused(false);
+              }}
             />
             <TouchableOpacity
               activeOpacity={message.trim() ? 0.2 : 1}
               style={{
-                width: "12%",
-                marginLeft: "4%",
+                backgroundColor: message.trim() ? color.primaryTransparent : color.base2,
+                borderRadius: 16,
+                width: "13%",
+                marginLeft: "3%",
                 justifyContent: "center",
                 alignItems: "center",
+                display: keyboardFocused ? "flex" : "none",
               }}
               onPress={sendMessageHandler}
             >
               <Ionicons
                 name="paper-plane-outline"
                 size={28}
-                color={message.trim() ? color.secondary : color.base3}
+                color={message.trim() ? color.primary : color.base3}
               />
             </TouchableOpacity>
           </View>

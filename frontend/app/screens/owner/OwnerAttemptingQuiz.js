@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Text, View, ScrollView, Alert } from "react-native";
+import { Text, View, ScrollView, Alert, FlatList } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 
@@ -11,7 +11,7 @@ import StepBar from "../../components/StepBar";
 
 import config from "../../assets/api-config";
 
-import {formatDateForResult} from "../../controller/QuizController";
+import { formatDateForResult } from "../../controller/QuizController";
 
 export default (props) => {
   const roomId = props.route.params.room.roomId;
@@ -32,7 +32,7 @@ export default (props) => {
   });
 
   const endAttemptHandler = () => {
-    Alert.alert(`End "${quizTitle}" Quiz?`, "", [
+    Alert.alert("", "Are you sure to end this quiz now?", [
       {
         text: "Cancel",
         style: "cancel",
@@ -68,7 +68,7 @@ export default (props) => {
             quizTitle: quizTitle,
             questionLength: questionLength,
             fullScore: questionLength,
-            type: "quiz"
+            type: "quiz",
           };
 
           var resultResponse = await axios.post(
@@ -82,7 +82,7 @@ export default (props) => {
             resultResponse.data.createDate
           );
 
-          props.navigation.navigate("OwnerQuizResult", {
+          props.navigation.navigate("OwnerAttemptResult", {
             type: "quiz",
             jsonData: resultResponse.data,
           });
@@ -105,42 +105,47 @@ export default (props) => {
             theme.rounded,
             theme.blurShadow,
             {
-              paddingBottom: 24,
-              marginBottom: 8,
+              paddingBottom: 36,
+              marginBottom: 16,
               backgroundColor: color.primary,
             },
           ]}
         >
-          <Text style={[theme.textHeader1, { color: color.base1 }]}>
+          <Text style={[theme.textHeader2, { color: color.base1 }]}>
             {quizTitle}
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Label text={"Quiz"} />
-            <Label text={`${questionLength} Questions`} />
+            <Label
+              text={
+                questionLength === 1
+                  ? "1 Question"
+                  : `${questionLength} Questions`
+              }
+            />
           </View>
         </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {questions.map((question, index) => {
-            return (
-              <View
-                style={{
-                  paddingBottom: index === questions.length - 1 ? 200 : 0,
-                }}
-                key={index}
-              >
-                <Question
-                  title={question.title}
-                  type={question.type}
-                  choices={question.choices}
-                  correct={question.correct}
-                  timer={question.timer}
-                  untouchable
-                  onSelect={() => {}}
-                />
-              </View>
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          style={{ paddingHorizontal: 4, borderRadius: 24 }}
+          showsVerticalScrollIndicator={false}
+          data={questions}
+          key={"questions"}
+          renderItem={({ item, index }) => (
+            <Question
+              title={item.title}
+              type={item.type}
+              choices={item.choices}
+              correct={item.correct}
+              timer={item.timer}
+              untouchable
+              onSelect={() => {}}
+            />
+          )}
+          keyExtractor={(question) => question.questionId}
+          ListFooterComponent={() => (
+            <View style={{ marginBottom: 200 }}></View>
+          )}
+        />
       </View>
       <View style={theme.tabBarContainer}>
         <View style={theme.tabBar}>

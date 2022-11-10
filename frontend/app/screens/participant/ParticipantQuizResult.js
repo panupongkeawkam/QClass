@@ -9,11 +9,11 @@ import Label from "../../components/Label";
 
 export default (props) => {
   // score data of participant xx
-  console.log("Participant Score : ", props.route.params.myScore)
-  
-  const myAttemptingTime = props.route.params.myAttemptingTime
-  const myPoint = props.route.params.myScore.point
-  const fullScore = props.route.params.quiz.questionLength
+  console.log("Participant Score : ", props.route.params.myScore);
+
+  const myAttemptingTime = props.route.params.myAttemptingTime;
+  const myPoint = props.route.params.myScore.point;
+  const fullScore = props.route.params.quiz.questionLength;
   const [chartImageUrl, setChartImageUrl] = useState(null);
   const generateChartUri = (score, radialColor) => {
     const options = {
@@ -62,7 +62,6 @@ export default (props) => {
   const backHomeHandler = () => {
     props.navigation.goBack();
     props.navigation.goBack();
-    // props.navigation.navigate("ParticipantRoomQuiz", { data: data })
   };
 
   return (
@@ -90,7 +89,9 @@ export default (props) => {
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Label text={"Quiz"} />
-            <Label text={`${props.route.params.quiz.questionLength} questions`} />
+            <Label
+              text={`${props.route.params.quiz.questionLength} questions`}
+            />
           </View>
         </View>
         <View

@@ -6,10 +6,10 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { theme, modalTheme, color } from "../../assets/theme/Theme";
 import SecondaryButton from "../button/SecondaryButton";
@@ -53,7 +53,6 @@ export default (props) => {
     props.close();
   };
 
-  // Icon
   const MyIcon = (icon) => {
     return (
       <TouchableOpacity
@@ -88,16 +87,11 @@ export default (props) => {
         transparent={true}
         animationType={"fade"}
         visible={props.visible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          props.close();
-        }}
       >
-        <KeyboardAwareScrollView
-          style={{
-            flex: 1,
-          }}
-          extraHeight={Dimensions.get("window").height * 0.3}
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior="height"
+          keyboardVerticalOffset={-(Dimensions.get("window").height * 0.15)}
         >
           <View
             style={[
@@ -169,7 +163,7 @@ export default (props) => {
               />
             </View>
           </View>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );

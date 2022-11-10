@@ -72,7 +72,6 @@ export default (props) => {
           style={{ marginRight: 12 }}
           title={"Room"}
           onPress={() => {
-            setCategory("owned");
             setCreateRoomModalVisible(true);
           }}
           iconName="add"
@@ -250,6 +249,7 @@ export default (props) => {
             visible={createRoomModalVisible}
             user={user}
             onCreateRoom={(newRoom) => {
+              setCategory("owned");
               setOwnedRoom((currentRoom) => {
                 currentRoom.push(newRoom);
                 return currentRoom;

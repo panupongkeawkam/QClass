@@ -5,8 +5,9 @@ import { Ionicons } from "react-native-vector-icons";
 
 import { leaveRoom } from "../controller/RoomController";
 import { theme, color } from "../assets/theme/Theme";
+import ParticipantRoomAttempt from "../screens/participant/ParticipantRoomAttempt";
+import ParticipantRoomResult from "../screens/participant/ParticipantRoomResult";
 import ParticipantAnnouncement from "../screens/participant/ParticipantAnnouncement";
-import ParticipantRoomQuiz from "../screens/participant/ParticipantRoomQuiz";
 import HeaderButton from "../components/button/HeaderButton";
 
 import axios from "axios";
@@ -23,7 +24,7 @@ export default (props) => {
       var leave = await leaveRoom(userId, room);
       props.navigation.navigate("RoomOverview");
     } catch (error) {
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
   };
 
@@ -36,23 +37,19 @@ export default (props) => {
             title={"Leave"}
             iconName={"exit-outline"}
             onPress={() => {
-              Alert.alert(
-                `Leave "${props.route.params.room.title}" Room?`,
-                "",
-                [
-                  {
-                    text: "Cancel",
-                    style: "cancel",
+              Alert.alert("", `Are you sure to leave this room?`, [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                },
+                {
+                  text: "Leave",
+                  style: "destructive",
+                  onPress: () => {
+                    leaveRoomHandler();
                   },
-                  {
-                    text: "Leave",
-                    style: "destructive",
-                    onPress: () => {
-                      leaveRoomHandler();
-                    },
-                  },
-                ]
-              );
+                },
+              ]);
             }}
           />
         );
@@ -62,7 +59,7 @@ export default (props) => {
 
   return (
     <RoomTabsNavigators.Navigator
-      initialRouteName="ParticipantRoomQuiz"
+      initialRouteName="ParticipantRoomAttempt"
       screenOptions={{
         headerShown: false,
         tabBarStyle: theme.bottomTab,
@@ -70,8 +67,38 @@ export default (props) => {
       }}
     >
       <RoomTabsNavigators.Screen
-        name="ParticipantRoomQuiz"
-        component={ParticipantRoomQuiz}
+        name="ParticipantRoomAttempt"
+        component={ParticipantRoomAttempt}
+        initialParams={{ room: room, participantId: participantId }}
+        options={{
+          tabBarIcon: ({ focused, size }) => {
+            return (
+              <Ionicons
+                name={focused ? "create" : "create-outline"}
+                size={24}
+                color={focused ? color.primary : color.base4}
+              />
+            );
+          },
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text
+                style={{
+                  color: focused ? color.primary : color.base4,
+                  fontSize: 10,
+                  fontWeight: "bold",
+                  marginTop: 2,
+                }}
+              >
+                ATTEMPT
+              </Text>
+            );
+          },
+        }}
+      />
+      <RoomTabsNavigators.Screen
+        name="ParticipantRoomResult"
+        component={ParticipantRoomResult}
         initialParams={{ room: room, participantId: participantId }}
         options={{
           tabBarIcon: ({ focused, size }) => {
@@ -93,7 +120,7 @@ export default (props) => {
                   marginTop: 2,
                 }}
               >
-                ATTEMPT & RESULT
+                RESULT
               </Text>
             );
           },

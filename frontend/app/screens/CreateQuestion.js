@@ -97,7 +97,7 @@ export default (props) => {
         quizTitle: props.route.params.quizTitle,
       });
     } catch (error) {
-      Alert.alert("Fail to create question", error.message, [
+      Alert.alert("Fail to Create Question", error.message, [
         {
           text: "Retry",
         },
@@ -189,7 +189,6 @@ export default (props) => {
     <View style={{ flex: 1, backgroundColor: color.base2 }}>
       <KeyboardAwareScrollView style={{ flex: 1 }} extraHeight={200}>
         <ScrollView style={[theme.container]}>
-          <Text style={theme.textLabel}>TITLE</Text>
           <TextInput
             style={theme.textInput}
             maxLength={60}
@@ -207,7 +206,7 @@ export default (props) => {
                 setQuestionShowTimeLimit(new Date(0, 0, 0, 0, 5));
               }}
             />
-            <Text style={[theme.textLabel, { marginLeft: 8 }]}>TIME LIMIT</Text>
+            <Text style={[theme.textLabel, { marginLeft: 8 }]}>Time Limit</Text>
           </View>
           <DateTimePicker
             style={[theme.textInput, { height: 160 }]}

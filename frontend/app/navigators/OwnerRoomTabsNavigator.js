@@ -5,7 +5,7 @@ import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../assets/theme/Theme";
 import OwnerAnnouncement from "../screens/owner/OwnerAnnouncement";
-import OwnerRoomQuiz from "../screens/owner/OwnerRoomQuiz";
+import OwnerRoomResult from "../screens/owner/OwnerRoomResult";
 import StartAttemptButton from "../components/button/StartAttemptButton";
 import HeaderButton from "../components/button/HeaderButton";
 
@@ -35,7 +35,7 @@ export default (props) => {
 
   return (
     <RoomTabsNavigators.Navigator
-      initialRouteName="OwnerRoomQuiz"
+      initialRouteName="OwnerRoomResult"
       screenOptions={(props) => ({
         headerShown: false,
         tabBarStyle: [
@@ -52,8 +52,8 @@ export default (props) => {
       })}
     >
       <RoomTabsNavigators.Screen
-        name="OwnerRoomQuiz"
-        component={OwnerRoomQuiz}
+        name="OwnerRoomResult"
+        component={OwnerRoomResult}
         initialParams={{
           room: props.route.params.room,
           user: props.route.params.user,

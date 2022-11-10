@@ -6,10 +6,10 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { theme, modalTheme, color } from "../../assets/theme/Theme";
@@ -27,18 +27,17 @@ export default (props) => {
       setQuizName("");
     } catch (error) {
       setQuizName("");
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
   };
 
   return (
     <View style={modalTheme.centeredView}>
       <Modal transparent={true} animationType={"fade"} visible={props.visible}>
-        <KeyboardAwareScrollView
-          style={{
-            flex: 1,
-          }}
-          extraHeight={Dimensions.get("window").height * 0.25}
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior="height"
+          keyboardVerticalOffset={-(Dimensions.get("window").height * 0.25)}
         >
           <View
             style={[
@@ -92,7 +91,7 @@ export default (props) => {
               />
             </View>
           </View>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );

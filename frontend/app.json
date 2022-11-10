@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "QClass",
+    "slug": "QClass",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/icon.png",
+    "icon": "./app/assets/q-class-logo-invert-padding.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/splash.png",

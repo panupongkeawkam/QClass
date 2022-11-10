@@ -22,7 +22,6 @@ export default (props) => {
   const BackRoomHandler = () => {
     props.navigation.goBack();
     props.navigation.goBack();
-    // props.navigation.navigate("OwnerRoomQuiz", { data: data })
   };
 
   useEffect(() => {
@@ -50,18 +49,28 @@ export default (props) => {
             theme.rounded,
             theme.blurShadow,
             {
-              paddingBottom: 24,
-              marginBottom: 8,
+              paddingBottom: 36,
+              marginBottom: 16,
               backgroundColor: color.primary,
             },
           ]}
         >
-          <Text style={[theme.textHeader1, { color: color.base1 }]}>
-            HID Week 7
+          <Text style={[theme.textHeader2, { color: color.base1 }]}>
+            {type === "quiz"
+              ? props.route.params.jsonData.quizTitle
+              : undefined}
           </Text>
           <View style={{ flexDirection: "row" }}>
-            <Label text={"Quiz"} />
-            <Label text={"10 Questions"} />
+            <Label text={type === "quiz" ? "Quiz" : "Survey"} />
+            {type === "quiz" ? (
+              <Label
+                text={
+                  props.route.params.jsonData.questionLength === 1
+                    ? "1 Question"
+                    : `${props.route.params.jsonData.questionLength} Questions`
+                }
+              />
+            ) : null}
           </View>
         </View>
         {type === "quiz" ? (
@@ -107,6 +116,3 @@ export default (props) => {
     </View>
   );
 };
-
-
-

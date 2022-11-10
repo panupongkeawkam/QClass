@@ -5,10 +5,10 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
   Dimensions,
 } from "react-native";
 import React, { useState } from "react";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Ionicons, EvilIcons } from "react-native-vector-icons";
 
 import { theme, modalTheme, color } from "../../assets/theme/Theme";
@@ -26,7 +26,7 @@ export default (props) => {
       props.onEditQuiz(newTitleDetail);
       setEditQuizModalVisible((current) => !current);
     } catch (error) {
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
   };
 
@@ -38,11 +38,10 @@ export default (props) => {
           animationType={"fade"}
           visible={editQuizModalVisible}
         >
-          <KeyboardAwareScrollView
-            style={{
-              flex: 1,
-            }}
-            extraHeight={Dimensions.get("window").height * 0.25}
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior="height"
+            keyboardVerticalOffset={-(Dimensions.get("window").height * 0.25)}
           >
             <View
               style={[
@@ -78,7 +77,7 @@ export default (props) => {
                 />
               </View>
             </View>
-          </KeyboardAwareScrollView>
+          </KeyboardAvoidingView>
         </Modal>
       </View>
       <TouchableOpacity

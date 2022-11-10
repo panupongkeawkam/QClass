@@ -137,7 +137,7 @@ const theme = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 8,
     marginBottom: 16,
-    fontSize: 16,
+    fontSize: 18,
     color: color.content2,
   },
   tabBarContainer: {

@@ -17,7 +17,6 @@ import { StackActions } from "@react-navigation/native";
 
 import { theme, color } from "../../assets/theme/Theme";
 import SecondaryButton from "./SecondaryButton";
-import EmptyDataLabel from "../EmptyDataLabel";
 
 import { joinRoom } from "../../controller/RoomController";
 
@@ -41,7 +40,7 @@ export default (props) => {
       props.navigation.navigate("RoomOverview", {});
       bottomSheetRef.current.close();
     } catch (error) {
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
       setInviteCode("");
     }
   };
@@ -56,7 +55,7 @@ export default (props) => {
     if (!data.includes("Roti")) {
       setActiveCamera(false);
       setScanned(true);
-      Alert.alert("Invalid room QR code", "", [
+      Alert.alert("", "Invalid room QR code", [
         {
           text: "Retry",
           style: "cancel",
@@ -87,27 +86,27 @@ export default (props) => {
       <TouchableOpacity
         style={[
           {
-            width: 108,
-            height: 72,
-            bottom: 40,
+            width: 88,
+            height: 88,
+            bottom: 48,
             backgroundColor: color.primary,
-            borderRadius: 24,
+            borderRadius: 88,
           },
           theme.blurShadow,
           theme.centered,
         ]}
-        onPress={() => {
+        onPress={async () => {
           const getUserId = async () => {
             var userVar = await userInitialize();
             setUser(userVar);
           };
-          getUserId();
+          await getUserId();
+          bottomSheetRef?.current?.expand();
           getBarCodeScannerPermissions();
           setActiveCamera(() => true);
-          bottomSheetRef?.current?.expand();
         }}
       >
-        <Ionicons name="scan-outline" size={28} color={color.base1} />
+        <Ionicons name="scan-outline" size={32} color={color.base1} />
         <Text
           style={{
             color: color.base1,

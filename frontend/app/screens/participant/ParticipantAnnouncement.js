@@ -21,7 +21,7 @@ export default (props) => {
     try {
       var announcementsVar = await fetchAnnouncements(roomId);
     } catch (error) {
-      Alert.alert(error.message, "", [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
     setAnnouncements([...announcementsVar]);
   };
@@ -32,12 +32,12 @@ export default (props) => {
     });
   }, []);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
+    await fetchAnnouncementsData();
     setTimeout(() => {
       setRefreshing(false);
-      fetchAnnouncementsData();
-    }, 1000);
+    }, 500);
   };
 
   return (

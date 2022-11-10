@@ -8,7 +8,7 @@ import Label from "./Label";
 export default (props) => {
   return (
     <TouchableOpacity
-      style={theme.boxOuter}
+      style={[theme.boxOuter, { height: 180 }]}
       onPress={() => {
         props.onCheck();
       }}
@@ -23,8 +23,21 @@ export default (props) => {
           },
         ]}
       >
-        <View style={{ width: "100%", flexDirection: "row" }}>
-          <View style={{ width: "75%" }}>
+        <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
+          <View
+            style={{
+              width: "100%",
+              marginBottom: 12,
+              alignItems: "flex-start",
+            }}
+          >
+            <Ionicons
+              name={props.isChecked ? "radio-button-on" : "radio-button-off"}
+              size={24}
+              color={props.isChecked ? color.base2 : color.base3}
+            />
+          </View>
+          <View style={{ width: "100%" }}>
             <Text
               style={[
                 theme.textHeader2,
@@ -37,25 +50,9 @@ export default (props) => {
             >
               {props.title}
             </Text>
-            <Text
-              style={{
-                color: props.isChecked ? color.base2 : color.content4,
-                fontSize: 12,
-                marginBottom: 16,
-              }}
-            >
-              {props.createDatetime}
-            </Text>
-          </View>
-          <View style={{ width: "25%", alignItems: "flex-end" }}>
-            <Ionicons
-              name={props.isChecked ? "radio-button-on" : "radio-button-off"}
-              size={24}
-              color={props.isChecked ? color.base2 : color.base3}
-            />
           </View>
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", alignItems: "space-between" }}>
           <Label
             text={
               props.questionLength === 0

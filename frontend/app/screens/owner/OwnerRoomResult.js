@@ -27,7 +27,6 @@ export default (props) => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={theme.container}>
-        <Text style={theme.textLabel}>FINISHED QUIZ</Text>
         {results.map((result, index) =>
           result.type === "quiz" ? (
             <QuizResult

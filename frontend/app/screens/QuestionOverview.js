@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Button,
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
   Alert,
+  FlatList,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "react-native-vector-icons";
@@ -17,6 +17,7 @@ import PrimaryButton from "../components/button/PrimaryButton";
 import EditQuizModal from "../components/modals/EditQuizModal";
 import EmptyDataLabel from "../components/EmptyDataLabel";
 import HeaderButton from "../components/button/HeaderButton";
+import Label from "../components/Label";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -59,19 +60,23 @@ export default (props) => {
             <HeaderButton
               iconName={"trash-outline"}
               onPress={() => {
-                Alert.alert(`Delete "${quizTitle}" Quiz?`, "", [
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                  {
-                    text: "Delete",
-                    style: "destructive",
-                    onPress: () => {
-                      deleteConfirmHandle();
+                Alert.alert(
+                  "",
+                  "Are you sure to delete this quiz (warning: this action cannot be change back)",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
                     },
-                  },
-                ]);
+                    {
+                      text: "Delete",
+                      style: "destructive",
+                      onPress: () => {
+                        deleteConfirmHandle();
+                      },
+                    },
+                  ]
+                );
               }}
             />
           </View>
@@ -104,36 +109,56 @@ export default (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={[theme.container]}>
-        <Text style={theme.textHeader1}>
-          {showQuizTitle === null ? quizTitle : showQuizTitle}
-        </Text>
-        {props.route.params.questions.length === 0 ? (
-          <EmptyDataLabel title={"No Question"} />
-        ) : (
-          questions.map((question, index) => {
-            return (
-              <View
-                style={{
-                  paddingBottom: index === questions.length - 1 ? 200 : 0,
-                }}
-                key={index}
-              >
-                <Question
-                  title={question.title}
-                  type={question.type}
-                  choices={question.choices}
-                  correct={question.correct}
-                  timer={question.timer}
-                  onSelect={() => {
-                    selectHandler(question, index);
-                  }}
-                />
-              </View>
-            );
-          })
-        )}
-      </ScrollView>
+      <View style={[theme.container]}>
+        <View
+          style={[
+            theme.rounded,
+            theme.blurShadow,
+            {
+              paddingBottom: 36,
+              marginBottom: 16,
+              backgroundColor: color.primary,
+            },
+          ]}
+        >
+          <Text style={[theme.textHeader2, { color: color.base1 }]}>
+            {showQuizTitle === null ? quizTitle : showQuizTitle}
+          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Label text={"Quiz"} />
+            <Label
+              text={
+                questions.length <= 1
+                  ? `${questions.length === 0 ? "No" : "1"} Question`
+                  : `${questions.length} Questions`
+              }
+            />
+          </View>
+        </View>
+        <FlatList
+          style={{ paddingHorizontal: 4, borderRadius: 24 }}
+          showsVerticalScrollIndicator={false}
+          data={questions}
+          key={"questions"}
+          renderItem={({ item, index }) => (
+            <Question
+              title={item.title}
+              type={item.type}
+              choices={item.choices}
+              correct={item.correct}
+              timer={item.timer}
+              onSelect={() => {
+                selectHandler(item, index);
+              }}
+            />
+          )}
+          keyExtractor={(question, index) => index}
+          ListEmptyComponent={() => <EmptyDataLabel title={"No Question"} />}
+          ListFooterComponent={() => (
+            <View style={{ marginBottom: 200 }}></View>
+          )}
+        />
+      </View>
       <View style={theme.tabBarContainer}>
         <View style={theme.tabBar}>
           <PrimaryButton
