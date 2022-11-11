@@ -15,7 +15,8 @@ router.get("/user/:userId/room", async (req, res) => {
       `
     SELECT *
     FROM Room
-    WHERE userId = ?`,
+    WHERE userId = ?
+    ORDER BY \`createDatetime\` DESC`,
       [userId]
     );
 

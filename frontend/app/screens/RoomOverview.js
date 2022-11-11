@@ -251,7 +251,7 @@ export default (props) => {
             onCreateRoom={(newRoom) => {
               setCategory("owned");
               setOwnedRoom((currentRoom) => {
-                currentRoom.push(newRoom);
+                currentRoom.splice(0, 0, newRoom);
                 return currentRoom;
               });
             }}
