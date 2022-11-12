@@ -49,6 +49,7 @@ function formatDateForResult(dateFormat) {
 const createQuiz = async (newTitle) => {
   //Variable
   newTitle = newTitle.trim();
+  let now = new Date()
 
   // All quiz
   let quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"));
@@ -68,8 +69,9 @@ const createQuiz = async (newTitle) => {
     var newQuiz = {
       title: newTitle,
       questions: [],
+      createDatetime: now
     };
-    await quizzes.push(newQuiz);
+    await quizzes.splice(0, 0, newQuiz);
     await AsyncStorage.setItem("quizzes", JSON.stringify(quizzes));
     return newQuiz;
   }
@@ -416,6 +418,29 @@ const onStartSurvey = async (roomId, survey) => {
   return survey;
 };
 
+
+const getSurveyResult = async (survey) => {
+  const surveyId = survey.surveyId
+  const choices = survey.choices
+  const title = survey.title
+
+  for (const choice of choices){
+    var newChoiceResult = await axios.get(
+      `http://${config.ip}:3000/survey/${surveyId}/surveyResponse/${parseInt(choice.index)}`
+    )
+    choice.response = newChoiceResult.data.response
+  }
+
+  return ({
+    surveyId: surveyId,
+    surveyTitle: title,
+    createDate: formatDateForResult(new Date()),
+    choices: choices,
+    surveyId: surveyId
+  })
+
+}
+
 export {
   createQuiz,
   createQuestion,
@@ -428,4 +453,5 @@ export {
   formatDateForResult,
   createSurvey,
   onStartSurvey,
+  getSurveyResult,
 };

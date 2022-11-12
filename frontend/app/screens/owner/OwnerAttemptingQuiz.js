@@ -41,6 +41,7 @@ export default (props) => {
         text: "End",
         style: "destructive",
         onPress: async () => {
+          console.log("Hello");
           await axios.put(
             `http://${config.ip}:3000/quiz/${props.route.params.quiz.quizId}`,
             {
@@ -68,7 +69,9 @@ export default (props) => {
             quizTitle: quizTitle,
             questionLength: questionLength,
             fullScore: questionLength,
+            createDate: formatDateForResult(new Date()),
             type: "quiz",
+            quizId: quizId
           };
 
           var resultResponse = await axios.post(
@@ -76,10 +79,6 @@ export default (props) => {
             {
               jsonData: jsonData,
             }
-          );
-
-          resultResponse.data.createDate = formatDateForResult(
-            resultResponse.data.createDate
           );
 
           props.navigation.navigate("OwnerAttemptResult", {

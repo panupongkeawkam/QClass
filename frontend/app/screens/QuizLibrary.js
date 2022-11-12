@@ -76,7 +76,7 @@ export default (props) => {
           }}
           onCreatedQuiz={async (newQuiz) => {
             var quizzesVar = quizzes;
-            quizzesVar.push(newQuiz);
+            quizzesVar.splice(0, 0, newQuiz);
             setQuizzes(quizzesVar);
             await AsyncStorage.setItem("quizzes", JSON.stringify(quizzesVar));
           }}

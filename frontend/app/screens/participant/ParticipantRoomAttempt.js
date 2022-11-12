@@ -32,6 +32,7 @@ export default (props) => {
       var myScore = await axios.get(
         `http://${config.ip}:3000/quiz/${quizResponse.data.quiz[0].quizId}/participant/${participantId}/score`
       );
+      // ถ้า Participant ได้ทำควิซไปแล้ว
       if (!myScore.data.myScore.length) {
         var quiz = quizResponse.data.quiz[0];
         quiz.type = "quiz";
@@ -45,10 +46,15 @@ export default (props) => {
     );
 
     if (surveyResponse.data[0]) {
-      var survey = surveyResponse.data[0];
-      survey.type = "survey";
-      setAttempt(survey);
-      return;
+      var mySurveyResponse = await axios.get(
+        `http://${config.ip}:3000/participant/${participantId}/survey/${surveyResponse.data[0].surveyId}/surveyResponse`
+      );
+      if (mySurveyResponse.data.length === 0) {
+        var survey = surveyResponse.data[0];
+        survey.type = "survey";
+        setAttempt(survey);
+        return;
+      }
     }
 
     setAttempt(null);
@@ -106,6 +112,7 @@ export default (props) => {
           survey: attempt,
           choices: surveyChoices.data,
           participantId: participantId,
+          roomId: roomId
         },
       });
     }

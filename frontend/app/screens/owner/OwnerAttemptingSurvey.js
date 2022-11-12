@@ -7,11 +7,12 @@ import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import Question from "../../components/Question";
 
+import { getSurveyResult, formatDateForResult } from "../../controller/QuizController";
 import config from "../../assets/api-config"
 
 export default (props) => {
-  console.log(props.route.params);
   const survey = props.route.params.survey;
+  const roomId = props.route.params.room.roomId;
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -27,10 +28,22 @@ export default (props) => {
   const endAttemptHandler = async () => {
     await axios.put(
       `http://${config.ip}:3000/survey/${survey.surveyId}`
-    ) 
-    if (true) {
-      props.navigation.goBack();
-    }
+    )
+
+    var jsonData = await getSurveyResult(props.route.params.survey)
+    jsonData.type = "survey"
+
+    var resultResponse = await axios.post(
+      `http://${config.ip}:3000/room/${roomId}/result`,
+      {
+        jsonData: jsonData,
+      }
+    );
+
+    props.navigation.navigate("OwnerAttemptResult", {
+      type: "survey",
+      jsonData: resultResponse.data
+    });
   };
 
   return (

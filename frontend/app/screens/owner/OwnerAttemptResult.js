@@ -85,22 +85,9 @@ export default (props) => {
           />
         ) : (
           <SurveyResult
-            surveyTitle={"What T-shirt colors you like?"}
-            createDate={"28 October 2565 19:30"}
-            choices={[
-              {
-                title: "Black",
-                response: 37,
-              },
-              {
-                title: "Pink",
-                response: 11,
-              },
-              {
-                title: "Yellow",
-                response: 9,
-              },
-            ]}
+          surveyTitle={props.route.params.jsonData.surveyTitle}
+          createDate={props.route.params.jsonData.createDate}
+          choices={props.route.params.jsonData.choices}
           />
         )}
       </View>

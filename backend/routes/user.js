@@ -111,4 +111,33 @@ router.get(
   }
 );
 
+// get survey response of participant ID xx in survey xx
+router.get(
+  "/participant/:participantId/survey/:surveyId/surveyResponse",
+  async (req, res) => {
+    const participantId = req.params.participantId;
+    const surveyId = req.params.surveyId;
+
+    const conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    try {
+      const [response, rows] = await conn.query(
+        `SELECT *
+        FROM \`surveyResponse\`
+        WHERE participantId = ? AND surveyId = ?`,
+        [participantId, surveyId]
+      );
+
+      await conn.commit();
+      res.json(response);
+    } catch (err) {
+      await conn.rollback();
+      res.status(500).send(err);
+    } finally {
+      conn.release();
+    }
+  }
+);
+
 exports.router = router;

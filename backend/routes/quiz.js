@@ -1,7 +1,6 @@
+const { json } = require("body-parser");
 const express = require("express");
 const pool = require("../config");
-// const { router } = require("./room");
-// const { router } = require("./room");
 
 router = express.Router();
 
@@ -372,12 +371,25 @@ router.get("/question/:questionId/choice", async (req, res) => {
 
 // get all result (any role)
 router.get("/room/:roomId/result", async (req, res) => {
+  const roomId = req.params.roomId
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
+    
+    const [results, rows] = await conn.query(
+      `SELECT jsonData
+      FROM \`result\`
+      WHERE roomId = ?`,
+      [roomId]
+    )
+
+    for (const result of results){
+      result.jsonData = JSON.parse(result.jsonData)
+    }
+
     await conn.commit();
-    res.json();
+    res.json(results)
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -400,8 +412,6 @@ router.post("/room/:roomId/result", async (req, res) => {
       VALUES (?, ?, ?)`,
       [roomId, jsonDataString, now]
     );
-
-    jsonData.createDate = now;
 
     await conn.commit();
     res.json(jsonData);
@@ -461,5 +471,34 @@ router.post("/participant/:participantId/survey/:surveyId", async (req, res) => 
     conn.release();
   }
 });
+
+//get all survey response in survey xx
+router.get("/survey/:surveyId/surveyResponse/:answered", async (req, res) => {
+  const surveyId = req.params.surveyId
+  const answered = req.params.answered
+
+  const conn = await pool.getConnection()
+  await conn.beginTransaction()
+
+  try{
+
+    const [survey, rows] = await conn.query(
+      `SELECT COUNT(answered) AS \`response\`
+      FROM \`surveyResponse\`
+      WHERE surveyId = ? and answered = ?`,
+      [surveyId, answered]
+    )
+
+    console.log(survey)
+
+    await conn.commit()
+    res.json(survey[0])
+  }catch(err){
+    await conn.rollback()
+    res.status(500).send(err)
+  }finally{
+    conn.release()
+  }
+})
 
 exports.router = router;

@@ -10,8 +10,12 @@ import SurveyResult from "../../components/SurveyResult";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 import config from "../../assets/api-config";
 import Loading from "../../components/Loading";
+import { fetchResults } from "../../controller/UserController";
 
 export default (props) => {
+  const participantId = props.route.params.participantId;
+  const room = props.route.params.room;
+
   const [refreshing, setRefreshing] = useState(false);
   const [results, setResults] = useState([
     {
@@ -59,6 +63,13 @@ export default (props) => {
     }, 500);
   };
 
+  useEffect(() => {
+    props.navigation.addListener("focus", async () => {
+      var resultsVar = await fetchResults(participantId, room.roomId)
+      setResults([...resultsVar])
+    });
+  }, []);
+
   return (
     <View style={[theme.container]}>
       <FlatList
@@ -76,7 +87,7 @@ export default (props) => {
               questionLength={item.questionLength}
               fullScore={item.fullScore}
               minScore={item.minScore}
-              meanScore={item.meanScore}
+              meanScore={item.averageScore}
               maxScore={item.maxScore}
               createDate={"22 October 2565 19:30"}
               myScore={item.myScore}
