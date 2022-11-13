@@ -8,6 +8,7 @@ import PrimaryButton from "../../components/button/PrimaryButton";
 import Label from "../../components/Label";
 import Question from "../../components/Question";
 import StepBar from "../../components/StepBar";
+import AttemptTitle from "../../components/AttemptTitle";
 
 import config from "../../assets/api-config";
 
@@ -19,6 +20,7 @@ export default (props) => {
   const questionLength = props.route.params.quiz.questionLength;
   const questions = props.route.params.quiz.questions;
   const quizId = props.route.params.quiz.quizId;
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -29,7 +31,19 @@ export default (props) => {
         return <></>;
       },
     });
+
+    for (var i = 0; i < 1200; i++) {
+      setTimeout(() => {
+        setTimer(timer + 1);
+      }, 1000);
+    }
   });
+
+  const formatTime = (time) => {
+    var minutes = (parseInt(time / 60) + 100).toString().slice(1);
+    var seconds = ((time % 60) + 100).toString().slice(1);
+    return `${minutes}:${seconds}`;
+  };
 
   const endAttemptHandler = () => {
     Alert.alert("", "Are you sure to end this quiz now?", [
@@ -41,7 +55,6 @@ export default (props) => {
         text: "End",
         style: "destructive",
         onPress: async () => {
-          console.log("Hello");
           await axios.put(
             `http://${config.ip}:3000/quiz/${props.route.params.quiz.quizId}`,
             {
@@ -55,6 +68,7 @@ export default (props) => {
           var scores = await axios.get(
             `http://${config.ip}:3000/quiz/${quizId}/score`
           );
+          var totalResponseVar = scores.data.length;
           var allScoresVar = scores.data.map((score) => score.point);
           var maxScoreVar = Math.max(...allScoresVar);
           var minScoreVar = Math.min(...allScoresVar);
@@ -62,6 +76,7 @@ export default (props) => {
             allScoresVar.reduce((prev, current) => prev + current, 0) /
             allScoresVar.length;
           var jsonData = {
+            totalResponse: totalResponseVar,
             allScore: allScoresVar,
             maxScore: maxScoreVar,
             minScore: minScoreVar,
@@ -71,7 +86,7 @@ export default (props) => {
             fullScore: questionLength,
             createDate: formatDateForResult(new Date()),
             type: "quiz",
-            quizId: quizId
+            quizId: quizId,
           };
 
           var resultResponse = await axios.post(
@@ -84,6 +99,7 @@ export default (props) => {
           props.navigation.navigate("OwnerAttemptResult", {
             type: "quiz",
             jsonData: resultResponse.data,
+            timeSpent: formatTime(timer),
           });
         },
       },
@@ -99,31 +115,15 @@ export default (props) => {
             { title: "RESULT", finished: false },
           ]}
         />
-        <View
-          style={[
-            theme.rounded,
-            theme.blurShadow,
-            {
-              paddingBottom: 36,
-              marginBottom: 16,
-              backgroundColor: color.primary,
-            },
+        <AttemptTitle
+          themeColor={color.primary}
+          title={quizTitle}
+          labels={[
+            "Quiz",
+            questionLength === 1 ? "1 Question" : `${questionLength} Questions`,
           ]}
-        >
-          <Text style={[theme.textHeader2, { color: color.base1 }]}>
-            {quizTitle}
-          </Text>
-          <View style={{ flexDirection: "row" }}>
-            <Label text={"Quiz"} />
-            <Label
-              text={
-                questionLength === 1
-                  ? "1 Question"
-                  : `${questionLength} Questions`
-              }
-            />
-          </View>
-        </View>
+          timer={formatTime(timer)}
+        />
         <FlatList
           style={{ paddingHorizontal: 4, borderRadius: 24 }}
           showsVerticalScrollIndicator={false}

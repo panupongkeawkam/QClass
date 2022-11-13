@@ -6,15 +6,21 @@ import { theme, color } from "../../assets/theme/Theme";
 import StepBar from "../../components/StepBar";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import Label from "../../components/Label";
+import AttemptTitle from "../../components/AttemptTitle";
 
 export default (props) => {
-  // score data of participant xx
-  console.log("Participant Score : ", props.route.params.myScore);
-
   const myAttemptingTime = props.route.params.myAttemptingTime;
   const myPoint = props.route.params.myScore.point;
   const fullScore = props.route.params.quiz.questionLength;
   const [chartImageUrl, setChartImageUrl] = useState(null);
+  const [rate, setRate] = useState(null);
+  const rateColor = {
+    EXCELLENT: color.correct,
+    GOOD: color.warning,
+    MODERATE: color.base4,
+    BAD: color.wrong,
+  };
+
   const generateChartUri = (score, radialColor) => {
     const options = {
       type: "radialGauge",
@@ -46,6 +52,42 @@ export default (props) => {
     return `https://quickchart.io/chart?&c=${JSON.stringify(options)}`;
   };
 
+  const timeDiff = (dateTime) => {
+    var date1 = new Date(dateTime);
+    var date2 = new Date();
+
+    var diff = date2.getTime() - date1.getTime();
+
+    var msec = diff;
+    var hh = Math.floor(msec / 1000 / 60 / 60);
+    msec -= hh * 1000 * 60 * 60;
+    var mm = Math.floor(msec / 1000 / 60);
+    msec -= mm * 1000 * 60;
+    var ss = Math.floor(msec / 1000);
+    msec -= ss * 1000;
+
+    return `${(mm + 100).toString().slice(1)}:${(ss + 100)
+      .toString()
+      .slice(1)}`;
+  };
+
+  const scoreRateCalculate = () => {
+    var ratio = myPoint / fullScore;
+    var rateVar;
+
+    if (ratio >= 0.75) {
+      rateVar = "EXCELLENT";
+    } else if (ratio >= 0.5) {
+      rateVar = "GOOD";
+    } else if (ratio >= 0.25) {
+      rateVar = "MODERATE";
+    } else if (ratio >= 0) {
+      rateVar = "BAD";
+    }
+
+    return rateVar;
+  };
+
   useEffect(() => {
     props.navigation.setOptions({
       title: null,
@@ -56,7 +98,8 @@ export default (props) => {
       },
     });
 
-    setChartImageUrl(generateChartUri(myPoint, color.correct));
+    setRate(scoreRateCalculate());
+    setChartImageUrl(generateChartUri(myPoint, rateColor[rate]));
   });
 
   const backHomeHandler = () => {
@@ -73,27 +116,16 @@ export default (props) => {
             { title: "RESULT", finished: true },
           ]}
         />
-        <View
-          style={[
-            theme.rounded,
-            theme.blurShadow,
-            {
-              paddingBottom: 24,
-              marginBottom: 8,
-              backgroundColor: color.primary,
-            },
+        <AttemptTitle
+          title={props.route.params.quiz.title}
+          labels={[
+            "Quiz",
+            `${props.route.params.quiz.questionLength} Question${
+              props.route.params.quiz.questionLength === 1 ? "" : "s"
+            }`,
           ]}
-        >
-          <Text style={[theme.textHeader1, { color: color.base1 }]}>
-            {props.route.params.quiz.title}
-          </Text>
-          <View style={{ flexDirection: "row" }}>
-            <Label text={"Quiz"} />
-            <Label
-              text={`${props.route.params.quiz.questionLength} questions`}
-            />
-          </View>
-        </View>
+          timer={timeDiff(props.route.params.myScore.createDatetime)}
+        />
         <View
           style={{
             width: "100%",
@@ -122,7 +154,7 @@ export default (props) => {
               <Image
                 source={{ uri: chartImageUrl }}
                 style={{
-                  width: "100%",
+                  width: "80%",
                   height: 240,
                   marginBottom: 32,
                   resizeMode: "contain",
@@ -130,10 +162,10 @@ export default (props) => {
               />
               <Text
                 style={[
-                  { fontSize: 20, fontWeight: "500", color: color.content4 },
+                  { fontSize: 16, fontWeight: "500", color: color.content4 },
                 ]}
               >
-                {myPoint} of {fullScore}
+                Score {myPoint} of {fullScore}
               </Text>
             </View>
             <View
@@ -152,10 +184,10 @@ export default (props) => {
                   fontSize: 20,
                   textAlign: "center",
                   fontWeight: "bold",
-                  color: color.correct,
+                  color: rateColor[rate],
                 }}
               >
-                GOOD
+                {rate}
               </Text>
             </View>
           </View>

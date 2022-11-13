@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   Dimensions,
   Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
@@ -41,7 +41,7 @@ export default (props) => {
     setTimeout(() => {
       props.navigation.navigate("OwnerAttemptingSurvey", {
         survey,
-        room
+        room,
       });
     }, 500);
   };
@@ -97,57 +97,52 @@ export default (props) => {
             Keyboard.dismiss();
           }}
         >
-          <KeyboardAwareScrollView
-            contentContainerStyle={{ flex: 1 }}
-            extraHeight={Dimensions.get("window").height * 0.3}
-          >
-            <NavigationContainer>
-              <Tab.Navigator
-                initialRouteName="StartSurvey"
-                screenOptions={{
-                  tabBarLabelStyle: { fontSize: 16, fontWeight: "bold" },
-                  tabBarActiveTintColor: color.primary,
-                  tabBarInactiveTintColor: color.content4,
-                  tabBarIndicatorStyle: {
-                    height: 4,
-                    width: Dimensions.get("window").width * 0.4,
-                    marginHorizontal: Dimensions.get("window").width * 0.05,
-                    borderRadius: 16,
-                    marginBottom: 6,
-                    backgroundColor: color.primary,
-                  },
-                }}
-              >
-                <Tab.Screen
-                  name="StartSurvey"
-                  initialParams={{ room: props.room, user: props.user }}
-                  children={(props) => (
-                    <StartSurvey
-                      onStart={(data) => {
-                        startSurveyHandler(data);
-                      }}
-                      {...props}
-                    />
-                  )}
-                  options={{ tabBarLabel: "Survey" }}
-                />
-                <Tab.Screen
-                  name="StartQuiz"
-                  initialParams={{ room: props.room, user: props.user }}
-                  children={(props) => (
-                    <StartQuiz
-                      onStart={(data) => {
-                        props.navigation.navigate("StartSurvey");
-                        startQuizHandler(data);
-                      }}
-                      {...props}
-                    />
-                  )}
-                  options={{ tabBarLabel: "Quiz" }}
-                />
-              </Tab.Navigator>
-            </NavigationContainer>
-          </KeyboardAwareScrollView>
+          <NavigationContainer>
+            <Tab.Navigator
+              initialRouteName="StartSurvey"
+              screenOptions={{
+                tabBarLabelStyle: { fontSize: 16, fontWeight: "bold" },
+                tabBarActiveTintColor: color.primary,
+                tabBarInactiveTintColor: color.content4,
+                tabBarIndicatorStyle: {
+                  height: 4,
+                  width: Dimensions.get("window").width * 0.4,
+                  marginHorizontal: Dimensions.get("window").width * 0.05,
+                  borderRadius: 16,
+                  marginBottom: 6,
+                  backgroundColor: color.primary,
+                },
+              }}
+            >
+              <Tab.Screen
+                name="StartSurvey"
+                initialParams={{ room: props.room, user: props.user }}
+                children={(props) => (
+                  <StartSurvey
+                    onStart={(data) => {
+                      startSurveyHandler(data);
+                    }}
+                    {...props}
+                  />
+                )}
+                options={{ tabBarLabel: "Survey" }}
+              />
+              <Tab.Screen
+                name="StartQuiz"
+                initialParams={{ room: props.room, user: props.user }}
+                children={(props) => (
+                  <StartQuiz
+                    onStart={(data) => {
+                      props.navigation.navigate("StartSurvey");
+                      startQuizHandler(data);
+                    }}
+                    {...props}
+                  />
+                )}
+                options={{ tabBarLabel: "Quiz" }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
         </BottomSheet>
       </Portal>
     </>

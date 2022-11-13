@@ -52,8 +52,8 @@ export default ({
             style={{
               height: "100%",
               borderRadius: 24,
-              minWidth: choiceResponse !== 0 ? 10 : 0,
-              minHeight: choiceResponse !== 0 ? 10 : 0,
+              minWidth: choiceResponse ? 10 : 0,
+              minHeight: choiceResponse ? 10 : 0,
               width: `${Math.round((choiceResponse / totalResponse) * 100)}%`,
               backgroundColor: color.warning,
             }}

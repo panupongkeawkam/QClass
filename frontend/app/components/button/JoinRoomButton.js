@@ -7,6 +7,7 @@ import {
   Dimensions,
   Keyboard,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -133,11 +134,11 @@ export default (props) => {
           handleIndicatorStyle={{ width: 48 }}
           onChange={bottomSheetOnChangeHandler}
         >
-          <KeyboardAwareScrollView
-            extraHeight={Dimensions.get("window").height * 0.3}
-          >
-            <BottomSheetView
-              style={{ height: Dimensions.get("window").height }}
+          <BottomSheetView style={{ height: Dimensions.get("window").height }}>
+            <KeyboardAvoidingView
+              behavior="height"
+              style={{ flex: 1 }}
+              keyboardVerticalOffset={-100}
             >
               <View
                 style={{
@@ -186,8 +187,8 @@ export default (props) => {
                   />
                 </View>
               </View>
-            </BottomSheetView>
-          </KeyboardAwareScrollView>
+            </KeyboardAvoidingView>
+          </BottomSheetView>
         </BottomSheet>
       </Portal>
     </>

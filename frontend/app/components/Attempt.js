@@ -14,12 +14,15 @@ export default (props) => {
         {
           marginTop: 8,
           marginBottom: 24,
-          backgroundColor: color.base1,
-          backgroundColor: color.primary,
+          backgroundColor: props.disabled
+            ? color.base3
+            : props.type === "quiz"
+            ? color.primary
+            : color.secondary,
         },
       ]}
     >
-      <Text style={[theme.textHeader2, { color: color.base1 }]}>
+      <Text style={[theme.textHeader1, { color: color.base1 }]}>
         {props.attemptTitle}
       </Text>
       <View style={{ flexDirection: "row", marginBottom: 32 }}>
@@ -35,8 +38,10 @@ export default (props) => {
         ) : null}
       </View>
       <SecondaryButton
+        disabled={props.disabled}
         style={{ backgroundColor: color.base1, color: color.content1 }}
-        title={"Attempt"}
+        title={props.disabled ? "Finished" : "Attempt"}
+        iconName={props.disabled ? "md-remove-circle-outline" : null}
         onPress={() => {
           props.onAttempt();
         }}

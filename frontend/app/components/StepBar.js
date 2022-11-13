@@ -5,7 +5,7 @@ import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../assets/theme/Theme";
 
-export default ({ options }) => {
+export default ({ options, themeColor = color.primary }) => {
   return (
     <View
       style={{
@@ -33,7 +33,7 @@ export default ({ options }) => {
           <Ionicons
             name={`radio-button${options[0].finished ? "-on" : "-off"}`}
             size={24}
-            color={options[0].finished ? color.primary : color.base3}
+            color={options[0].finished ? themeColor : color.base3}
           />
         </View>
         <View
@@ -47,9 +47,7 @@ export default ({ options }) => {
             style={{
               flex: 1,
               borderRadius: 40,
-              backgroundColor: options[1].finished
-                ? color.primary
-                : color.base3,
+              backgroundColor: options[1].finished ? themeColor : color.base3,
             }}
           ></View>
         </View>
@@ -63,7 +61,7 @@ export default ({ options }) => {
           <Ionicons
             name={`radio-button${options[1].finished ? "-on" : "-off"}`}
             size={24}
-            color={options[1].finished ? color.primary : color.base3}
+            color={options[1].finished ? themeColor : color.base3}
           />
         </View>
         <View style={{ width: "50%", paddingLeft: 24, marginTop: 4 }}>

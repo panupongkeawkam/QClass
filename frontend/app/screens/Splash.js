@@ -35,7 +35,7 @@ export default ({ onLoaded }) => {
       }}
     >
       <Image
-        source={require("../assets/q-class-logo-invert.png")}
+        source={require("../assets/q-class-logo-invert-padding.png")}
         style={{ width: 100, height: 100, resizeMode: "contain" }}
       />
     </Animated.View>

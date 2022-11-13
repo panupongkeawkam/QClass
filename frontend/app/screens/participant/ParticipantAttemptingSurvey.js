@@ -44,9 +44,11 @@ export default (props) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: color.base2 }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={[theme.container, { paddingTop: Constants.statusBarHeight }]}
+      <View
+        style={[
+          theme.container,
+          { paddingTop: Constants.statusBarHeight, justifyContent: "center" },
+        ]}
       >
         <View
           style={[
@@ -105,7 +107,7 @@ export default (props) => {
           </View>
         </View>
         {/*  */}
-      </ScrollView>
+      </View>
       <View style={theme.tabBarContainer}>
         <View style={theme.tabBar}>
           <PrimaryButton

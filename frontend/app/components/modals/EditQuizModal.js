@@ -26,7 +26,8 @@ export default (props) => {
       props.onEditQuiz(newTitleDetail);
       setEditQuizModalVisible((current) => !current);
     } catch (error) {
-      Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
+      Alert.alert("", 
+      [{ text: "Retry", style: "cancel" }]);
     }
   };
 

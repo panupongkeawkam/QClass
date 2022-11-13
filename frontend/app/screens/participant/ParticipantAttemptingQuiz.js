@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Text, View, ScrollView, TextInput } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  Animated,
+  Easing,
+} from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import { StackActions } from "@react-navigation/native";
 
@@ -24,6 +31,24 @@ export default (props) => {
   const [buttonColor, setButtonColor] = useState(
     questions.length === 1 ? color.correct : color.primary
   );
+  const [timeoutObject, setTimeoutObject] = useState(null);
+  const timer = props.route.params.quiz.questions[questionIndex].timer;
+
+  const widthAnim = useRef(new Animated.Value(1)).current;
+
+  const width = widthAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0%", "100%"],
+  });
+
+  const startTimer = () => {
+    Animated.timing(widthAnim, {
+      toValue: 0,
+      duration: timer * 1000,
+      useNativeDriver: false,
+      easing: Easing.linear,
+    }).start();
+  };
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -39,7 +64,15 @@ export default (props) => {
       setButtonLabel("Submit");
       setButtonColor(color.correct);
     }
-  });
+
+    if (timer) {
+      startTimer();
+      var timeoutObjectVar = setTimeout(() => {
+        pressHandler();
+      }, timer * 1000);
+      setTimeoutObject(timeoutObjectVar)
+    }
+  }, []);
 
   const submit = async () => {
     var quizAvailable = await checkQuizAvailable();
@@ -93,6 +126,7 @@ export default (props) => {
   };
 
   const pressHandler = () => {
+    clearTimeout(timeoutObject);
     if (questionIndex === questions.length - 1) {
       submit();
     } else {
@@ -114,25 +148,77 @@ export default (props) => {
             width: "100%",
             justifyContent: "center",
             alignItems: "center",
+            paddingVertical: 8,
+            flexDirection: "row",
             marginBottom: 16,
           }}
         >
           <Text
-            style={{ fontSize: 16, fontWeight: "600", color: color.content4 }}
+            style={{
+              fontSize: 20,
+              fontWeight: "600",
+              color: color.content3,
+            }}
           >
             {`${questionIndex + 1} of ${questions.length}`}
           </Text>
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={[theme.blurShadow, { marginVertical: 8 }]}
+          style={[{ marginVertical: 8, paddingHorizontal: 4 }]}
         >
-          <View style={{ paddingBottom: 200 }}>
+          <View style={{ paddingBottom: 200, ...theme.blurShadow }}>
+            <View
+              style={{
+                borderTopLeftRadius: 24,
+                borderTopRightRadius: 24,
+                paddingHorizontal: 24,
+                paddingTop: 16,
+                paddingBottom: 12,
+                borderBottomWidth: 1,
+                backgroundColor: color.base1,
+                borderColor: color.base2,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                display: timer ? "flex" : "none",
+              }}
+            >
+              <View
+                style={{
+                  width: "10%",
+                  justifyContent: "center",
+                }}
+              >
+                <Ionicons
+                  name="stopwatch-outline"
+                  size={20}
+                  color={color.wrong}
+                />
+              </View>
+              <View
+                style={{
+                  height: 8,
+                  width: "90%",
+                  borderRadius: 8,
+                  backgroundColor: color.base2,
+                }}
+              >
+                <Animated.View
+                  style={{
+                    width: width,
+                    height: "100%",
+                    borderRadius: 8,
+                    backgroundColor: color.wrong,
+                  }}
+                />
+              </View>
+            </View>
             <View
               style={[
                 {
-                  borderTopLeftRadius: 24,
-                  borderTopRightRadius: 24,
+                  borderTopLeftRadius: timer ? 0 : 24,
+                  borderTopRightRadius: timer ? 0 : 24,
                   paddingHorizontal: 24,
                   paddingVertical: 16,
                   borderBottomWidth: 1,

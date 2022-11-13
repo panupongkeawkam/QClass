@@ -23,7 +23,7 @@ export default (props) => {
 
   const copyHandler = async () => {
     await Clipboard.setStringAsync(props.route.params.roomCode);
-    Alert.alert("Copy room code to clipboard");
+    Alert.alert("", "Copied room code to clipboard");
   };
 
   return (

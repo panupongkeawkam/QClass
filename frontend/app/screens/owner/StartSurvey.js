@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  FlatList,
+} from "react-native";
 import { Ionicons } from "react-native-vector-icons";
-import SwitchSelector from "react-native-switch-selector";
 
 import { theme, color } from "../../assets/theme/Theme";
 import Choice from "../../components/Choice";
 import AddChoiceButton from "../../components/button/AddChoiceButton";
 import PrimaryButton from "../../components/button/PrimaryButton";
-
+import Loading from "../../components/Loading";
 
 import * as Controller from "../../controller/QuizController";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default (props) => {
   const [surveyTitle, setSurveyTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [choices, setChoices] = useState([
     {
       title: "",
@@ -48,11 +56,14 @@ export default (props) => {
     setChoices([...newChoices]);
   };
 
-
   const startHandler = async () => {
     try {
+      setIsLoading(true);
       var newSurvey = Controller.createSurvey(surveyTitle, choices);
-      var survey = await Controller.onStartSurvey(props.route.params.room.roomId, newSurvey)
+      var survey = await Controller.onStartSurvey(
+        props.route.params.room.roomId,
+        newSurvey
+      );
 
       setSurveyTitle("");
       setChoices([
@@ -66,39 +77,40 @@ export default (props) => {
         },
       ]);
 
+      setIsLoading(false);
       props.onStart({
         survey: survey,
-        type: "survey"
+        type: "survey",
       });
-
     } catch (error) {
+      setIsLoading(false);
       Alert.alert("", error.message, [{ text: "Retry", style: "cancel" }]);
     }
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: color.base2 }}>
-      <View style={[theme.container]}>
-        <Text style={theme.textLabel}>TITLE</Text>
-        <TextInput
-          style={theme.textInput}
-          maxLength={60}
-          placeholderTextColor={color.base3}
-          placeholder="Survey title"
-          value={surveyTitle}
-          onChangeText={(text) => {
-            setSurveyTitle(text);
-          }}
-        />
-        <Text style={[theme.textLabel, { marginTop: 8 }]}>CHOICE</Text>
-        <View style={{ marginBottom: 48 }}>
-          {choices.map((choice, index) => {
-            return (
+    <>
+      <Loading active={isLoading} />
+      <View style={{ flex: 1, backgroundColor: color.base2 }}>
+        <View style={[theme.container]}>
+          <TextInput
+            style={theme.textInput}
+            maxLength={60}
+            placeholderTextColor={color.base3}
+            placeholder="Survey title"
+            onBlur={({ nativeEvent }) => {
+              setSurveyTitle(nativeEvent.text);
+            }}
+          />
+          <FlatList
+            style={{ paddingHorizontal: 4 }}
+            showsVerticalScrollIndicator={false}
+            data={choices}
+            renderItem={({ item, index }) => (
               <Choice
-                key={index}
-                isDeletable={choice.isDeletable}
+                isDeletable={item.isDeletable}
                 index={index}
-                title={choice.title}
+                title={item.title}
                 onSetCorrect={() => {
                   // do nothing
                 }}
@@ -109,16 +121,23 @@ export default (props) => {
                   titleChangeHandler(newTitle, index);
                 }}
               />
-            );
-          })}
-          <AddChoiceButton onAddChoice={addChoiceHandler} />
+            )}
+            keyExtractor={(choice, index) => index}
+            ListFooterComponent={() => (
+              <View style={{ paddingBottom: 240 }}>
+                {choices.length < 8 ? (
+                  <AddChoiceButton onAddChoice={addChoiceHandler} />
+                ) : null}
+              </View>
+            )}
+          />
+        </View>
+        <View style={theme.tabBarContainer}>
+          <View style={theme.tabBar}>
+            <PrimaryButton title={"Start Survey"} onPress={startHandler} />
+          </View>
         </View>
       </View>
-      <View style={theme.tabBarContainer}>
-        <View style={theme.tabBar}>
-          <PrimaryButton title={"Start Survey"} onPress={startHandler} />
-        </View>
-      </View>
-    </View>
+    </>
   );
 };

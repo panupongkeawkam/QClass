@@ -220,12 +220,14 @@ export default (props) => {
         backgroundColor: color.base2,
       }}
     >
-      <View style={[theme.container]}>
-        <View style={{ paddingHorizontal: 10, marginBottom: 16 }}>
-          <ScrollView
-            horizontal={true}
-            style={[{ flexDirection: "row", borderRadius: 20 }]}
-          >
+      <View
+        style={{
+          paddingTop: 16,
+          backgroundColor: color.base2,
+        }}
+      >
+        <ScrollView horizontal={true} style={[{ flexDirection: "row" }]}>
+          <View style={{ marginLeft: 34 }}>
             <Category
               isFocus={category === "joined"}
               title="Joined"
@@ -234,16 +236,18 @@ export default (props) => {
                 fetchJoinedRooms(user.userId);
               }}
             />
-            <Category
-              isFocus={category === "owned"}
-              title="Owned"
-              onSelect={() => {
-                setCategory("owned");
-                fetchOwnedRooms(user.userId);
-              }}
-            />
-          </ScrollView>
-        </View>
+          </View>
+          <Category
+            isFocus={category === "owned"}
+            title="Owned"
+            onSelect={() => {
+              setCategory("owned");
+              fetchOwnedRooms(user.userId);
+            }}
+          />
+        </ScrollView>
+      </View>
+      <View style={[theme.container]}>
         <View style={{ width: "100%" }}>
           <CreateRoomModal
             visible={createRoomModalVisible}

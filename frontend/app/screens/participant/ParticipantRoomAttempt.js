@@ -21,9 +21,11 @@ export default (props) => {
   const participantId = props.route.params.participantId;
   const [attempt, setAttempt] = useState(null); // { data } or null
   const [refreshing, setRefreshing] = useState(false);
+  const [attemptAllow, setAttemptAllow] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const fetchAvailableAttempt = async () => {
+    setAttemptAllow(true)
     var quizResponse = await axios.get(
       `http://${config.ip}:3000/room/${roomId}/quiz`
     );
@@ -32,13 +34,17 @@ export default (props) => {
       var myScore = await axios.get(
         `http://${config.ip}:3000/quiz/${quizResponse.data.quiz[0].quizId}/participant/${participantId}/score`
       );
+
+      var quiz = quizResponse.data.quiz[0];
+      quiz.type = "quiz";
+      setAttempt(quiz);
+
       // ถ้า Participant ได้ทำควิซไปแล้ว
       if (!myScore.data.myScore.length) {
-        var quiz = quizResponse.data.quiz[0];
-        quiz.type = "quiz";
-        setAttempt(quiz);
-        return;
+        setAttemptAllow(false);
       }
+
+      return;
     }
 
     var surveyResponse = await axios.get(
@@ -49,12 +55,16 @@ export default (props) => {
       var mySurveyResponse = await axios.get(
         `http://${config.ip}:3000/participant/${participantId}/survey/${surveyResponse.data[0].surveyId}/surveyResponse`
       );
+
+      var survey = surveyResponse.data[0];
+      survey.type = "survey";
+      setAttempt(survey);
+
+      // ถ้า Participant ได้ทำควิซไปแล้ว
       if (mySurveyResponse.data.length === 0) {
-        var survey = surveyResponse.data[0];
-        survey.type = "survey";
-        setAttempt(survey);
-        return;
+        setAttemptAllow(false);
       }
+      return;
     }
 
     setAttempt(null);
@@ -75,6 +85,7 @@ export default (props) => {
   }, []);
 
   const attemptHandler = async () => {
+    setLoading(true);
     if (attempt.type === "quiz") {
       await axios.post(
         `http://${config.ip}:3000/quiz/${attempt.quizId}/score`,
@@ -97,6 +108,7 @@ export default (props) => {
         }
       }
       attempt.questions = questionsResponse.data;
+      setLoading(false);
       props.navigation.navigate("ParticipantAttemptingQuiz", {
         quiz: attempt,
         questionIndex: 0,
@@ -107,12 +119,13 @@ export default (props) => {
       var surveyChoices = await axios.get(
         `http://${config.ip}:3000/survey/${attempt.surveyId}/choice`
       );
+      setLoading(false);
       props.navigation.navigate("ParticipantAttemptingSurvey", {
         survey: {
           survey: attempt,
           choices: surveyChoices.data,
           participantId: participantId,
-          roomId: roomId
+          roomId: roomId,
         },
       });
     }
@@ -130,6 +143,7 @@ export default (props) => {
         >
           {attempt ? (
             <Attempt
+              disabled={attemptAllow}
               type={attempt.type}
               attemptTitle={attempt.title}
               questionLength={attempt.questionLength}

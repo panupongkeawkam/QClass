@@ -121,7 +121,7 @@ export default (props) => {
             },
           ]}
         >
-          <Text style={[theme.textHeader2, { color: color.base1 }]}>
+          <Text style={[theme.textHeader1, { color: color.base1 }]}>
             {showQuizTitle === null ? quizTitle : showQuizTitle}
           </Text>
           <View style={{ flexDirection: "row" }}>
