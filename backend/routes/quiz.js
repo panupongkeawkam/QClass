@@ -201,8 +201,6 @@ router.get("/quiz/:quizId/score", async (req, res) => {
       [quizId]
     );
 
-    console.log(scores);
-
     await conn.commit();
     res.json(scores);
   } catch (err) {
@@ -325,7 +323,6 @@ router.post("/question/:questionId/response", async (req, res) => {
 
 router.get("/survey/:surveyId/choice", async (req, res) => {
   const surveyId = req.params.surveyId;
-  console.log(surveyId);
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
@@ -402,6 +399,7 @@ router.get("/room/:roomId/result", async (req, res) => {
   }
 });
 
+// save data when finished
 router.post("/room/:roomId/result", async (req, res) => {
   const roomId = req.params.roomId;
   const jsonData = req.body.jsonData;
@@ -427,6 +425,7 @@ router.post("/room/:roomId/result", async (req, res) => {
   }
 });
 
+// ended survey
 router.put("/survey/:surveyId", async (req, res) => {
   const surveyId = req.params.surveyId;
   const state = "ended";
@@ -495,10 +494,32 @@ router.get("/survey/:surveyId/surveyResponse/:answered", async (req, res) => {
       [surveyId, answered]
     );
 
-    console.log(survey);
-
     await conn.commit();
     res.json(survey[0]);
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).send(err);
+  } finally {
+    conn.release();
+  }
+});
+
+//get survey state in survey xx
+router.get("/survey/:surveyId/state", async (req, res) => {
+  const surveyId = req.params.surveyId;
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [survey, rows] = await conn.query(
+      `SELECT \`state\`
+      FROM \`survey\`
+      WHERE \`surveyId\` = ?`,
+      [surveyId]
+    );
+
+    await conn.commit();
+    res.send(survey[0].state === "ended" ? false : true);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);

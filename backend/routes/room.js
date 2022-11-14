@@ -43,7 +43,8 @@ router.get("/participant/:userId/room", async (req, res) => {
       FROM Room AS r
       JOIN Participant AS p
       USING (roomId)
-      WHERE p.userId = ? AND p.state = ?`,
+      WHERE p.userId = ? AND p.state = ?
+      ORDER BY \`joinedDatetime\` DESC`,
       [userId, "joined"]
     );
 
@@ -78,7 +79,6 @@ router.post("/user/:userId/participant", async (req, res) => {
     );
 
     if (room.length === 0) {
-      console.log("Error InvalidCode");
       await conn.rollback();
       return res.status(400).send("Invalid join code");
     }
@@ -98,11 +98,9 @@ router.post("/user/:userId/participant", async (req, res) => {
     );
 
     if (user.length > 0) {
-      console.log("You join same room");
       await conn.rollback();
       return res.status(404).send("Cannot join same room");
     } else if (ownRoom.length > 0) {
-      console.log("Own Room");
       await conn.rollback();
       return res.status(400).send("Cannot join your own room");
     }
@@ -287,7 +285,6 @@ router.post("/room/:roomId/announcement", async (req, res) => {
     var isNotOwnRoom = isOwnRoom.length <= 0;
 
     if (isNotOwnRoom) {
-      console.log("You cannot post announcement");
       await conn.rollback();
       res.status(401).send("Your cannot send a post");
     }
@@ -299,7 +296,6 @@ router.post("/room/:roomId/announcement", async (req, res) => {
     );
 
     await conn.commit();
-    console.log(`"From Backend" : New announcement (${message})`);
     res.json({
       announcement: {
         message: message,

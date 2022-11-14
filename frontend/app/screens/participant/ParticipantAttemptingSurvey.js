@@ -30,11 +30,16 @@ export default (props) => {
   });
 
   const submitHandler = async () => {
-    var index = selectedChoiceIndex.toString();
-    const myResponse = await axios.post(
-      `http://${config.ip}:3000/participant/${participantId}/survey/${surveyId}`,
-      { index: index }
+    var isEnded = await axios.get(
+      `http://${config.ip}:3000/survey/${surveyId}/state`
     );
+    if (isEnded.data) {
+      var index = selectedChoiceIndex.toString();
+      const myResponse = await axios.post(
+        `http://${config.ip}:3000/participant/${participantId}/survey/${surveyId}`,
+        { index: index }
+      );
+    }
 
     props.navigation.navigate("ParticipantRoomAttempt", {
       roomId: props.route.params.survey.roomId,

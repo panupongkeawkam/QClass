@@ -78,6 +78,7 @@ export default (props) => {
       ]);
 
       setIsLoading(false);
+
       props.onStart({
         survey: survey,
         type: "survey",
@@ -98,9 +99,8 @@ export default (props) => {
             maxLength={100}
             placeholderTextColor={color.base3}
             placeholder="Survey title"
-            onBlur={({ nativeEvent }) => {
-              setSurveyTitle(nativeEvent.text);
-            }}
+            value={surveyTitle}
+            onChangeText={(newText) => setSurveyTitle(newText)}
           />
           <FlatList
             style={{ paddingHorizontal: 4 }}
