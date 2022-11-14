@@ -139,8 +139,8 @@ export default ({
       <View
         style={[
           {
-            borderBottomLeftRadius: myScore ? 0 : 24,
-            borderBottomRightRadius: myScore ? 0 : 24,
+            borderBottomLeftRadius: myScore !== null ? 0 : 24,
+            borderBottomRightRadius: myScore !== null ? 0 : 24,
             paddingHorizontal: 24,
             paddingVertical: 16,
             backgroundColor: color.base1,
@@ -163,7 +163,7 @@ export default ({
           ))}
         </View>
       </View>
-      {myScore ? (
+      {myScore !== null ? (
         <View
           style={[
             {

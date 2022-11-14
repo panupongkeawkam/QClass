@@ -10,7 +10,6 @@ import { LargeProgress } from "./OwnerAttemptingSurvey";
 import AttemptTitle from "../../components/AttemptTitle";
 
 export default (props) => {
-  console.log(props.route.params);
   const type = props.route.params.type;
   const [totalResponse, setTotalResponse] = useState(0);
 
@@ -80,7 +79,7 @@ export default (props) => {
     {
       label: "Mean",
       chartImageUrl: generateChartUri(
-        props.route.params.jsonData.meanScore,
+        props.route.params.jsonData.averageScore,
         color.warning
       ),
     },

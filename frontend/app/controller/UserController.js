@@ -36,22 +36,23 @@ const userInitialize = async () => {
   return user;
 };
 
-const fetchResults = async (participantId, roomId) => {
+const fetchResults = async (roomId, participantId = null) => {
   const allResult = await axios.get(
     `http://${config.ip}:3000/room/${roomId}/result`
   );
-  const results = []
-  for (const result of allResult.data){
-    if(result.jsonData.type === "quiz"){
-      var myScore = await axios.get(
-        `http://${config.ip}:3000/quiz/${result.jsonData.quizId}/participant/${participantId}/score`
-      );
-      result.jsonData.myScore = myScore.data.myScore[0].point
+  const results = [];
+  for (const result of allResult.data) {
+    if (participantId) {
+      if (result.jsonData.type === "quiz") {
+        var myScore = await axios.get(
+          `http://${config.ip}:3000/quiz/${result.jsonData.quizId}/participant/${participantId}/score`
+        );
+        result.jsonData.myScore = myScore.data.myScore.length <= 0 ? null : myScore.data.myScore[0].point;
+      }
     }
-    results.push(result.jsonData)
+    results.push(result.jsonData);
   }
-  return results
-}
-
+  return results;
+};
 
 export { userInitialize, fetchResults };

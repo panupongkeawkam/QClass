@@ -17,7 +17,7 @@ import SurveyResult from "../../components/SurveyResult";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 import config from "../../assets/api-config";
 import Loading from "../../components/Loading";
-import { fetchResults } from "../../controller/UserController";
+import * as Controller from "../../controller/UserController";
 
 export default (props) => {
   const participantId = props.route.params.participantId;
@@ -28,11 +28,20 @@ export default (props) => {
   const [category, setCategory] = useState("all");
   const [displayedResults, setDisplayedResults] = useState([]);
 
+  const getResults = async () => {
+    var resultsVar = await Controller.fetchResults(room.roomId, participantId);
+    setResults([...resultsVar]);
+    if (category === "quiz") {
+      resultsVar = resultsVar.filter((result) => result.type === "quiz");
+    } else if (category === "survey") {
+      resultsVar = resultsVar.filter((result) => result.type === "survey");
+    }
+    setDisplayedResults([...resultsVar]);
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
-    var resultsVar = await fetchResults(participantId, room.roomId);
-    setResults([...resultsVar]);
-    setDisplayedResults([...resultsVar]);
+    await getResults();
     setTimeout(() => {
       setRefreshing(false);
     }, 500);
@@ -40,8 +49,8 @@ export default (props) => {
 
   useEffect(() => {
     props.navigation.addListener("focus", async () => {
-      var resultsVar = await fetchResults(participantId, room.roomId);
-      setResults([...resultsVar]);
+      setCategory("all");
+      await getResults();
     });
   }, []);
 
@@ -102,7 +111,7 @@ export default (props) => {
             onSelect={() => {
               setCategory("quiz");
               setDisplayedResults(
-                results.filter((result) => result.jsonData.type === "quiz")
+                results.filter((result) => result.type === "quiz")
               );
             }}
           />
@@ -112,7 +121,7 @@ export default (props) => {
             onSelect={() => {
               setCategory("survey");
               setDisplayedResults(
-                results.filter((result) => result.jsonData.type === "survey")
+                results.filter((result) => result.type === "survey")
               );
             }}
           />
@@ -136,7 +145,7 @@ export default (props) => {
                 minScore={item.minScore}
                 meanScore={item.averageScore}
                 maxScore={item.maxScore}
-                createDate={"22 October 2565 19:30"}
+                createDate={item.createDate}
                 myScore={item.myScore}
               />
             ) : (

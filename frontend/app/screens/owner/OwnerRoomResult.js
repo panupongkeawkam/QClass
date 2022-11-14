@@ -16,6 +16,8 @@ import config from "../../assets/api-config";
 import SurveyResult from "../../components/SurveyResult";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 
+import * as Controller from "../../controller/UserController";
+
 export default (props) => {
   const roomId = props.route.params.room.roomId;
 
@@ -26,23 +28,26 @@ export default (props) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchAllResult();
+    await getResults();
     setTimeout(() => {
       setRefreshing(false);
     }, 500);
   };
 
-  const fetchAllResult = async () => {
-    var allResult = await axios.get(
-      `http://${config.ip}:3000/room/${roomId}/result`
-    );
-    setResults(allResult.data);
-    setDisplayedResults(allResult.data);
+  const getResults = async () => {
+    var resultsVar = await Controller.fetchResults(roomId)
+    setResults([...resultsVar]);
+    if (category === "quiz") {
+      resultsVar = resultsVar.filter((result) => result.type === "quiz");
+    } else if (category === "survey") {
+      resultsVar = resultsVar.filter((result) => result.type === "survey");
+    }
+    setDisplayedResults([...resultsVar]);
   };
 
   useEffect(() => {
     props.navigation.addListener("focus", async () => {
-      fetchAllResult();
+      await getResults();
     });
   }, []);
 
@@ -103,7 +108,7 @@ export default (props) => {
             onSelect={() => {
               setCategory("quiz");
               setDisplayedResults(
-                results.filter((result) => result.jsonData.type === "quiz")
+                results.filter((result) => result.type === "quiz")
               );
             }}
           />
@@ -113,7 +118,7 @@ export default (props) => {
             onSelect={() => {
               setCategory("survey");
               setDisplayedResults(
-                results.filter((result) => result.jsonData.type === "survey")
+                results.filter((result) => result.type === "survey")
               );
             }}
           />
@@ -130,21 +135,21 @@ export default (props) => {
           initialNumToRender={4}
           key={"results"}
           renderItem={({ item, index }) =>
-            item.jsonData.type === "quiz" ? (
+            item.type === "quiz" ? (
               <QuizResult
-                quizTitle={item.jsonData.quizTitle}
-                questionLength={item.jsonData.questionLength}
-                fullScore={item.jsonData.fullScore}
-                minScore={item.jsonData.minScore}
-                meanScore={item.jsonData.averageScore}
-                maxScore={item.jsonData.maxScore}
-                createDate={item.jsonData.createDate}
+                quizTitle={item.quizTitle}
+                questionLength={item.questionLength}
+                fullScore={item.fullScore}
+                minScore={item.minScore}
+                meanScore={item.averageScore}
+                maxScore={item.maxScore}
+                createDate={item.createDate}
               />
             ) : (
               <SurveyResult
-                surveyTitle={item.jsonData.surveyTitle}
-                createDate={item.jsonData.createDate}
-                choices={item.jsonData.choices}
+                surveyTitle={item.surveyTitle}
+                createDate={item.createDate}
+                choices={item.choices}
               />
             )
           }

@@ -380,7 +380,8 @@ router.get("/room/:roomId/result", async (req, res) => {
     const [results, rows] = await conn.query(
       `SELECT jsonData
       FROM \`result\`
-      WHERE roomId = ?`,
+      WHERE roomId = ?
+      ORDER BY \`createDatetime\` DESC`,
       [roomId]
     )
 
