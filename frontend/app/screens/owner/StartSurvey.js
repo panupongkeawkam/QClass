@@ -95,7 +95,7 @@ export default (props) => {
         <View style={[theme.container]}>
           <TextInput
             style={theme.textInput}
-            maxLength={60}
+            maxLength={100}
             placeholderTextColor={color.base3}
             placeholder="Survey title"
             onBlur={({ nativeEvent }) => {

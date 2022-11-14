@@ -201,10 +201,10 @@ export default (props) => {
   return (
     <View style={{ flex: 1, backgroundColor: color.base2 }}>
       <KeyboardAwareScrollView style={{ flex: 1 }} extraHeight={200}>
-        <ScrollView style={[theme.container]}>
+        <ScrollView style={[theme.container]} showsVerticalScrollIndicator={false}>
           <TextInput
             style={theme.textInput}
-            maxLength={60}
+            maxLength={100}
             value={title}
             placeholder="New question title"
             placeholderTextColor={color.base3}

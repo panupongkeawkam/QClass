@@ -153,6 +153,7 @@ export default (props) => {
                 surveyTitle={item.surveyTitle}
                 createDate={item.createDate}
                 choices={item.choices}
+                myAnswered={item.myAnswered}
               />
             )
           }

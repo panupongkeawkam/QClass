@@ -191,7 +191,7 @@ export default (props) => {
         <ScrollView style={[theme.container]}>
           <TextInput
             style={theme.textInput}
-            maxLength={60}
+            maxLength={100}
             placeholder="Question title"
             placeholderTextColor={color.base3}
             onChangeText={(value) => {

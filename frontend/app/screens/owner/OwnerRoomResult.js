@@ -36,6 +36,7 @@ export default (props) => {
 
   const getResults = async () => {
     var resultsVar = await Controller.fetchResults(roomId);
+    // console.log(resultsVar[0].choices)
     setResults([...resultsVar]);
     if (category === "quiz") {
       resultsVar = resultsVar.filter((result) => result.type === "quiz");

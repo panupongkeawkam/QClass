@@ -4,6 +4,7 @@ const color = {
   primary: "#4dbee4", // #3bc8ed
   primaryTransparent: "#edfbff",
   secondary: "#ffb630",
+  secondaryTransparent: "#fffbf2",
   correct: "#37de90",
   correctTransparent: "#edfcf5",
   warning: "#ffb630",

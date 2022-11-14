@@ -5,13 +5,13 @@ import { Ionicons } from "react-native-vector-icons";
 import { theme, color } from "../assets/theme/Theme";
 import Label from "./Label";
 
-export default ({
-  surveyTitle,
-  createDate,
-  choices, // { response, title }
-}) => {
+export default ({ surveyTitle, createDate, choices, myAnswered = null }) => {
   const choicesResponse = choices.map((choice) => choice.response);
   const totalResponse = choicesResponse.reduce((a, b) => a + b, 0);
+
+  const getChoicesTitle = (targetIndex) => {
+    return choices.find((choice, index) => index == targetIndex).title;
+  };
 
   const ChoiceProgress = ({ choiceTitle, choiceResponse }) => {
     return (
@@ -79,7 +79,7 @@ export default ({
           },
         ]}
       >
-        <View style={{ width: "90%" }}>
+        <View style={{ width: "80%" }}>
           <Text style={theme.textHeader2}>{surveyTitle}</Text>
           <Text
             style={{ color: color.content4, fontSize: 12, marginBottom: 16 }}
@@ -90,12 +90,25 @@ export default ({
             <Label text={"Survey"} />
           </View>
         </View>
+        <View
+          style={{
+            width: "20%",
+            justifyContent: "flex-end",
+            flexDirection: "row",
+          }}
+        >
+          <Text
+            style={{ fontSize: 12, color: color.base4, fontWeight: "normal" }}
+          >
+            {totalResponse} Response
+          </Text>
+        </View>
       </View>
       <View
         style={[
           {
-            borderBottomLeftRadius: 24,
-            borderBottomRightRadius: 24,
+            borderBottomLeftRadius: myAnswered !== null ? 0 : 24,
+            borderBottomRightRadius: myAnswered !== null ? 0 : 24,
             paddingHorizontal: 24,
             paddingVertical: 4,
             backgroundColor: color.base1,
@@ -105,6 +118,7 @@ export default ({
         <View
           style={{
             paddingVertical: 12,
+            marginBottom: myAnswered !== null ? 0 : 12,
           }}
         >
           {choices.map((choice, index) => (
@@ -114,6 +128,50 @@ export default ({
               choiceResponse={choice.response}
             />
           ))}
+        </View>
+      </View>
+      <View
+        style={{
+          display: myAnswered !== null ? "flex" : "none",
+          borderBottomLeftRadius: 24,
+          borderBottomRightRadius: 24,
+          paddingHorizontal: 24,
+          paddingVertical: 12,
+          backgroundColor: color.base1,
+          flexDirection: "row",
+          justifyContent: "center",
+          borderTopWidth: 1,
+          borderColor: color.base2,
+        }}
+      >
+        <View
+          style={{
+            paddingVertical: 6,
+            paddingHorizontal: 12,
+            borderRadius: 8,
+            backgroundColor: color.secondaryTransparent,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              fontWeight: "300",
+              color: color.secondary,
+              justifyContent: "center",
+            }}
+          >
+            Your response is{" "}
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: color.secondary,
+              }}
+            >
+              {myAnswered !== null ? getChoicesTitle(myAnswered) : ""}
+            </Text>
+          </Text>
         </View>
       </View>
     </View>
