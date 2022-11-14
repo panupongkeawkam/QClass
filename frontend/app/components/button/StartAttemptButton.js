@@ -75,6 +75,7 @@ export default (props) => {
             color: color.base1,
             fontWeight: "bold",
             fontSize: 12,
+            textAlign: "center",
           }}
         >
           ATTEMPT

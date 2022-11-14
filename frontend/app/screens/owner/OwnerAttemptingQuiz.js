@@ -84,7 +84,6 @@ export default (props) => {
             quizTitle: quizTitle,
             questionLength: questionLength,
             fullScore: questionLength,
-            createDate: formatDateForResult(new Date()),
             type: "quiz",
             quizId: quizId,
           };

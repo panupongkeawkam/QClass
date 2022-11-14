@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Text, View, Image } from "react-native";
+import CircularProgress from "react-native-circular-progress-indicator";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../../assets/theme/Theme";
@@ -9,47 +10,14 @@ import Label from "../../components/Label";
 import AttemptTitle from "../../components/AttemptTitle";
 
 export default (props) => {
-  const myAttemptingTime = props.route.params.myAttemptingTime;
   const myPoint = props.route.params.myScore.point;
   const fullScore = props.route.params.quiz.questionLength;
-  const [chartImageUrl, setChartImageUrl] = useState(null);
   const [rate, setRate] = useState(null);
   const rateColor = {
     EXCELLENT: color.correct,
     GOOD: color.warning,
     MODERATE: color.base4,
     BAD: color.wrong,
-  };
-
-  const generateChartUri = (score, radialColor) => {
-    const options = {
-      type: "radialGauge",
-      data: {
-        datasets: [{ data: [Math.round(score)], backgroundColor: radialColor }],
-      },
-      options: {
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-        },
-        centerPercentage: 80,
-        rotation: -Math.PI / 2,
-        trackColor: color.base2,
-        domain: [0, fullScore],
-        roundedCorners: true,
-        centerArea: {
-          displayText: true,
-          fontColor: null,
-          fontSize: 128,
-          padding: 0,
-          backgroundImage: null,
-          backgroundColor: null,
-          text: null,
-        },
-      },
-    };
-
-    return `https://quickchart.io/chart?&c=${JSON.stringify(options)}`;
   };
 
   const timeDiff = (dateTime) => {
@@ -99,7 +67,6 @@ export default (props) => {
     });
 
     setRate(scoreRateCalculate());
-    setChartImageUrl(generateChartUri(myPoint, rateColor[rate]));
   });
 
   const backHomeHandler = () => {
@@ -151,22 +118,24 @@ export default (props) => {
                 },
               ]}
             >
-              <Image
-                source={{ uri: chartImageUrl }}
-                style={{
-                  width: "80%",
-                  height: 240,
-                  marginBottom: 32,
-                  resizeMode: "contain",
-                }}
-              />
-              <Text
-                style={[
-                  { fontSize: 16, fontWeight: "500", color: color.content4 },
-                ]}
-              >
-                Score {myPoint} of {fullScore}
-              </Text>
+              <View style={{ paddingVertical: 24 }}>
+                <CircularProgress
+                  value={myPoint}
+                  radius={80}
+                  duration={1000}
+                  title={" of " + fullScore}
+                  titleColor={color.base4}
+                  titleStyle={{ fontWeight: "600" }}
+                  progressValueColor={color.base4}
+                  maxValue={fullScore}
+                  activeStrokeWidth={16}
+                  inActiveStrokeWidth={24}
+                  activeStrokeColor={rateColor[rate]}
+                  inActiveStrokeColor={color.base2}
+                  progressValueFontSize={60}
+                  progressValueStyle={{ fontWeight: "600" }}
+                />
+              </View>
             </View>
             <View
               style={[

@@ -50,7 +50,8 @@ export default (props) => {
           { paddingTop: Constants.statusBarHeight, justifyContent: "center" },
         ]}
       >
-        <View
+        <ScrollView
+          showsVerticalScrollIndicator={false}
           style={[
             theme.blurShadow,
             { marginVertical: 8, paddingTop: 60, paddingBottom: 200 },
@@ -82,6 +83,7 @@ export default (props) => {
                 paddingHorizontal: 24,
                 paddingVertical: 16,
                 backgroundColor: color.base1,
+                marginBottom: 200,
               },
             ]}
           >
@@ -105,7 +107,7 @@ export default (props) => {
               );
             })}
           </View>
-        </View>
+        </ScrollView>
         {/*  */}
       </View>
       <View style={theme.tabBarContainer}>

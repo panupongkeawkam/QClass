@@ -58,7 +58,7 @@ export default (props) => {
                   style={{
                     paddingVertical: 10,
                     paddingHorizontal: 16,
-                    marginVertical: 4,
+                    marginVertical: 6,
                     borderRadius: 16,
                     flexDirection: "row",
                     backgroundColor:
@@ -71,7 +71,7 @@ export default (props) => {
                     key={index}
                     style={{
                       width: "90%",
-                      fontSize: 20,
+                      fontSize: 18,
                       color:
                         index === parseInt(props.correct)
                           ? color.base1
@@ -107,7 +107,7 @@ export default (props) => {
               <View style={{ width: "90%" }}>
                 <Text
                   style={{
-                    fontSize: 20,
+                    fontSize: 18,
                     colro: color.content4,
                   }}
                 >

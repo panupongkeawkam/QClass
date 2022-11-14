@@ -35,7 +35,7 @@ export default (props) => {
   };
 
   const getResults = async () => {
-    var resultsVar = await Controller.fetchResults(roomId)
+    var resultsVar = await Controller.fetchResults(roomId);
     setResults([...resultsVar]);
     if (category === "quiz") {
       resultsVar = resultsVar.filter((result) => result.type === "quiz");
@@ -47,6 +47,7 @@ export default (props) => {
 
   useEffect(() => {
     props.navigation.addListener("focus", async () => {
+      setCategory("all");
       await getResults();
     });
   }, []);

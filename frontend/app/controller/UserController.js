@@ -17,6 +17,33 @@ function formatDate(dateFormat) {
   return dateFormat;
 }
 
+function timeSince(date) {
+  var seconds = Math.floor((new Date() - date) / 1000);
+
+  var interval = seconds / 31536000;
+
+  if (interval > 1) {
+    return Math.floor(interval) + " years ago";
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return Math.floor(interval) + " months ago";
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return Math.floor(interval) + " days ago";
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return Math.floor(interval) + " hours ago";
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return Math.floor(interval) + " minutes ago";
+  }
+  return Math.floor(seconds) + " seconds ago";
+}
+
 // Use for initial project
 const userInitialize = async () => {
   let user = JSON.parse(await AsyncStorage.getItem("user"));
@@ -40,17 +67,28 @@ const fetchResults = async (roomId, participantId = null) => {
   const allResult = await axios.get(
     `http://${config.ip}:3000/room/${roomId}/result`
   );
+
   const results = [];
   for (const result of allResult.data) {
+    result.createDate = timeSince(new Date(result.createDatetime));
     if (participantId) {
-      if (result.jsonData.type === "quiz") {
+      if (result.type === "quiz") {
         var myScore = await axios.get(
-          `http://${config.ip}:3000/quiz/${result.jsonData.quizId}/participant/${participantId}/score`
+          `http://${config.ip}:3000/quiz/${result.quizId}/participant/${participantId}/score`
         );
-        result.jsonData.myScore = myScore.data.myScore.length <= 0 ? null : myScore.data.myScore[0].point;
+        result.myScore =
+          myScore.data.myScore.length <= 0
+            ? null
+            : myScore.data.myScore[0].point;
+      } else if (result.type === "survey") {
+        var myAnswered = await axios.get(
+          `http://${config.ip}:3000/participant/${participantId}/survey/${result.surveyId}/surveyResponse`
+        );
+        result.myAnswered =
+          myAnswered.data.length <= 0 ? null : myAnswered.data[0].answered;
       }
     }
-    results.push(result.jsonData);
+    results.push(result);
   }
   return results;
 };

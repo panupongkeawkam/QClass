@@ -272,6 +272,7 @@ export default (props) => {
               data={joinedRoom}
               initialNumToRender={4}
               key={"joined"}
+              numColumns={2}
               renderItem={renderJoinedRoom}
               keyExtractor={(room) => room.roomId}
               ListEmptyComponent={() => <GetStarted />}

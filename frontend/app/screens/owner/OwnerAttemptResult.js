@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Text, View, FlatList, Image } from "react-native";
+import CircularProgress from "react-native-circular-progress-indicator";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../../assets/theme/Theme";
@@ -12,6 +13,27 @@ import AttemptTitle from "../../components/AttemptTitle";
 export default (props) => {
   const type = props.route.params.type;
   const [totalResponse, setTotalResponse] = useState(0);
+
+  const options =
+    type === "quiz"
+      ? [
+          {
+            value: props.route.params.jsonData.minScore,
+            color: color.wrong,
+            title: "Min",
+          },
+          {
+            value: props.route.params.jsonData.averageScore,
+            color: color.warning,
+            title: "Mean",
+          },
+          {
+            value: props.route.params.jsonData.maxScore,
+            color: color.correct,
+            title: "Max",
+          },
+        ]
+      : [];
 
   const BackRoomHandler = () => {
     props.navigation.goBack();
@@ -36,88 +58,6 @@ export default (props) => {
       setTotalResponse(totalResponseVar);
     }
   });
-
-  const generateChartUri = (score, radialColor) => {
-    const options = {
-      type: "radialGauge",
-      data: {
-        datasets: [{ data: [Math.round(score)], backgroundColor: radialColor }],
-      },
-      options: {
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-        },
-        centerPercentage: 80,
-        rotation: -Math.PI / 2,
-        trackColor: color.base2,
-        domain: [0, props.route.params.jsonData.fullScore],
-        roundedCorners: true,
-        centerArea: {
-          displayText: true,
-          fontColor: null,
-          fontSize: 128,
-          padding: 0,
-          backgroundImage: null,
-          backgroundColor: null,
-          text: null,
-        },
-      },
-    };
-
-    return `https://quickchart.io/chart?&c=${JSON.stringify(options)}`;
-  };
-
-  const [chartData, setChartData] = useState([
-    {
-      label: "Min",
-      chartImageUrl: generateChartUri(
-        props.route.params.jsonData.minScore,
-        color.wrong
-      ),
-    },
-    {
-      label: "Mean",
-      chartImageUrl: generateChartUri(
-        props.route.params.jsonData.averageScore,
-        color.warning
-      ),
-    },
-    {
-      label: "Max",
-      chartImageUrl: generateChartUri(
-        props.route.params.jsonData.maxScore,
-        color.correct
-      ),
-    },
-  ]);
-
-  const Chart = ({ label, chartImageUrl }) => {
-    return (
-      <View
-        style={{
-          width: "30%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={{ uri: chartImageUrl }}
-          style={{ width: "100%", height: 72, resizeMode: "cover" }}
-        />
-        <Text
-          style={{
-            marginTop: 8,
-            fontSize: 16,
-            fontWeight: "bold",
-            color: color.content4,
-          }}
-        >
-          {label}
-        </Text>
-      </View>
-    );
-  };
 
   return (
     <View style={{ flex: 1, backgroundColor: color.base2 }}>
@@ -173,12 +113,38 @@ export default (props) => {
                   paddingVertical: 12,
                 }}
               >
-                {chartData.map((each, index) => (
-                  <Chart
-                    key={index}
-                    label={each.label}
-                    chartImageUrl={each.chartImageUrl}
-                  />
+                {options.map((option, index) => (
+                  <View key={index}>
+                    <CircularProgress
+                      value={option.value}
+                      radius={32}
+                      duration={typeof option.value === "number" ? 500 : 0}
+                      progressValueColor={color.base4}
+                      maxValue={props.route.params.jsonData.fullScore}
+                      activeStrokeWidth={8}
+                      inActiveStrokeWidth={12}
+                      activeStrokeColor={option.color}
+                      inActiveStrokeColor={color.base2}
+                      progressValueFontSize={20}
+                      progressValueStyle={{ fontWeight: "600" }}
+                      progressFormatter={(value) => {
+                        "worklet";
+                        return typeof value === "number"
+                          ? value.toFixed(index === 1 ? 1 : 0)
+                          : "-";
+                      }}
+                    />
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        marginTop: 12,
+                        fontWeight: "600",
+                        color: color.content4,
+                      }}
+                    >
+                      {option.title}
+                    </Text>
+                  </View>
                 ))}
               </View>
             </View>
@@ -192,15 +158,46 @@ export default (props) => {
                   paddingHorizontal: 24,
                   paddingVertical: 16,
                   backgroundColor: color.base1,
+                  flexDirection: "row",
+                  justifyContent: "center",
                 },
-              ]}>
-              <Text style={{ fontSize: 16, textAlign: 'center', color: color.content4 }}>
-                Total {props.route.params.jsonData.totalResponse} Attempt
-              </Text>
+              ]}
+            >
+              <View
+                style={{
+                  paddingVertical: 6,
+                  paddingHorizontal: 12,
+                  borderRadius: 8,
+                  backgroundColor: color.primaryTransparent,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    textAlign: "center",
+                    fontWeight: "300",
+                    color: color.primary,
+                    justifyContent: "center",
+                  }}
+                >
+                  Total{" "}
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "700",
+                      color: color.primary,
+                    }}
+                  >
+                    {props.route.params.jsonData.totalResponse}
+                  </Text>{" "}
+                  Attempt
+                </Text>
+              </View>
             </View>
           </>
         ) : (
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={props.route.params.jsonData.choices}
             style={{ paddingHorizontal: 4 }}
             renderItem={({ item, index }) => (

@@ -40,7 +40,7 @@ router.post("/quiz", async (req, res) => {
     const [quiz, rows1] = await conn.query(
       `INSERT INTO Quiz (\`roomId\`, \`title\`, \`questionLength\`, \`createDatetime\`, \`state\`)
       VALUES (?, ?, ?, NOW(), ?)`,
-      [roomId, title, questionLength, "attempting"]
+      [roomId, title, questionLength, "ended"]
     );
 
     await conn.commit();
@@ -371,26 +371,29 @@ router.get("/question/:questionId/choice", async (req, res) => {
 
 // get all result (any role)
 router.get("/room/:roomId/result", async (req, res) => {
-  const roomId = req.params.roomId
+  const roomId = req.params.roomId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
-    
     const [results, rows] = await conn.query(
-      `SELECT jsonData
+      `SELECT jsonData, createDatetime
       FROM \`result\`
       WHERE roomId = ?
       ORDER BY \`createDatetime\` DESC`,
       [roomId]
-    )
+    );
 
-    for (const result of results){
-      result.jsonData = JSON.parse(result.jsonData)
+    const resultsVar = [];
+
+    for (const result of results) {
+      result.jsonData = JSON.parse(result.jsonData);
+      result.jsonData.createDatetime = result.createDatetime;
+      resultsVar.push(result.jsonData);
     }
 
     await conn.commit();
-    res.json(results)
+    res.json(resultsVar);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -450,21 +453,52 @@ router.put("/survey/:surveyId", async (req, res) => {
 });
 
 //add response survey
-router.post("/participant/:participantId/survey/:surveyId", async (req, res) => {
-  const participantId = req.params.participantId
-  const index = req.body.index
-  const surveyId = req.params.surveyId
+router.post(
+  "/participant/:participantId/survey/:surveyId",
+  async (req, res) => {
+    const participantId = req.params.participantId;
+    const index = req.body.index;
+    const surveyId = req.params.surveyId;
+    const conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    try {
+      const [result, rows] = await conn.query(
+        `INSERT INTO \`SurveyResponse\` (participantId, surveyId, answered, createDatetime)
+      VALUES (?, ?, ?, NOW())`,
+        [participantId, surveyId, index]
+      );
+      await conn.commit();
+      res.status(200).send("Insert into SurveyResponse Success");
+    } catch (err) {
+      await conn.rollback();
+      res.status(500).send(err);
+    } finally {
+      conn.release();
+    }
+  }
+);
+
+//get all survey response in survey xx
+router.get("/survey/:surveyId/surveyResponse/:answered", async (req, res) => {
+  const surveyId = req.params.surveyId;
+  const answered = req.params.answered;
+
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
-    const [result, rows] = await conn.query(
-      `INSERT INTO \`SurveyResponse\` (participantId, surveyId, answered, createDatetime)
-      VALUES (?, ?, ?, NOW())`,
-      [participantId, surveyId, index]
+    const [survey, rows] = await conn.query(
+      `SELECT COUNT(answered) AS \`response\`
+      FROM \`surveyResponse\`
+      WHERE surveyId = ? and answered = ?`,
+      [surveyId, answered]
     );
+
+    console.log(survey);
+
     await conn.commit();
-    res.status(200).send("Insert into SurveyResponse Success");
+    res.json(survey[0]);
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -472,34 +506,5 @@ router.post("/participant/:participantId/survey/:surveyId", async (req, res) => 
     conn.release();
   }
 });
-
-//get all survey response in survey xx
-router.get("/survey/:surveyId/surveyResponse/:answered", async (req, res) => {
-  const surveyId = req.params.surveyId
-  const answered = req.params.answered
-
-  const conn = await pool.getConnection()
-  await conn.beginTransaction()
-
-  try{
-
-    const [survey, rows] = await conn.query(
-      `SELECT COUNT(answered) AS \`response\`
-      FROM \`surveyResponse\`
-      WHERE surveyId = ? and answered = ?`,
-      [surveyId, answered]
-    )
-
-    console.log(survey)
-
-    await conn.commit()
-    res.json(survey[0])
-  }catch(err){
-    await conn.rollback()
-    res.status(500).send(err)
-  }finally{
-    conn.release()
-  }
-})
 
 exports.router = router;

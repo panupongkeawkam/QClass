@@ -49,7 +49,7 @@ function formatDateForResult(dateFormat) {
 const createQuiz = async (newTitle) => {
   //Variable
   newTitle = newTitle.trim();
-  let now = new Date()
+  let now = new Date();
 
   // All quiz
   let quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"));
@@ -69,7 +69,7 @@ const createQuiz = async (newTitle) => {
     var newQuiz = {
       title: newTitle,
       questions: [],
-      createDatetime: now
+      createDatetime: now,
     };
     await quizzes.splice(0, 0, newQuiz);
     await AsyncStorage.setItem("quizzes", JSON.stringify(quizzes));
@@ -391,6 +391,12 @@ const startQuiz = async (quiz, room, user) => {
     }
   }
 
+  await axios.put(`http://${config.ip}:3000/quiz/${quiz.quizId}`, {
+    quiz: {
+      state: "attempting",
+    },
+  });
+
   return quiz;
 };
 
@@ -418,28 +424,27 @@ const onStartSurvey = async (roomId, survey) => {
   return survey;
 };
 
-
 const getSurveyResult = async (survey) => {
-  const surveyId = survey.surveyId
-  const choices = survey.choices
-  const title = survey.title
+  const surveyId = survey.surveyId;
+  const choices = survey.choices;
+  const title = survey.title;
 
-  for (const choice of choices){
+  for (const choice of choices) {
     var newChoiceResult = await axios.get(
-      `http://${config.ip}:3000/survey/${surveyId}/surveyResponse/${parseInt(choice.index)}`
-    )
-    choice.response = newChoiceResult.data.response
+      `http://${config.ip}:3000/survey/${surveyId}/surveyResponse/${parseInt(
+        choice.index
+      )}`
+    );
+    choice.response = newChoiceResult.data.response;
   }
 
-  return ({
+  return {
     surveyId: surveyId,
     surveyTitle: title,
-    createDate: formatDateForResult(new Date()),
     choices: choices,
-    surveyId: surveyId
-  })
-
-}
+    surveyId: surveyId,
+  };
+};
 
 export {
   createQuiz,
