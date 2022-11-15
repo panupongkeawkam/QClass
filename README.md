@@ -1,7 +1,7 @@
 # QClass | Quizzes Mobile Application (iOS)
 Room activity with quiz, survey or announcement, can add quiz with many question in type multiple choice or text answer, use QR Code to join room with camera
 
-> Functions
+> Features
 * Common for Any Role
   * Create and setup quiz for later
   * Create and modify question detail such as title, choices or timer
@@ -27,10 +27,10 @@ Room activity with quiz, survey or announcement, can add quiz with many question
   * Change database config `./backend/config.js`
   * Open terminal `cd backend` -> `npm i` -> `npm run serve`
 * Start frontend server
-  * Edit host IP in `./frontend/app/assets/api-config.js` *(hint: Run `ipconfig`)*
+  * Edit host IP in `./frontend/app/assets/api-config.js` *(hint: Run `ipconfig` in terminal)*
   * Open terminal `cd frontend` -> `npm i` -> `yarn start`
   * Open Expo Go in your phone and scan QR code
-> Developer
+> Teams
 1. [Panupong Keawkam](https://github.com/panupongkeawkam) at IT KMITL
 2. [Pithawat Nuckong](https://github.com/pithawat565) at IT KMITL
 3. [Nattapat Wattanapitacpong](https://github.com/63070059) at IT KMITL
