@@ -1,4 +1,4 @@
-# QClass | Quizzes Mobile Application (iOS)
+# QClass | Quizzes Mobile Application (iOS
 Room activity with quiz, survey or announcement, can add quiz with many question in type multiple choice or text answer, use QR Code to join room with camera
 
 > Features
