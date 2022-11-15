@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, ScrollView, ActivityIndicator, Dimensions } from "react-native";
+import {
+  View,
+  ScrollView,
+  FlatList,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -66,26 +72,29 @@ export default (props) => {
       <Loading active={isLoading} />
       <View style={{ flex: 1, backgroundColor: color.base2 }}>
         <View style={theme.container}>
-          <ScrollView>
-            <View style={[theme.boxContainer]}>
-              {quizzes.length ? (
-                quizzes?.map((quiz, index) => (
-                  <CheckableQuiz
-                    key={index}
-                    title={quiz.title}
-                    questionLength={quiz.questions.length}
-                    createDatetime={"22 October 2565"}
-                    isChecked={selectedQuizIndex === index}
-                    onCheck={() => {
-                      checkHandler(quiz, index);
-                    }}
-                  />
-                ))
-              ) : (
-                <EmptyDataLabel title={"No quiz"} />
-              )}
-            </View>
-          </ScrollView>
+          <FlatList
+            data={quizzes}
+            style={{ paddingHorizontal: 4 }}
+            renderItem={({ item, index }) => (
+              <CheckableQuiz
+                title={item.title}
+                questionLength={item.questions.length}
+                createDatetime={"22 October 2565"}
+                isChecked={selectedQuizIndex === index}
+                onCheck={() => {
+                  checkHandler(item, index);
+                }}
+              />
+            )}
+            keyExtractor={(quiz, index) => index}
+            key={"quizzes"}
+            numColumns={2}
+            ListEmptyComponent={() => <EmptyDataLabel title={"No quiz"} />}
+            ListFooterComponent={() => (
+              <View style={{ marginBottom: 200 }}></View>
+            )}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
         <View style={theme.tabBarContainer}>
           <View style={theme.tabBar}>

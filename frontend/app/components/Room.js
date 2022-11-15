@@ -57,7 +57,7 @@ export default (props) => {
           )}
           <Text
             style={[theme.textHeader2, { marginLeft: 4, textAlign: "center" }]}
-            numberOfLines={2}
+            numberOfLines={1}
           >
             {props.room.title}
           </Text>

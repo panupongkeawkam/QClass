@@ -167,6 +167,9 @@ export default (props) => {
     if (newChoices[index].isCorrect) {
       setCorrect(-1);
     }
+    else if (index < correct){
+      setCorrect(current => current - 1)
+    }
     newChoices.splice(index, 1);
     setChoices([...newChoices]);
   };

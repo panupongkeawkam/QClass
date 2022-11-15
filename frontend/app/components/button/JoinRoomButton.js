@@ -174,6 +174,10 @@ export default (props) => {
                     value={inviteCode}
                     placeholder={"Room Code"}
                     placeholderTextColor={color.base3}
+                    spellCheck={false}
+                    onEndEditing={() => {
+                      Keyboard.dismiss()
+                    }}
                     onChangeText={(text) => {
                       setInviteCode(() => text);
                     }}

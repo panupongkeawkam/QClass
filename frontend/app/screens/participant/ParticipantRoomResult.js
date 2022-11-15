@@ -141,6 +141,7 @@ export default (props) => {
               <QuizResult
                 quizTitle={item.quizTitle}
                 questionLength={item.questionLength}
+                totalResponse={item.totalResponse}
                 fullScore={item.fullScore}
                 minScore={item.minScore}
                 meanScore={item.averageScore}

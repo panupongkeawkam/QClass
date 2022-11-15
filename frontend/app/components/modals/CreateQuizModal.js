@@ -75,20 +75,6 @@ export default (props) => {
                   confirmHandler();
                 }}
               />
-              {/* <SecondaryButton
-                backgroundColor={color.wrong}
-                title="CLEAR USER"
-                onPress={async () => {
-                  await AsyncStorage.removeItem("user");
-                }}
-              />
-              <SecondaryButton
-                backgroundColor={color.wrong}
-                title="CONSOLE USER"
-                onPress={async () => {
-                  console.log(await AsyncStorage.getItem("user"));
-                }}
-              /> */}
             </View>
           </View>
         </KeyboardAvoidingView>

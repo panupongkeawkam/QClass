@@ -4,7 +4,7 @@ import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../assets/theme/Theme";
 
-export default ({ style = {}, text, colored = false }) => {
+export default ({ style = {}, text, colored = false, hasMarginTop = false }) => {
   return (
     <View
       style={{
@@ -12,13 +12,14 @@ export default ({ style = {}, text, colored = false }) => {
         paddingHorizontal: 12,
         borderRadius: 24,
         marginRight: 8,
+        marginTop: hasMarginTop ? 8 : 0,
         backgroundColor: colored ? color.primaryTransparent : color.base2,
         ...style,
       }}
     >
       <Text
         style={{
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: "bold",
           color: colored ? color.primary : color.base4,
         }}

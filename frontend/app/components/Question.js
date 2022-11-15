@@ -28,7 +28,7 @@ export default (props) => {
         ]}
       >
         <View style={{ width: "90%" }}>
-          <Text style={theme.textHeader2}>{props.title}</Text>
+          <Text style={[theme.textHeader2, { fontWeight: "normal" }]}>{props.title}</Text>
         </View>
         <View style={{ width: "10%", alignItems: "flex-end" }}>
           <Ionicons

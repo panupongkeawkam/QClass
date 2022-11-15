@@ -9,8 +9,9 @@ export default ({ surveyTitle, createDate, choices, myAnswered = null }) => {
   const choicesResponse = choices.map((choice) => choice.response);
   const totalResponse = choicesResponse.reduce((a, b) => a + b, 0);
 
-  const getChoicesTitle = (targetIndex) => {
-    return choices.find((choice, index) => index == targetIndex).title;
+  const getChoiceTitle = (targetIndex) => {
+    var choice = choices.find((choice, index) => index == targetIndex);
+    return choice ? choice.title : null;
   };
 
   const ChoiceProgress = ({ choiceTitle, choiceResponse }) => {
@@ -79,29 +80,17 @@ export default ({ surveyTitle, createDate, choices, myAnswered = null }) => {
           },
         ]}
       >
-        <View style={{ width: "80%" }}>
-          <Text style={theme.textHeader2}>{surveyTitle}</Text>
-          <Text
-            style={{ color: color.content4, fontSize: 12, marginBottom: 16 }}
-          >
+        <View style={{ width: "100%" }}>
+          <Text style={[theme.textHeader2, { fontWeight: "normal" }]}>
+            {surveyTitle}
+          </Text>
+          <Text style={{ color: color.base4, fontSize: 10, marginBottom: 16 }}>
             {createDate}
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Label text={"Survey"} />
+            <Label text={totalResponse + " Response"} />
           </View>
-        </View>
-        <View
-          style={{
-            width: "20%",
-            justifyContent: "flex-end",
-            flexDirection: "row",
-          }}
-        >
-          <Text
-            style={{ fontSize: 12, color: color.base4, fontWeight: "normal" }}
-          >
-            {totalResponse} Response
-          </Text>
         </View>
       </View>
       <View
@@ -169,7 +158,7 @@ export default ({ surveyTitle, createDate, choices, myAnswered = null }) => {
                 color: color.secondary,
               }}
             >
-              {myAnswered !== null ? getChoicesTitle(myAnswered) : ""}
+              {myAnswered !== null ? getChoiceTitle(myAnswered) : ""}
             </Text>
           </Text>
         </View>

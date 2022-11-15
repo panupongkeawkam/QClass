@@ -8,6 +8,7 @@ import Label from "./Label";
 
 export default ({
   fullScore,
+  totalResponse,
   maxScore,
   meanScore,
   minScore,
@@ -38,14 +39,14 @@ export default ({
           },
         ]}
       >
-        <View style={{ width: "80%" }}>
-          <Text style={theme.textHeader2}>{quizTitle}</Text>
-          <Text
-            style={{ color: color.content4, fontSize: 12, marginBottom: 16 }}
-          >
+        <View style={{ width: "100%" }}>
+          <Text style={[theme.textHeader2, { fontWeight: "normal" }]}>
+            {quizTitle}
+          </Text>
+          <Text style={{ color: color.base4, fontSize: 10, marginBottom: 16 }}>
             {createDate}
           </Text>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <Label text={"Quiz"} />
             <Label
               text={
@@ -54,20 +55,11 @@ export default ({
                   : `${questionLength} Questions`
               }
             />
+            <Label text={fullScore + " Point"} />
           </View>
-        </View>
-        <View
-          style={{
-            width: "20%",
-            justifyContent: "flex-end",
-            flexDirection: "row",
-          }}
-        >
-          <Text
-            style={{ fontSize: 12, color: color.base4, fontWeight: "normal" }}
-          >
-            {fullScore} Point
-          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+            <Label text={totalResponse + " Response"} hasMarginTop />
+          </View>
         </View>
       </View>
       <View

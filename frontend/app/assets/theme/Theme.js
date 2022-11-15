@@ -87,8 +87,8 @@ const theme = StyleSheet.create({
     marginBottom: 8,
   },
   textHeader2: {
-    fontSize: 24,
-    fontWeight: "500",
+    fontSize: 20,
+    fontWeight: "600",
     color: color.content3,
     marginBottom: 8,
   },

@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `Announcement`;
 CREATE TABLE `Announcement` (
     `announcementId` INT(10) AUTO_INCREMENT,
     `roomId` INT(10) NOT NULL,
-    `message` VARCHAR(255) NOT NULL,
+    `message` TEXT NOT NULL,
     `createDatetime` DATETIME,
     PRIMARY KEY (`announcementId`),
     FOREIGN KEY (`roomId`)

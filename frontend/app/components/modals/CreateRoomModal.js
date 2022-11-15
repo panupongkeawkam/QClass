@@ -83,11 +83,7 @@ export default (props) => {
 
   return (
     <View style={modalTheme.centeredView}>
-      <Modal
-        transparent={true}
-        animationType={"fade"}
-        visible={props.visible}
-      >
+      <Modal transparent={true} animationType={"fade"} visible={props.visible}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior="height"
@@ -104,6 +100,7 @@ export default (props) => {
                 <Text style={modalTheme.textHeader}>Create Room</Text>
                 <TouchableOpacity
                   onPress={() => {
+                    setIconName("");
                     props.close();
                   }}
                 >

@@ -51,7 +51,7 @@ export default (props) => {
         <Text
           style={{
             width: "68%",
-            fontSize: 20,
+            fontSize: 18,
             color: props.isCorrect ? color.base1 : color.content1,
           }}
         >
@@ -70,7 +70,7 @@ export default (props) => {
             width: "68%",
             borderBottomWidth: 1,
             borderColor: props.isCorrect ? color.base2 : color.base3,
-            fontSize: 20,
+            fontSize: 18,
             color: props.isCorrect ? color.base1 : color.content1,
           }}
         />

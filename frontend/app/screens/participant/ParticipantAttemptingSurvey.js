@@ -77,7 +77,9 @@ export default (props) => {
             ]}
           >
             <View style={{ width: "100%" }}>
-              <Text style={theme.textHeader2}>{surveyTitle}</Text>
+              <Text style={[theme.textHeader2, { fontWeight: "normal" }]}>
+                {surveyTitle}
+              </Text>
             </View>
           </View>
           <View
@@ -113,11 +115,11 @@ export default (props) => {
             })}
           </View>
         </ScrollView>
-        {/*  */}
       </View>
       <View style={theme.tabBarContainer}>
         <View style={theme.tabBar}>
           <PrimaryButton
+            disable={selectedChoiceIndex === -1}
             backgroundColor={color.correct}
             title={"Submit"}
             onPress={submitHandler}
