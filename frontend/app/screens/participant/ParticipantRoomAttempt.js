@@ -4,7 +4,6 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
   RefreshControl,
   Alert,
 } from "react-native";
@@ -19,7 +18,7 @@ import Loading from "../../components/Loading";
 export default (props) => {
   const roomId = props.route.params.room.roomId;
   const participantId = props.route.params.participantId;
-  const [attempt, setAttempt] = useState(null); // { data } or null
+  const [attempt, setAttempt] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [attemptAllow, setAttemptAllow] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -39,7 +38,6 @@ export default (props) => {
       quiz.type = "quiz";
       setAttempt(quiz);
 
-      // ถ้า Participant ได้ทำควิซไปแล้ว
       if (!myScore.data.myScore.length) {
         setAttemptAllow(false);
       }
@@ -60,7 +58,6 @@ export default (props) => {
       survey.type = "survey";
       setAttempt(survey);
 
-      // ถ้า Participant ได้ทำควิซไปแล้ว
       if (mySurveyResponse.data.length === 0) {
         setAttemptAllow(false);
       }

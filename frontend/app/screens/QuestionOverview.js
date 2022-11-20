@@ -1,14 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
   Alert,
   FlatList,
 } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../assets/theme/Theme";
@@ -29,7 +25,6 @@ export default (props) => {
   const [showQuizTitle, setShowQuizTitle] = useState(null);
 
   useEffect(() => {
-    // need to refactor
     props.navigation.addListener("focus", async () => {
       let quizzes = JSON.parse(await AsyncStorage.getItem("quizzes"));
       let thisQuiz = await quizzes.find((quiz) => {

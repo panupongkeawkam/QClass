@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import { theme, color } from "../../assets/theme/Theme";
 

@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Text, View, FlatList, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, FlatList } from "react-native";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import StepBar from "../../components/StepBar";
-import QuizResult from "../../components/QuizResult";
 import { LargeProgress } from "./OwnerAttemptingSurvey";
 import AttemptTitle from "../../components/AttemptTitle";
 

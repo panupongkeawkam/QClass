@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 

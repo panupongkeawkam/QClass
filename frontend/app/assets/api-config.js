@@ -1,3 +1,3 @@
 export default {
-    ip: "192.168.1.100"
+    ip: "" // ใส่เลข ip ของเครื่องที่รัน ิbackend (ไม่ใช่ localhost)
 }

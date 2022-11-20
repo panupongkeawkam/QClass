@@ -7,12 +7,10 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import axios from "axios";
 
 import { theme, color } from "../../assets/theme/Theme";
 
 import QuizResult from "../../components/QuizResult";
-import config from "../../assets/api-config";
 import SurveyResult from "../../components/SurveyResult";
 import EmptyDataLabel from "../../components/EmptyDataLabel";
 

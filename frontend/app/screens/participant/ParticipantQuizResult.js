@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Text, View, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View } from "react-native";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../../assets/theme/Theme";
 import StepBar from "../../components/StepBar";
 import PrimaryButton from "../../components/button/PrimaryButton";
-import Label from "../../components/Label";
 import AttemptTitle from "../../components/AttemptTitle";
 
 export default (props) => {

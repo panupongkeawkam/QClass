@@ -14,7 +14,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import { theme, color } from "../../assets/theme/Theme";
-import PrimaryButton from "./PrimaryButton";
 import StartQuiz from "../../screens/owner/StartQuiz";
 import StartSurvey from "../../screens/owner/StartSurvey";
 

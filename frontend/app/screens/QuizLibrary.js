@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, FlatList } from "react-native";
-import Constants from "expo-constants";
+import { View, FlatList } from "react-native";
 
 import { theme, color } from "../assets/theme/Theme";
 import Quiz from "../components/Quiz";
@@ -11,11 +10,9 @@ import HeaderButton from "../components/button/HeaderButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default (props) => {
-  // ข้อมูลจาก localstorage
   const [createQuizModalVisible, setCreateQuizModalVisible] = useState(false);
   const [quizzes, setQuizzes] = useState([]);
 
-  // fetch data from async storage
   const fetchQuiz = async () => {
     let values = await AsyncStorage.getItem("quizzes");
     if (values) {
@@ -47,10 +44,9 @@ export default (props) => {
   }, []);
 
   const selectQuizHandler = async (quiz, index) => {
-    // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
     props.navigation.navigate("QuestionOverview", {
       quizTitle: quiz.title,
-      questions: quiz.questions, // ข้อมูล
+      questions: quiz.questions,
     });
   };
 

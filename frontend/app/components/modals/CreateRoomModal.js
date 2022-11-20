@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Modal,
   Text,
   View,
@@ -45,7 +44,6 @@ export default (props) => {
   };
 
   const confirmHandler = async () => {
-    // กดปุ่ม confirm
     var newRoom = await createNewRoom(props.user.userId, roomName, iconName);
     setRoomName("");
     setIconName("");

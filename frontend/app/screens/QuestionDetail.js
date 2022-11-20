@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Dimensions,
   Alert,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import SwitchSelector from "react-native-switch-selector";
 
 import { theme, color } from "../assets/theme/Theme";
 import PrimaryButton from "../components/button/PrimaryButton";

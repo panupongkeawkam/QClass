@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   Text,
   View,
@@ -13,8 +13,6 @@ import { Ionicons } from "react-native-vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { StackActions } from "@react-navigation/native";
 
 import { theme, color } from "../../assets/theme/Theme";
 import SecondaryButton from "./SecondaryButton";
@@ -33,7 +31,6 @@ export default (props) => {
 
   const bottomSheetRef = useRef(null);
 
-  // press 'Join' button
   const joinHandler = async () => {
     try {
       var newRoom = await joinRoom(user.userId, inviteCode);

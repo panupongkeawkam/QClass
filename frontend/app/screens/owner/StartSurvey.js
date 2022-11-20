@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  TextInput,
-  Alert,
-  KeyboardAvoidingView,
-  FlatList,
-} from "react-native";
+import React, { useState } from "react";
+import { View, TextInput, Alert, FlatList } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 
 import { theme, color } from "../../assets/theme/Theme";
@@ -16,7 +9,6 @@ import PrimaryButton from "../../components/button/PrimaryButton";
 import Loading from "../../components/Loading";
 
 import * as Controller from "../../controller/QuizController";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default (props) => {
   const [surveyTitle, setSurveyTitle] = useState("");
@@ -111,9 +103,7 @@ export default (props) => {
                 isDeletable={item.isDeletable}
                 index={index}
                 title={item.title}
-                onSetCorrect={() => {
-                  // do nothing
-                }}
+                onSetCorrect={() => {}}
                 onDelete={(index) => {
                   deleteHandler(index);
                 }}

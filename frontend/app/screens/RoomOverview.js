@@ -8,8 +8,6 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
-import Constants from "expo-constants";
-import axios from "axios";
 
 import { theme, color } from "../assets/theme/Theme";
 import Room from "../components/Room";
@@ -17,8 +15,9 @@ import CreateRoomModal from "../components/modals/CreateRoomModal";
 import HeaderButton from "../components/button/HeaderButton";
 import EmptyDataLabel from "../components/EmptyDataLabel";
 
-import { userInitialize } from "../controller/UserController";
+import axios from "axios";
 import config from "../assets/api-config";
+import { userInitialize } from "../controller/UserController";
 
 export default (props) => {
   const [ownedRoom, setOwnedRoom] = useState([]);
@@ -86,7 +85,6 @@ export default (props) => {
   }, [user]);
 
   const selectJoinedRoomHandler = async (room, index) => {
-    // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
 
     const fetchParticipantId = async () => {
       const participantIdVar = await axios.get(
@@ -105,7 +103,6 @@ export default (props) => {
   };
 
   const selectOwnedRoomHandler = (room, index) => {
-    // เปิดหน้า QuestionOverview พร้อมกับดึงข้อมูลไปแสดง
     props.navigation.navigate("OwnerRoomTabsNavigator", {
       room: room,
       user: user,

@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { theme, modalTheme, color } from "../../assets/theme/Theme";
 import { createQuiz } from "../../controller/QuizController";

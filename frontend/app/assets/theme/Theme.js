@@ -21,21 +21,6 @@ const color = {
   blackTransparent: "#00000088",
 };
 
-// const color = {
-//   primary: "#3bc8ed",
-//   correct: "#5cbc7c",
-//   wrong: "red",
-//   content1: "#ffffff",
-//   content2: "#f9f9f9",
-//   content3: "#D3D3D3",
-//   content4: "#808080",
-//   base1: "#555",
-//   base2: "#444",
-//   base3: "#333",
-//   base4: "#111",
-//   blackTransparent: "#00000088",
-// };
-
 const theme = StyleSheet.create({
   container: {
     flex: 1,

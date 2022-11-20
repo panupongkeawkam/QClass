@@ -44,7 +44,6 @@ function timeSince(date) {
   return Math.floor(seconds) + " seconds ago";
 }
 
-// Use for initial project
 const userInitialize = async () => {
   let user = JSON.parse(await AsyncStorage.getItem("user"));
   var isNoUser = !user;

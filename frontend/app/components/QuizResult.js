@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Text, View, Image } from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
+import React from "react";
+import { Text, View } from "react-native";
+import { Ionicons } from "react-native-vector-icons";
 import CircularProgress from "react-native-circular-progress-indicator";
 
 import { theme, color } from "../assets/theme/Theme";

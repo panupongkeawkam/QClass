@@ -3,7 +3,6 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
   RefreshControl,
   Alert,
 } from "react-native";
@@ -55,7 +54,7 @@ export default (props) => {
                 marginBottom: announcements.length - 1 === index ? 240 : 0,
               }}
               message={announcement.message}
-              dateTime={announcement.time} // didn't format
+              dateTime={announcement.time}
               key={index}
             />
           );

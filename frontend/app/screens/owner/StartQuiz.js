@@ -1,11 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  View,
-  ScrollView,
-  FlatList,
-  ActivityIndicator,
-  Dimensions,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, FlatList } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

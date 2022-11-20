@@ -4,29 +4,6 @@ const pool = require("../config");
 
 router = express.Router();
 
-// get all quiz
-router.get("/quiz", async (req, res) => {
-  const conn = await pool.getConnection();
-  await conn.beginTransaction();
-
-  try {
-    const quiz = await conn.query(
-      `SELECT *
-        FROM Quiz`,
-      []
-    )[0];
-
-    res.json({ quiz: quiz });
-  } catch (err) {
-    await conn.rollback();
-    res.status(500).send(err);
-  } finally {
-    conn.release();
-  }
-
-  return;
-});
-
 // owner start quiz
 router.post("/quiz", async (req, res) => {
   const title = req.body.quiz.title;
@@ -342,6 +319,7 @@ router.get("/survey/:surveyId/choice", async (req, res) => {
     conn.release();
   }
 });
+
 // get all choice in question xx
 router.get("/question/:questionId/choice", async (req, res) => {
   const questionId = req.params.questionId;
@@ -478,7 +456,7 @@ router.post(
   }
 );
 
-//get all survey response in survey xx
+// get all survey response in survey xx
 router.get("/survey/:surveyId/surveyResponse/:answered", async (req, res) => {
   const surveyId = req.params.surveyId;
   const answered = req.params.answered;
@@ -504,7 +482,7 @@ router.get("/survey/:surveyId/surveyResponse/:answered", async (req, res) => {
   }
 });
 
-//get survey state in survey xx
+// get survey state in survey xx
 router.get("/survey/:surveyId/state", async (req, res) => {
   const surveyId = req.params.surveyId;
   const conn = await pool.getConnection();

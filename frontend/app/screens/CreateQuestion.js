@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TextInput,
-  KeyboardAvoidingView,
   TouchableOpacity,
-  Dimensions,
   Alert,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
@@ -25,7 +21,6 @@ import { createQuestion } from "../controller/QuizController";
 
 export default (props) => {
   const [questionTitle, setQuestionTitle] = useState("");
-  // const [questionTimeLimit, setQuestionTimeLimit] = useState(null);
   const [questionType, setQuestionType] = useState("choice");
   const [questionTextAnswer, setQuestionTextAnswer] = useState("");
   const [questionShowTimeLimit, setQuestionShowTimeLimit] = useState(

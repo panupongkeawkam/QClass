@@ -3,27 +3,6 @@ const pool = require("../config");
 
 router = express.Router();
 
-// get all user
-router.get("/user/:userId", async (req, res) => {
-  const conn = await pool.getConnection();
-  await conn.beginTransaction();
-  try {
-    const [users, rows] = await conn.query(
-      `SELECT *
-        FROM User
-        WHERE ? = userId`,
-      [req.params.userId]
-    );
-
-    res.send(!users[0]);
-  } catch (err) {
-    await conn.rollback();
-    res.status(500).send(err);
-  } finally {
-    conn.release();
-  }
-});
-
 // create new user
 router.post("/user", async (req, res) => {
   const conn = await pool.getConnection();

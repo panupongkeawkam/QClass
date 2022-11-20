@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, Alert } from "react-native";
+import { Text, Alert } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "react-native-vector-icons";
 
@@ -9,9 +9,6 @@ import ParticipantRoomAttempt from "../screens/participant/ParticipantRoomAttemp
 import ParticipantRoomResult from "../screens/participant/ParticipantRoomResult";
 import ParticipantAnnouncement from "../screens/participant/ParticipantAnnouncement";
 import HeaderButton from "../components/button/HeaderButton";
-
-import axios from "axios";
-import config from "../assets/api-config";
 
 export default (props) => {
   const RoomTabsNavigators = createBottomTabNavigator();

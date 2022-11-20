@@ -1,18 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Text, View, ScrollView, Alert, FlatList } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, Alert, FlatList } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 
 import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
-import Label from "../../components/Label";
 import Question from "../../components/Question";
 import StepBar from "../../components/StepBar";
 import AttemptTitle from "../../components/AttemptTitle";
 
 import config from "../../assets/api-config";
-
-import { formatDateForResult } from "../../controller/QuizController";
 
 export default (props) => {
   const roomId = props.route.params.room.roomId;
@@ -64,7 +61,6 @@ export default (props) => {
             }
           );
 
-          // result statement
           var scores = await axios.get(
             `http://${config.ip}:3000/quiz/${quizId}/score`
           );

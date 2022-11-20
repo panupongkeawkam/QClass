@@ -32,7 +32,6 @@ router.get("/user/:userId/room", async (req, res) => {
 
 // get all joined room for user xx
 router.get("/participant/:userId/room", async (req, res) => {
-  // state = "joined"
   const userId = req.params.userId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
@@ -60,10 +59,6 @@ router.get("/participant/:userId/room", async (req, res) => {
 
 // join room with room code by body
 router.post("/user/:userId/participant", async (req, res) => {
-  // if rejoin then set state to "joined"
-  // { body: { inviteCode: "value", state: "joined" } }
-  // get room by inviteCode
-  // room member += 1
   const userId = req.params.userId;
   const inviteCode = req.body.inviteCode;
 
@@ -143,9 +138,6 @@ router.post("/user/:userId/participant", async (req, res) => {
 
 // create new own room for user xx
 router.post("/user/:userId/room", async (req, res) => {
-  // { body: { title, iconName } }
-  // generate inviteCode
-  // room member is 0 default
   const newRoom = req.body.room;
   const userId = req.params.userId;
   const title = req.body.room.title;
@@ -167,21 +159,6 @@ router.post("/user/:userId/room", async (req, res) => {
 
     await conn.commit();
     res.json(newRoom);
-  } catch (err) {
-    await conn.rollback();
-    res.status(500).send(err);
-  } finally {
-    conn.release();
-  }
-});
-
-// enter to room (any role)
-router.get("/user/:userId/room/:roomId", async (req, res) => {
-  const conn = await pool.getConnection();
-  await conn.beginTransaction();
-
-  try {
-    res.json();
   } catch (err) {
     await conn.rollback();
     res.status(500).send(err);
@@ -217,20 +194,19 @@ router.get("/room/:roomId/quiz", async (req, res) => {
 // get survey available of room xx
 router.get("/room/:roomId/survey", async (req, res) => {
   // find survey state = "attempting"
-  const roomId = req.params.roomId
+  const roomId = req.params.roomId;
   const conn = await pool.getConnection();
   await conn.beginTransaction();
 
   try {
-
-    const [survey, rows]  = await conn.query(
+    const [survey, rows] = await conn.query(
       `SELECT *
       FROM \`Survey\`
       WHERE \`roomId\` = ? AND \`state\` = ?`,
       [roomId, "attempting"]
-    )
+    );
 
-    await conn.commit()
+    await conn.commit();
     res.json(survey);
   } catch (err) {
     await conn.rollback();
@@ -266,7 +242,6 @@ router.get("/room/:roomId/announcement", async (req, res) => {
 
 // send announcement to room xx (by owner)
 router.post("/room/:roomId/announcement", async (req, res) => {
-  // { body: { message } }
   const roomId = req.params.roomId;
   const userId = req.body.userId;
   const message = req.body.message;
@@ -314,7 +289,6 @@ router.post("/room/:roomId/announcement", async (req, res) => {
 router.put("/participant/:participantId", async (req, res) => {
   const userId = req.params.participantId;
   const roomId = req.body.room.roomId;
-  // { body: { state: "left" || "join" } }
 
   const conn = await pool.getConnection();
   await conn.beginTransaction();
@@ -344,6 +318,5 @@ router.put("/participant/:participantId", async (req, res) => {
     conn.release();
   }
 });
-
 
 exports.router = router;

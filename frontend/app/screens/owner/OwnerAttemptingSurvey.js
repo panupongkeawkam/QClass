@@ -1,19 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Text, View, ScrollView, Alert, FlatList } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, Alert, FlatList } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 
 import { theme, color } from "../../assets/theme/Theme";
 import PrimaryButton from "../../components/button/PrimaryButton";
 import StepBar from "../../components/StepBar";
-import Question from "../../components/Question";
-import Label from "../../components/Label";
 import AttemptTitle from "../../components/AttemptTitle";
 
-import {
-  getSurveyResult,
-  formatDateForResult,
-} from "../../controller/QuizController";
+import { getSurveyResult } from "../../controller/QuizController";
 import config from "../../assets/api-config";
 
 const LargeProgress = ({ title, length, maxLength }) => (
@@ -115,7 +110,10 @@ export default (props) => {
 
           var jsonData = await getSurveyResult(props.route.params.survey);
           jsonData.type = "survey";
-          jsonData.totalResponse = jsonData.choices.reduce((total, value) => total + value.response, 0)
+          jsonData.totalResponse = jsonData.choices.reduce(
+            (total, value) => total + value.response,
+            0
+          );
 
           var resultResponse = await axios.post(
             `http://${config.ip}:3000/room/${roomId}/result`,
